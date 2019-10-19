@@ -7,7 +7,8 @@ class SampleScreen extends React.Component {
 	constructor(props){
     super(props)
     this.state = {
-      wallet: ""
+			wallet: "",
+			balance: ""
     }
 	}
 	createWallet = async () => {
@@ -20,8 +21,11 @@ class SampleScreen extends React.Component {
 
 	async componentDidMount() {
 		this.setState({
-	    wallet: await Wallet.getWalletAddress()
+			wallet: await Wallet.getWalletAddress(),
 		})
+		console.log(this.state.wallet)
+		// console.log(this.state.balance)
+		// balance: await Wallet.getWalletBalance()
 	}
 
   render() {

@@ -3,8 +3,8 @@ import * as SecureStore from 'expo-secure-store';
 
 const createWallet = async () => {
 	console.log("start")
-	if(getWalletAddress()) return
-	if (getCosignerPrivateKey() == null){
+	if(await getWalletAddress()) return
+	if (await getCosignerPrivateKey() == null){
 		const _privateKey = await client.createAccount()
 		setPrivateKey(_privateKey)
 	}
@@ -54,18 +54,6 @@ const execute = async (_to, _encodeABI, _value) => {
 		getCosignerPrivateKey()
 	)
 
-	// const params = {
-	// 	address: getCosignerAddress(),
-	// 	wallet: _wallet,
-	// 	data: _encodeABI,
-	// 	sign: _sign,
-	// 	hash: _hash,
-	// 	authorized: _authorized,
-	// 	nonce: _nonce,
-	// 	to: _to,
-	// 	value: _value,
-	// }
-
 	await fetch(client.config.host.execute, {
 		method: 'POST',
 		headers: {
@@ -108,7 +96,7 @@ const getKeyManager = (_to) => {
 
 const getCosignerAddress = async () => {
 	if(!await SecureStore.getItemAsync('PrivateKey')) return
-	return web3.eth.accounts.privateKeyToAccount(await SecureStore.getItemAsync('PrivateKey')).address
+	return client.web3.eth.accounts.privateKeyToAccount(await SecureStore.getItemAsync('PrivateKey')).address
 }
 
 const getCosignerPrivateKey = async () => {
@@ -116,12 +104,15 @@ const getCosignerPrivateKey = async () => {
 }
 
 const getWalletAddress = async () => {
-	if(!await SecureStore.getItemAsync('wallet')) return
   return await SecureStore.getItemAsync('wallet')
 }
 
 const getTransaction = async (_hash) => {
   return await client.web3.eth.getTransaction(_hash)
+}
+
+const getWalletBalance = async () => {
+  return await client.web3.eth.getBalance(await getWalletAddress())
 }
 
 const setPrivateKey = async (_privateKey) => {
@@ -131,11 +122,13 @@ const setPrivateKey = async (_privateKey) => {
 const setWallet = async (_wallet) => {
   await SecureStore.setItemAsync('wallet', _wallet)
 }
+
 const Wallet = {
   createWallet: createWallet,
 	execute: execute,
 	getCosignerAddress: getCosignerAddress,
 	getWalletAddress: getWalletAddress,
+	getWalletBalance: getWalletBalance
 }
 
 export default Wallet
