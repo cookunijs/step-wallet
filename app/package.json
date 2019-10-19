@@ -1,0 +1,51 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^10.0.0",
+    "atob": "^2.1.2",
+    "axios": "^0.19.0",
+    "bn.js": "^5.0.0",
+    "crypto-browserify": "^3.12.0",
+    "did-jwt": "^3.0.0",
+    "eth-json-rpc-middleware": "^2.6.1",
+    "ethereumjs-abi": "^0.6.7",
+    "ethereumjs-util": "^6.1.0",
+    "expo": "^34.0.1",
+    "expo-barcode-scanner": "^6.0.0",
+    "expo-constants": "~6.0.0",
+    "expo-permissions": "~6.0.0",
+    "expo-secure-store": "~6.0.0",
+    "json-rpc-engine": "^5.1.1",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.15",
+    "node-libs-browser": "^2.2.1",
+    "react": "16.8.3",
+    "react-dom": "^16.8.6",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
+    "react-native-elements": "^1.2.1",
+    "react-native-gesture-handler": "~1.3.0",
+    "react-native-modal": "^11.4.0",
+    "react-native-paper": "^2.16.0",
+    "react-native-web": "^0.11.4",
+    "react-navigation": "^4.0.8",
+    "react-navigation-material-bottom-tabs": "^2.1.2",
+    "react-navigation-stack": "^1.9.4",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "web3": "^1.2.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-expo": "^6.0.0"
+  },
+  "private": true
+}
