@@ -9,8 +9,8 @@ class SampleScreen extends React.Component {
 	constructor(props){
     super(props)
     this.state = {
-			wallet: "aaa",
-			balance: "",
+			wallet: "",
+			balance: "0",
 			isDepositModalVisible: false,
 			isWithdrawModalVisible: false,
 			to: "",
@@ -24,7 +24,7 @@ class SampleScreen extends React.Component {
 			balance: await Wallet.getWalletBalance()
 		})
   }
-	_onRefresh = () => {
+	onRefresh = () => {
     this.setState({refreshing: true});
     this.loadData().then(() => {
       this.setState({refreshing: false});
@@ -44,6 +44,7 @@ class SampleScreen extends React.Component {
 	}
 	createWallet = async () => {
 		if(await Wallet.getWalletAddress()) return
+		console.log(await Wallet.getWalletAddress())
 		const _wallet = await Wallet.createWallet()
 		this.setState({
 	    wallet: _wallet
@@ -66,7 +67,7 @@ class SampleScreen extends React.Component {
 				refreshControl={
 					<RefreshControl
 						refreshing={this.state.refreshing}
-						onRefresh={this._onRefresh}
+						onRefresh={this.onRefresh}
 					/>
 				}
         style={{
