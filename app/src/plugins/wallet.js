@@ -35,24 +35,8 @@ const execute = async (_to, _encodeABI, _value) => {
 	} else {
 		_value = 0
 	}
-
 	const _wallet = await getWalletAddress()
-	const data = await fetch(client.config.host.getWalletData, {
-		method: 'POST',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			wallet: _wallet,
-		}),
-	}).then(response => response.json())
-	.then(responseJson => {
-		return responseJson
-	})
-	.catch(error => {
-		console.error(error)
-	})
+	const data = await getWalletData(_wallet)
 	const _nonce = data.nonce
 	const _authorized = data.authorized
 	const _hash = await client.web3.utils.soliditySha3(
@@ -103,6 +87,25 @@ const getKeyManager = (_to) => {
     client.config.abi.keyManager,
     _to
   )
+}
+
+const getWalletData = async (_wallet) => {
+  return await fetch(client.config.host.getWalletData, {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			wallet: _wallet,
+		}),
+	}).then(response => response.json())
+	.then(responseJson => {
+		return responseJson
+	})
+	.catch(error => {
+		console.error(error)
+	})
 }
 
 const getCosignerAddress = async () => {
