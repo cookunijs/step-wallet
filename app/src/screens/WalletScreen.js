@@ -1,7 +1,7 @@
 import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
-import { Text, View, TextInput, StyleSheet, Image, ScrollView } from 'react-native'
-import { Card, ListItem, Button } from 'react-native-elements'
+import { Text, View, TextInput, StyleSheet, Image, ScrollView, RefreshControl } from 'react-native'
+import { Card, Button } from 'react-native-elements'
 import Modal from "react-native-modal"
 import QRCode from 'react-native-qrcode-svg'
 
@@ -14,9 +14,22 @@ class SampleScreen extends React.Component {
 			isDepositModalVisible: false,
 			isWithdrawModalVisible: false,
 			to: "",
-			value: ""
+			value: "",
+			refreshing: false,
     }
 	}
+	loadData = async() => {
+		this.setState({
+			wallet: await Wallet.getWalletAddress(),
+			balance: await Wallet.getWalletBalance()
+		})
+  }
+	_onRefresh = () => {
+    this.setState({refreshing: true});
+    this.loadData().then(() => {
+      this.setState({refreshing: false});
+    });
+  }
 	toggleWithdrawModal = () => {
     this.setState({ isWithdrawModalVisible: !this.state.isWithdrawModalVisible })
 	}
@@ -44,17 +57,18 @@ class SampleScreen extends React.Component {
 		})
 	}
 	async componentDidMount() {
-		this.setState({
-			wallet: await Wallet.getWalletAddress(),
-			balance: await Wallet.getWalletBalance()
-		})
-		console.log(this.state.wallet)
-		console.log(this.state.balance)
+		await this.loadData()
 	}
 
   render() {
     return (
       <ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={this.state.refreshing}
+						onRefresh={this._onRefresh}
+					/>
+				}
         style={{
           flex: 1,
           flexDirection: 'column',
@@ -62,10 +76,16 @@ class SampleScreen extends React.Component {
 				<Card
 					title="Ethereum"
 					image={require('../../assets/icon.png')}>
-					<Text style={{marginBottom: 10}}>
+					<Text style={styles.contentTitle}>
+						Address：
+					</Text>
+					<Text style={styles.contentText}>
 						{this.state.wallet}
 					</Text>
-					<Text style={{marginBottom: 10}}>
+					<Text style={styles.contentTitle}>
+						Balance：
+					</Text>
+					<Text style={styles.contentText}>
 						{this.state.balance} wei
 					</Text>
 					<Button
@@ -106,7 +126,7 @@ class SampleScreen extends React.Component {
 									logoBorderRadius={50}
 									logoBackgroundColor="white"
 								/>
-								<Text style={styles.contentText}>{this.state.wallet}</Text>
+								<Text style={styles.contentModalText}>{this.state.wallet}</Text>
 								<View style={styles.fixToText}>
 									<Button
 										buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
@@ -193,9 +213,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 12,
 	},
-	contentText: {
+	contentModalText: {
 		padding: 15,
     fontSize: 10,
+    marginBottom: 10,
+	},
+	contentText: {
+		padding: 5,
+    fontSize: 15,
     marginBottom: 10,
   },
   button: {
