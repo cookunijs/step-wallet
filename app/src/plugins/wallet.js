@@ -27,7 +27,6 @@ const createWallet = async () => {
 	})
 }
 
-
 const execute = async (_to, _encodeABI, _value) => {
 	console.log("start")
 	if(_value != 0) {
@@ -128,7 +127,7 @@ const getTransaction = async (_hash) => {
 }
 
 const getWalletBalance = async () => {
-	return await fetch(client.config.host.balance, {
+	return await fetch(client.config.host.getWalletBalance, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',

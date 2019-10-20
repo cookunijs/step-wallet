@@ -285,7 +285,7 @@ app.post('/keyUpdate', async function(req, res){
   }
 })
 
-app.post('/balance', async function(req, res){
+app.post('/getWalletBalance', async function(req, res){
   const param = req.body
   const _address = param.address
   const _result = {

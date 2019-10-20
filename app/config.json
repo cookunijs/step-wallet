@@ -15,7 +15,7 @@
   "host": {
     "createWallet": "http://10.0.1.24:5000/createWallet",
     "execute": "http://10.0.1.24:5000/execute/",
-    "balance": "http://10.0.1.24:5000/balance/",
+    "getWalletBalance": "http://10.0.1.24:5000/getWalletBalance/",
     "getWalletData": "http://10.0.1.24:5000/getWalletData/"
   }
 }
