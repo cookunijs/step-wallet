@@ -43,9 +43,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
 	},
 	{
 		initialRouteName: "Wallet",
-		activeColor: '#f0edf6',
-		inactiveColor: '#696969',
-		barStyle: { backgroundColor: '#000000' },
+		activeColor: '#00acee',
+		inactiveColor: '#a9a9a9',
+		barStyle: { backgroundColor: '#fff' },
 	},
 )
 

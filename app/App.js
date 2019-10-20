@@ -99,10 +99,10 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <Header
-					centerComponent={{ text: 'CONTRACT WALLET', style: { color: '#fff' } }}
-					rightComponent={{ icon: 'settings', color: '#fff' }}
+					centerComponent={{ text: 'CONTRACT WALLET', style: { color: '#00acee' }}}
+					rightComponent={{ icon: 'settings', color: '#00acee' }}
 					containerStyle={{
-						backgroundColor: '#000000',
+						backgroundColor: '#fff',
 						justifyContent: 'space-around',
 					}}
 				/>
