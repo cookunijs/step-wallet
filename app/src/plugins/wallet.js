@@ -29,31 +29,42 @@ const createWallet = async () => {
 
 
 const execute = async (_to, _encodeABI, _value) => {
+	console.log("start")
 	if(_value != 0) {
-		_value = client.web3.utils.toWei(_value, 'ether')
+		_value = _value
 	} else {
 		_value = 0
 	}
-	const _wallet = getWalletAddress()
-	const CloneableWallet = getCloneableWallet(_wallet)
-	const _nonce = await CloneableWallet.methods.nonce().call()
-	const _keyManager = await CloneableWallet.methods.keyManager().call()
-	const KeyManager = getKeyManager(_keyManager)
-	const AUTHORIZED = await KeyManager.methods.AUTHORIZED().call()
-	const _authorized = await KeyManager.methods.addresses(AUTHORIZED).call()
 
+	const _wallet = await getWalletAddress()
+	const data = await fetch(client.config.host.getWalletData, {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			wallet: _wallet,
+		}),
+	}).then(response => response.json())
+	.then(responseJson => {
+		return responseJson
+	})
+	.catch(error => {
+		console.error(error)
+	})
+	const _nonce = data.nonce
+	const _authorized = data.authorized
 	const _hash = await client.web3.utils.soliditySha3(
 		_wallet,
 		_nonce,
 		_authorized,
 		_encodeABI
 	)
-
 	const _sign = client.web3.eth.accounts.sign(
 		_hash,
-		getCosignerPrivateKey()
+		await getCosignerPrivateKey()
 	)
-
 	await fetch(client.config.host.execute, {
 		method: 'POST',
 		headers: {
@@ -61,7 +72,7 @@ const execute = async (_to, _encodeABI, _value) => {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			address: getCosignerAddress(),
+			address: await getCosignerAddress(),
 			wallet: _wallet,
 			data: _encodeABI,
 			sign: _sign,
@@ -73,7 +84,7 @@ const execute = async (_to, _encodeABI, _value) => {
 		}),
 	}).then(response => response.json())
 	.then(responseJson => {
-		return responseJson.movies
+		return responseJson.balance
 	})
 	.catch(error => {
 		console.error(error)
@@ -82,25 +93,27 @@ const execute = async (_to, _encodeABI, _value) => {
 
 const getCloneableWallet = (_to) => {
   return new client.web3.eth.Contract(
-    client.config.cloneableWallet.abi,
+    client.config.abi.cloneableWallet,
     _to
   )
 }
 
 const getKeyManager = (_to) => {
   return new client.web3.eth.Contract(
-    client.config.keyManager.abi,
+    client.config.abi.keyManager,
     _to
   )
 }
 
 const getCosignerAddress = async () => {
 	if(!await SecureStore.getItemAsync('PrivateKey')) return
-	return client.web3.eth.accounts.privateKeyToAccount(await SecureStore.getItemAsync('PrivateKey')).address
+	const result = await SecureStore.getItemAsync('PrivateKey')
+	return client.web3.eth.accounts.privateKeyToAccount("0x" + result).address
 }
 
 const getCosignerPrivateKey = async () => {
-  return await SecureStore.getItemAsync('PrivateKey')
+	const result = await SecureStore.getItemAsync('PrivateKey')
+  return "0x" + result
 }
 
 const getWalletAddress = async () => {
@@ -112,7 +125,22 @@ const getTransaction = async (_hash) => {
 }
 
 const getWalletBalance = async () => {
-  return await client.web3.eth.getBalance(await getWalletAddress())
+	return await fetch(client.config.host.balance, {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			address: await getWalletAddress(),
+		}),
+	}).then(response => response.json())
+	.then(responseJson => {
+		return responseJson.balance
+	})
+	.catch(error => {
+		console.error(error)
+	})
 }
 
 const setPrivateKey = async (_privateKey) => {
@@ -124,6 +152,7 @@ const setWallet = async (_wallet) => {
 }
 
 const Wallet = {
+	web3: client.web3,
   createWallet: createWallet,
 	execute: execute,
 	getCosignerAddress: getCosignerAddress,

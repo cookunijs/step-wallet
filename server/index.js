@@ -73,7 +73,9 @@ app.post('/createWallet', async function(req, res){
   const _gasPrice = await getGasPrice()
 
   try{
-		const nonce = await web3.eth.getTransactionCount(senderPublicKey)
+    const nonce = await web3.eth.getTransactionCount(senderPublicKey)
+    console.log(senderPublicKey)
+    console.log(nonce)
     const transactionObj = {
 			nonce: nonce,
 			gasPrice: _gasPrice,
@@ -282,6 +284,44 @@ app.post('/keyUpdate', async function(req, res){
     console.log("else")
   }
 })
+
+app.post('/balance', async function(req, res){
+  const param = req.body
+  const _address = param.address
+  const _result = {
+    balance: await web3.eth.getBalance(_address),
+  }
+  res.send(_result)
+})
+
+app.post('/getWalletData', async function(req, res){
+  const param = req.body
+  const CloneableWallet = getCloneableWallet(param.wallet)
+	const _nonce = await CloneableWallet.methods.nonce().call()
+	const _keyManager = await CloneableWallet.methods.keyManager().call()
+	const KeyManager = getKeyManager(_keyManager)
+	const AUTHORIZED = await KeyManager.methods.AUTHORIZED().call()
+  const _authorized = await KeyManager.methods.addresses(AUTHORIZED).call()
+  const _result = {
+    nonce: _nonce,
+    authorized: _authorized
+  }
+  res.send(_result)
+})
+
+const getCloneableWallet = (_to) => {
+  return new web3.eth.Contract(
+    config.abi.cloneableWallet,
+    _to
+  )
+}
+
+const getKeyManager = (_to) => {
+  return new web3.eth.Contract(
+    config.abi.keyManager,
+    _to
+  )
+}
 
 const getGasPrice = async() => {
   const result = await web3.eth.getGasPrice()
