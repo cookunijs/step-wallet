@@ -87,7 +87,7 @@ class SampleScreen extends React.Component {
 						Balance：
 					</Text>
 					<Text style={styles.contentText}>
-						{this.state.balance} wei
+						{this.state.balance} ETH
 					</Text>
 					<Button
 							color="white"

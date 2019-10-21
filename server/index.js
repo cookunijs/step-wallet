@@ -288,8 +288,9 @@ app.post('/keyUpdate', async function(req, res){
 app.post('/getWalletBalance', async function(req, res){
   const param = req.body
   const _address = param.address
+  const balance = web3.utils.fromWei(await web3.eth.getBalance(_address), 'ether')
   const _result = {
-    balance: await web3.eth.getBalance(_address),
+    balance: balance,
   }
   res.send(_result)
 })
@@ -305,6 +306,15 @@ app.post('/getWalletData', async function(req, res){
   const _result = {
     nonce: _nonce,
     authorized: _authorized
+  }
+  res.send(_result)
+})
+
+app.post('/getToWeiValue', async function(req, res){
+  const param = req.body
+  const _value = web3.utils.toWei(param.value, 'ether')
+  const _result = {
+    value: _value,
   }
   res.send(_result)
 })

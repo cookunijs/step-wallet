@@ -32,6 +32,10 @@ const createWallet = async () => {
 
 const execute = async (_to, _encodeABI, _value) => {
 	console.log("start")
+	const result = await getToWeiValue(_value)
+	_value = result.value
+	console.log(_value)
+
 	if(_value != 0) {
 		_value = _value
 	} else {
@@ -110,6 +114,25 @@ const getWalletData = async (_wallet) => {
 	})
 }
 
+const getToWeiValue = async (_value) => {
+  return await fetch(client.config.host.getToWeiValue, {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			value: _value,
+		}),
+	}).then(response => response.json())
+	.then(responseJson => {
+		return responseJson
+	})
+	.catch(error => {
+		console.error(error)
+	})
+}
+
 const getCosignerAddress = async () => {
 	if(!await SecureStore.getItemAsync('PrivateKey')) return
 	const result = await SecureStore.getItemAsync('PrivateKey')
@@ -141,7 +164,7 @@ const getWalletBalance = async () => {
 		}),
 	}).then(response => response.json())
 	.then(responseJson => {
-		return responseJson.balance
+		return  Math.floor(responseJson.balance* 100000) / 100000
 	})
 	.catch(error => {
 		console.error(error)
