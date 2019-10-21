@@ -3,8 +3,7 @@ import { View } from 'react-native'
 import { createAppContainer } from 'react-navigation'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
 import Icon from 'react-native-vector-icons/Ionicons'
-
-import ChartScreen from '../screens/HomeScreen'
+import ChartScreen from '../screens/ChartScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import WalletScreen from '../screens/WalletScreen'
 
