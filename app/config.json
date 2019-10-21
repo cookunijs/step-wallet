@@ -13,7 +13,10 @@
     "wss": "wss://rinkeby.infura.io/ws"
   },
   "host": {
-    "createWallet": "http://10.0.1.24:5000/createWallet",
-    "execute": "http://10.0.1.24:5000/execute/"
+    "createWallet": "http://10.0.1.31:5000/createWallet",
+    "execute": "http://10.0.1.31:5000/execute/",
+    "getWalletBalance": "http://10.0.1.31:5000/getWalletBalance/",
+    "getWalletData": "http://10.0.1.31:5000/getWalletData/",
+    "getToWeiValue": "http://10.0.1.31:5000/getToWeiValue/"
   }
 }

@@ -1,10 +1,11 @@
 import config from'../../config.json'
 import '../../global'
-global.Web3 = require('web3')
-global.web3 = new Web3(new Web3.providers.HttpProvider(config.node.https))
-
 import crypto from 'crypto'
-import randomBytes from "randombytes"
+import randomBytes from 'randombytes'
+global.Web3  = require('web3')
+global.web3  = new Web3(
+  new Web3.providers.HttpProvider(config.node.https)
+)
 
 const web3 = global.web3
 
@@ -38,7 +39,7 @@ const ownedTokens = async (name ,address)=> {
 
 const createAccount = async () => {
   var x = await web3.eth.accounts.create(web3.utils.randomHex(32))
-  return x.privateKey
+  return x.privateKey.substring(2)
 }
 
 const client = {

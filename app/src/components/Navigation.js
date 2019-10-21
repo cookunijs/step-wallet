@@ -3,10 +3,9 @@ import { View } from 'react-native'
 import { createAppContainer } from 'react-navigation'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
 import Icon from 'react-native-vector-icons/Ionicons'
-
-import ChartScreen from '../screens/HomeScreen'
-import ProfileScreen from '../screens/ProfileScreen'
-import WalletScreen from '../screens/WalletScreen'
+import ChartScreen from '../screens/ChartScreen'
+import SecondScreen from '../screens/SecondScreen'
+import ThirdScreen from '../screens/ThirdScreen'
 
 const TabNavigator = createMaterialBottomTabNavigator(
 	{
@@ -15,12 +14,12 @@ const TabNavigator = createMaterialBottomTabNavigator(
 				tabBarLabel:'Chart',
 				tabBarIcon: ({ tintColor }) => (
 					<View>
-      			<Icon style={[{color: tintColor}]} size={25} name={'ios-pricetags'}/>
+      			<Icon style={[{color: tintColor}]} size={25} name={'md-trending-up'}/>
 					</View>
 				),
 			}
 		},
-		Wallet: { screen: WalletScreen,
+		Wallet: { screen: SecondScreen,
 			navigationOptions:{
 				tabBarLabel:'wallet',
 				tabBarIcon: ({ tintColor }) => (
@@ -30,7 +29,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
 				),
 			}
 		},
-		Profile: { screen: ProfileScreen,
+		Profile: { screen: ThirdScreen,
 			navigationOptions:{
 				tabBarLabel:'Profile',
 				tabBarIcon: ({ tintColor }) => (
