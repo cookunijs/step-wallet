@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { Image } from 'react-native-elements'
+import { StyleSheet, View, ScrollView, ActivityIndicator } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 class WelcomeScreen extends Component {
   render() {
+    const { uri } = this.props.navigation.state.params;
     return (
       <ScrollView>
-        {/* <Image
-          style={styles.image}
-          source={require('../../assets/15.png')}
-          PlaceholderContent={<ActivityIndicator />}
-        /> */}
+       	<WebView source={{ uri: uri }} style={styles.container}/>
       </ScrollView>
     );
   }
@@ -20,7 +17,8 @@ export default WelcomeScreen
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+		width: 375,
+    height: 800,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
