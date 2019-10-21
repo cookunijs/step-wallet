@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack';
-import WelcomeScreen from '../screens/WelcomeScreen'
-import SettingScreen from '../screens/SettingScreen'
+import WelcomeScreen from './WelcomeScreen'
+import SettingScreen from './SettingScreen'
 
 const AppNavigator = createStackNavigator({
 	SettingScreen: {

@@ -1,10 +1,6 @@
-import '../../global'
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Image } from 'react-native'
-import Modal from "react-native-modal";
-import { Button } from 'react-native-elements'
-
-// import Constants from 'expo-constants'
+import { Text, View, StyleSheet, Button } from 'react-native'
+import { NavigationActions } from 'react-navigation'
 import * as Permissions from 'expo-permissions'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import * as SecureStore from 'expo-secure-store';
@@ -12,24 +8,13 @@ import * as SecureStore from 'expo-secure-store';
 import { connect } from 'react-redux';
 import { storeDid, storePubEncKey } from '../actions';
 
-import crypto from 'crypto'
-import randomBytes from "randombytes"
-
-//globalでのWeb3の作成
-global.Web3  = require('web3');
-global.web3  = new Web3(
-  new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/e6bff28e38264667949d1244613efd01')
-);
-
-class QRBarcodeScanner extends React.Component {
+class ScannerScreen extends React.Component {
+  static navigationOptions = {
+		title: 'Scanner',
+	}
   state = {
     hasCameraPermission: null,
     scanned: false,
-    url: "",
-    isVisible: null,
-    type: "",
-    data: {},
-    decodedValue: {}
   }
   data = ""
   chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
@@ -96,131 +81,27 @@ class QRBarcodeScanner extends React.Component {
           justifyContent: 'flex-end',
         }}>
         <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : this.onModal}
+          onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned}
           style={StyleSheet.absoluteFillObject}
         />
         {scanned && (
-          <Button title={'Tap to Scan Again'} onPress={() => this.setState({ scanned: false, url: ""})} />
+          <Button title={'Tap to Scan Again'} onPress={() => this.setState({ scanned: false })} />
         )}
-        <Modal
-          isVisible={this.state.isVisible === 'bottom'}
-          onSwipeComplete={() => this.setState({ isVisible: null })}
-          swipeDirection={['up', 'left', 'right', 'down']}
-          style={styles.bottomModal}
-        >
-          <View style={styles.content}>
-          <Text style={styles.contentTitle}>承認先</Text>
-            <Image
-              style={styles.image}
-              source={require('../../assets/images/image.jpg')}
-            />
-            <Text style={styles.contentTitle}>{this.state.decodedValue.iat}</Text>
-            <Text>{this.state.decodedValue.iss}</Text>
-            <View style={styles.fixToText}>
-              <Button
-              	buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
-                title="承認する"
-                onPress={this.handleBarCodeScanned}
-                style={styles.button}
-              />
-              <Button
-              	buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
-                title="閉じる"
-                onPress={this.offModal}
-                style={styles.button}
-              />
-            </View>
-          </View>
-        </Modal>
-        <Text style={styles.content}>{this.state.url}</Text>
       </View>
     )
   }
 
-  onModal = async ({ type, data }) => {
-    const urlSplited =  data.split("/")
-    const jwt = urlSplited[7]
-    const base64Url = jwt.split('.')[1]
-    const decodedValue = JSON.parse(this.atob(base64Url))
-    this.setState({
-      type: type,
-      data: data,
-      decodedValue: decodedValue,
-      isVisible: 'bottom'
-    })
-  }
-
-  offModal = async () => {
-    this.setState({
-      isVisible: null
-    })
-  }
-
-  handleCreateAccount = (values, bag) => {
-		var x = global.web3.eth.accounts.create(web3.utils.randomHex(32))
-    return x.privateKey.substring(2)
-  }
-
-  handleBarCodeScanned = async () => {decodedValue
-    const decodedValue = this.state.decodedValue
-    const data = this.state.data
-    const { pushToken, publicEncKey } = this.props
-    const did = decodedValue.iss
-    const pubKey = did.split(':')[2]
-    const pubEncKey = this.btoa(pubKey)
-    const privateKey = this.handleCreateAccount()
-    if(!await SecureStore.getItemAsync("privateKey")) {
-      await SecureStore.setItemAsync("privateKey", privateKey)
-    }
-    this.props.storeDid(did)
-    this.props.storePubEncKey(pubEncKey)
-    this.setState({
-      scanned: true,
-      url: data,
-      isVisible: null,
-    })
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`)
-
-    // fetch('https://mywebsite.com/endpoint/', {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     did: did,
-    //     pushToken: pushToken,
-    //     pubEncKey: pubEncKey
-    //   }),
-    // });
-
-    await fetch('http://192.168.0.127:8080/endpoint/', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        did: did,
-        pushToken: pushToken,
-        pubEncKey: pubEncKey
-      }),
-    }).then(response => response.json())
-    .then(responseJson => {
-      return responseJson.movies
-    })
-    .catch(error => {
-      console.error(error)
-    })
-    // this.props.navigation.navigate('Home')
+  handleBarCodeScanned = async ({ type, data }) => {
+    this.props.navigation.navigate('WalletScreen', {to: data}, NavigationActions.navigate({ routeName: 'ScannerScreen' }))
   }
 }
 
 const mapStateToProps = state => {
-  return state.auth;
+  console.log(state.auth)
+  return state.auth
 };
 
-export default connect(mapStateToProps,{ storeDid, storePubEncKey })(QRBarcodeScanner);
+export default connect(mapStateToProps,{ storeDid, storePubEncKey })(ScannerScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -232,29 +113,4 @@ const styles = StyleSheet.create({
     height:200,
     borderWidth: 1,
   },
-  content: {
-    backgroundColor: 'white',
-    padding: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  fixToText: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    margin: 10
-
-  },
-  contentTitle: {
-    fontSize: 20,
-    marginBottom: 12,
-  },
-  button: {
-    margin: 10
-  }
-  // bottomModal: {
-  //   justifyContent: 'flex-end',
-  //   margin: 0,
-  // },
 })

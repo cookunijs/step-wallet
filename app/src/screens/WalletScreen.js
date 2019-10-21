@@ -1,11 +1,16 @@
 import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
-import { Text, View, TextInput, StyleSheet, Image, ScrollView, RefreshControl } from 'react-native'
-import { Card, Button } from 'react-native-elements'
+import { Text, View, StyleSheet, Image, ScrollView, RefreshControl } from 'react-native'
+import { Card, Button, ButtonGroup, Input } from 'react-native-elements'
+import { NavigationActions } from 'react-navigation'
 import Modal from "react-native-modal"
 import QRCode from 'react-native-qrcode-svg'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-class SampleScreen extends React.Component {
+class WalletScreen extends React.Component {
+	static navigationOptions = {
+		title: 'Wallet',
+	}
 	constructor(props){
     super(props)
     this.state = {
@@ -16,6 +21,7 @@ class SampleScreen extends React.Component {
 			to: "",
 			value: "",
 			refreshing: false,
+			selectedIndex: 2
     }
 	}
 	loadData = async() => {
@@ -39,12 +45,15 @@ class SampleScreen extends React.Component {
 	onChangeTo = (_to) => {
     this.setState({ to: _to })
 	}
+	onChangeQRCodeTo = () => {
+    this.setState({ isWithdrawModalVisible: !this.state.isWithdrawModalVisible })
+		this.props.navigation.navigate('ScannerScreen', {}, NavigationActions.navigate({ routeName: 'WalletScreen' }))
+	}
 	onChangeValue = (_value) => {
     this.setState({ value: _value })
 	}
 	createWallet = async () => {
 		if(await Wallet.getWalletAddress()) return
-		console.log(await Wallet.getWalletAddress())
 		const _wallet = await Wallet.createWallet()
 		this.setState({
 	    wallet: _wallet
@@ -54,14 +63,63 @@ class SampleScreen extends React.Component {
 		this.toggleWithdrawModal()
 		await Wallet.execute(this.state.to, "0x", this.state.value)
 		this.setState({
-			balance: await Wallet.getWalletBalance()
+			balance: await Wallet.getWalletBalance(),
+			to: ''
 		})
 	}
 	async componentDidMount() {
 		await this.loadData()
 	}
+	updateIndex = async (_index) => {
+		if(_index == 0){
+			this.toggleDepositModal()
+		} else if (_index == 1) {
+			this.toggleWithdrawModal()
+		}
+	}
+	component1 = () =>
+		<View>
+			<Icon
+				name="plus"
+				size={50}
+				color="#00acee"
+				style={{
+					alignItems: 'center',
+					justifyContent: 'center',
+        }}
+			/>
+			{/* <Text>入金</Text> */}
+		</View>
 
+	component2 = () =>
+		<View　>
+			<Icon
+				name="minus"
+				size={50}
+				color="#00acee"
+				style={{
+					alignItems: 'center',
+					justifyContent: 'center',
+        }}
+			/>
+			{/* <Text 
+				style={{
+					fontSize: 20,
+					alignItems: 'center',
+					justifyContent: 'center',
+        }}
+			>出金</Text> */}
+		</View>
   render() {
+		const { navigate } = this.props.navigation
+		if(this.props.navigation.state.params) {
+			this.setState({ isWithdrawModalVisible: true })
+			const { to } = this.props.navigation.state.params
+			this.onChangeTo(to)
+			this.props.navigation.state.params = undefined
+		}
+		const buttons = [{ element: this.component1 }, { element: this.component2 }]
+  	const selectedIndex = this.state.selectedIndex
     return (
       <ScrollView
 				refreshControl={
@@ -74,37 +132,71 @@ class SampleScreen extends React.Component {
           flex: 1,
           flexDirection: 'column',
         }}>
-				<Card
-					title="Ethereum"
-					image={require('../../assets/icon.png')}>
+					<Card
+						style={styles.card}
+						title="Ethereum"
+					>
 					<Text style={styles.contentTitle}>
-						Address：
+						<Icon
+							name='user'
+							size={24}
+							color='black'
+							style={styles.contentIcon}
+						/>  Address：
 					</Text>
 					<Text style={styles.contentText}>
 						{this.state.wallet}
 					</Text>
 					<Text style={styles.contentTitle}>
-						Balance：
+						<Icon
+							name='database'
+							size={24}
+							color='black'
+							style={styles.contentIcon}
+						/>  Balance：
 					</Text>
 					<Text style={styles.contentText}>
 						{this.state.balance} ETH
 					</Text>
-					<Button
-							color="white"
-							type="outline"
-							style={styles.button}
-							buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-							title='deposit'
-							onPress={this.toggleDepositModal}
+					<ButtonGroup
+						onPress={this.updateIndex}
+						selectedIndex={selectedIndex}
+						buttons={buttons}
+						containerStyle={{height: 90}}
+					/>
+					</Card>
+					{/* <Button
+						icon={
+							<Icon
+								name="eye"
+								size={50}
+								color="#00acee"
+							/>
+						}
+						iconRight
+						color="white"
+						type="Clear"
+						style={styles.button}
+						buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+						title='deposit'
+						onPress={this.toggleDepositModal}
 					/>
 					<Button
+						icon={
+							<Icon
+								name="eye"
+								size={50}
+								color="#00acee"
+							/>
+						}
+						iconContainerStyle={styles.button}
 						color="white"
-						type="outline"
+						type="Clear"
 						style={styles.button}
 						buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
 						title='withdraw'
 						onPress={this.toggleWithdrawModal}
-					/>
+					/> */}
 					<Modal
 						isVisible={this.state.isDepositModalVisible}
 						onSwipeComplete={() => this.setState({ isDepositModalVisible: false })}
@@ -130,6 +222,7 @@ class SampleScreen extends React.Component {
 								<Text style={styles.contentModalText}>{this.state.wallet}</Text>
 								<View style={styles.fixToText}>
 									<Button
+										type="Clear"
 										buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
 										title="閉じる"
 										onPress={this.toggleDepositModal}
@@ -145,33 +238,62 @@ class SampleScreen extends React.Component {
 						// style={styles.bottomModal}
         	>
 						<View style={styles.content}>
-							<Text style={styles.contentTitle}>送金先</Text>
-							<TextInput
-								style={{ height: 30, width: 300, borderColor: 'gray', borderWidth: 1 }}
+							<Text style={styles.contentTitle}></Text>
+							<Input
+								label="ADDRESS"
+								placeholder='送金先'
+								value={this.state.to}
+								leftIcon={
+									<Icon
+										name='smile-o'
+										size={23}
+										color='black'
+										style={styles.contentIcon}
+									/>
+								}
+								rightIcon={
+									<Icon
+										name='qrcode'
+										size={23}
+										color='black'
+										style={styles.contentIcon}
+										onPress={this.onChangeQRCodeTo}
+										/>
+								}
+								style={{ height: 30, width: 300, borderColor: 'gray', borderWidth: 1, marginBottom: 20 }}
 								onChangeText={this.onChangeTo}
 							/>
-							<Text style={styles.contentTitle}>金額</Text>
-							<TextInput
-								style={{ height: 30, width: 300, borderColor: 'gray', borderWidth: 1 }}
+							<Text style={styles.contentTitle}></Text>
+							<Input
+								label="VALUE"
+								placeholder='金額'
+								leftIcon={
+									<Icon
+										name='dollar'
+										size={25}
+										color='black'
+										style={styles.contentIcon}
+									/>
+								}
+								style={{ height: 30, width: 300, borderColor: 'gray', borderWidth: 1, marginBottom: 20}}
 								onChangeText={this.onChangeValue}
 							/>
 							<View style={styles.fixToText}>
 								<Button
-									buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
-									title="送金する"
-									onPress={this.transferEth}
+									type="Clear"
 									style={styles.button}
+									title="送金"
+									onPress={this.transferEth}
 								/>
 								<Button
-									buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
-									title="閉じる"
-									onPress={this.toggleWithdrawModal}
+									type="Clear"
 									style={styles.button}
+									title="閉じる"
+									onPress={this.toggleWithdrawModal}
 								/>
 							</View>
 						</View>
 					</Modal>
-				</Card>
         <Button
 					buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
 					title="作成"
@@ -183,13 +305,17 @@ class SampleScreen extends React.Component {
   }
 }
 
-export default SampleScreen
+export default WalletScreen
 
 const styles = StyleSheet.create({
   container: {
     color: "#000",
     backgroundColor: '#fff',
-  },
+	},
+	card: {
+		color: "red",
+    backgroundColor: 'red',
+	},
   image: {
     width:200,
     height:200,
@@ -220,15 +346,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
 	},
 	contentText: {
-		padding: 5,
+		padding: 10,
     fontSize: 15,
     marginBottom: 10,
   },
   button: {
-    margin: 10
+		padding: 5,
+		paddingLeft: 24,
+    paddingRight: 24,
+		marginTop: 30,
+		marginLeft: 20,
+    marginRight: 10,
+		fontSize: 10,
 	},
 	bottomModal: {
     justifyContent: 'flex-end',
     margin: 0,
-  },
+	},
+	contentIcon: {
+		marginTop: 5,
+    marginBottom: 10,
+    marginRight: 10,
+	},
 })
