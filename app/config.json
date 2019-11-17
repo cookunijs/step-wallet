@@ -31,7 +31,7 @@
   },
   "host": {
     "sand": "http://172.20.10.3:5000/",
-    "development": "http://172.20.10.3:5000/",
+    "development": "https://us-central1-my-contract-wallet-development.cloudfunctions.net/api/",
     "staging": "",
     "production": ""
   },
