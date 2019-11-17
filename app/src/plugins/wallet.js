@@ -1,17 +1,22 @@
+//環境変数に設定する値
+const process = {
+  env: {
+    PROJECT: "development",
+  }
+}
+const project = process.env.PROJECT
+
 import client from './ethereum-client.js'
 import * as SecureStore from 'expo-secure-store';
 
 const createWallet = async () => {
 	console.log("start")
-	console.log(await getWalletAddress())
-	console.log(await getCosignerPrivateKey())
-
 	if(await getWalletAddress()) return
 	if (!await getCosignerPrivateKey()){
 		const _privateKey = await client.createAccount()
 		setPrivateKey(_privateKey)
 	}
-	return await fetch(client.config.host.createWallet, {
+	return await fetch(client.config.host[project] + client.config.url.createWallet, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -23,6 +28,7 @@ const createWallet = async () => {
 	}).then(response => response.json())
 	.then(async responseJson => {
 		await setWallet(responseJson.wallet)
+		console.log("end")
 		return responseJson.wallet
 	})
 	.catch(error => {
@@ -34,13 +40,13 @@ const execute = async (_to, _encodeABI, _value) => {
 	console.log("start")
 	const result = await getToWeiValue(_value)
 	_value = result.value
-	console.log(_value)
 
 	if(_value != 0) {
 		_value = _value
 	} else {
 		_value = 0
 	}
+
 	const _wallet = await getWalletAddress()
 	const data = await getWalletData(_wallet)
 	const _nonce = data.nonce
@@ -55,7 +61,7 @@ const execute = async (_to, _encodeABI, _value) => {
 		_hash,
 		await getCosignerPrivateKey()
 	)
-	await fetch(client.config.host.execute, {
+	await fetch(client.config.host[project] + client.config.url.execute, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -74,6 +80,7 @@ const execute = async (_to, _encodeABI, _value) => {
 		}),
 	}).then(response => response.json())
 	.then(responseJson => {
+		console.log("end")
 		return responseJson.balance
 	})
 	.catch(error => {
@@ -96,7 +103,7 @@ const getKeyManager = (_to) => {
 }
 
 const getWalletData = async (_wallet) => {
-  return await fetch(client.config.host.getWalletData, {
+  return await fetch(client.config.host[project] + client.config.url.getWalletData, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -115,7 +122,7 @@ const getWalletData = async (_wallet) => {
 }
 
 const getToWeiValue = async (_value) => {
-  return await fetch(client.config.host.getToWeiValue, {
+  return await fetch(client.config.host[project] + client.config.url.getToWeiValue, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -141,6 +148,7 @@ const getCosignerAddress = async () => {
 
 const getCosignerPrivateKey = async () => {
 	const result = await SecureStore.getItemAsync('PrivateKey')
+	if(!result) return result
   return "0x" + result
 }
 
@@ -153,7 +161,7 @@ const getTransaction = async (_hash) => {
 }
 
 const getWalletBalance = async () => {
-	return await fetch(client.config.host.getWalletBalance, {
+	return await fetch(client.config.host[project] + client.config.url.getWalletBalance, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -167,7 +175,7 @@ const getWalletBalance = async () => {
 		return  Math.floor(responseJson.balance* 100000) / 100000
 	})
 	.catch(error => {
-		console.error(error)
+		console.log(error)
 	})
 }
 

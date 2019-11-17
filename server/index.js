@@ -1,12 +1,17 @@
 //環境変数に設定する値
 const process = {
   env: {
-    SENDERPUBLICKEY: "0x4fDD03ea775a490242Cbe1382997F477d2ccC59E",
-    SENDERPRIVATEKEY: "0x2afd91ee7448708b7be2f7c4b6973bf6ba02973bdc2b8b10aeec3dfa632add06",
-    AUTHORIZEDPRIVATEKEY: "0x26eca9d40ba07290aa3601e68d010d20116942eed3b7f1dd7bc33b219d00e4b6",
+    PROJECT: "dev",
+    SENDERPUBLICKEY: "0x7A7A156dC4754f6ff7Cf0D66aB56a9c85b49fe13",
+    SENDERPRIVATEKEY: "0x73109EC5629ECFF977ACF3801418A63802229171BC4EB1C764A056C67758DFCE",
+    AUTHORIZEDPRIVATEKEY: "0xD188779DBEF13E791540C32F61AF70C8C2D8472B2BC28D31497172DFA32B4212",
   }
 }
+// SENDERPUBLICKEY: "0x4fDD03ea775a490242Cbe1382997F477d2ccC59E",
+// SENDERPRIVATEKEY: "0x2afd91ee7448708b7be2f7c4b6973bf6ba02973bdc2b8b10aeec3dfa632add06",
+// AUTHORIZEDPRIVATEKEY: "0x26eca9d40ba07290aa3601e68d010d20116942eed3b7f1dd7bc33b219d00e4b6",
 
+const project = process.env.PROJECT
 const express = require('express')
 const host = process.env.HOST || '0.0.0.0'
 const port = process.env.PORT || 5000
@@ -15,7 +20,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const config = require('./config.json')
 const Web3 = require('web3')
-const web3 = new Web3(config.node.https)
+const web3 = new Web3(new Web3.providers.HttpProvider(config.node[project].https))
 const senderPublicKey = process.env.SENDERPUBLICKEY
 const senderPrivateKey = process.env.SENDERPRIVATEKEY
 
@@ -24,11 +29,11 @@ const RECOVERY = 2
 const contract = {
   walletFactory: new web3.eth.Contract(
     config.abi.walletFactory,
-    config.contract.walletFactory
+    config.contract[project].walletFactory
   ),
   keyManager: new web3.eth.Contract(
     config.abi.keyManager,
-    config.contract.keyManager
+    config.contract[project].keyManager
   )
 }
 
@@ -45,7 +50,7 @@ app.post('/createWallet', async function(req, res){
   const _authorizedPrivateKey = process.env.AUTHORIZEDPRIVATEKEY
   const param = req.body
   const _cosigner = param.cosigner
-  const _walletFactory = config.contract.walletFactory
+  const _walletFactory = config.contract[project].walletFactory
   const _nonce = await contract.walletFactory.methods.nonce().call()
 
   //署名用のハッシュの作成
@@ -74,8 +79,6 @@ app.post('/createWallet', async function(req, res){
 
   try{
     const nonce = await web3.eth.getTransactionCount(senderPublicKey)
-    console.log(senderPublicKey)
-    console.log(nonce)
     const transactionObj = {
 			nonce: nonce,
 			gasPrice: _gasPrice,
@@ -156,14 +159,15 @@ app.post('/execute', async function(req, res){
     }
     const signedTx = await web3.eth.accounts.signTransaction(transactionObj, senderPrivateKey)
     console.log('Sending.......')
-
     //senderKeyにてtransactionを送信する
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-    .on('receipt', receipt => {
-      console.log(`Success!!`)
-      res.send(receipt)
-    })
-    .on('error', console.error)
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    
+    await web3.eth.subscribe('logs', {
+      address: senderPublicKey,
+    }, function(error, result){
+        // if (!error)
+          console.log(error)
+    });
   } else {
     console.log("error")
   }
@@ -235,7 +239,7 @@ app.post('/keyUpdate', async function(req, res){
   const _nonce = param.nonce
   const _target = param.target
   const _new = param.new
-  const _keyManager = config.contract.keyManager
+  const _keyManager = config.contract[project].keyManager
 
   //recoveryの署名を復元
   const _recoveryPublicKey = await web3.eth.accounts.recover(_hash, _sigRecovery.signature)
@@ -288,6 +292,14 @@ app.post('/keyUpdate', async function(req, res){
 app.post('/getWalletBalance', async function(req, res){
   const param = req.body
   const _address = param.address
+  if(!_address){
+    console.log("null address")
+    const _result = {
+      balance: 0,
+    }
+    res.send(_result)
+    return
+  }
   const balance = web3.utils.fromWei(await web3.eth.getBalance(_address), 'ether')
   const _result = {
     balance: balance,

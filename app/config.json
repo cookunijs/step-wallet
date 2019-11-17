@@ -4,19 +4,42 @@
     "keyManager":[{"constant":true,"inputs":[],"name":"AUTHORIZED","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"RECOVERY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"nonce","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"addresses","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_authorized","type":"address"},{"name":"_recovery","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_authorized","type":"address"},{"indexed":false,"name":"_recovery","type":"address"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_previous","type":"address"},{"indexed":false,"name":"_new","type":"address"},{"indexed":false,"name":"_target","type":"uint256"}],"name":"Reset","type":"event"},{"constant":false,"inputs":[{"name":"v","type":"uint8[2]"},{"name":"r","type":"bytes32[2]"},{"name":"s","type":"bytes32[2]"},{"name":"_nonce","type":"uint256"},{"name":"_target","type":"uint256"},{"name":"_new","type":"address"}],"name":"update","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_nonce","type":"uint256"},{"name":"_target","type":"uint256"},{"name":"_new","type":"address"}],"name":"createHash","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}]
   },
   "contract":{
-    "cloneableWallet":"0x3d5a4656bf84B0A7114fb46BA8Fe5Ca9630be553",
-    "keyManager":"0x6949c80e3808e8e8B3092Fd5c6422893a0E216C3",
-    "walletFactory":"0x2E5bA81da7f6B06fAf99cFD8ebae2cfB64c29489"
+    "sand":{
+      "cloneableWallet":"0x3d5a4656bf84B0A7114fb46BA8Fe5Ca9630be553",
+      "keyManager":"0x6949c80e3808e8e8B3092Fd5c6422893a0E216C3",
+      "walletFactory":"0x2E5bA81da7f6B06fAf99cFD8ebae2cfB64c29489"
+    },
+    "development":{
+      "cloneableWallet":"",
+      "keyManager":"",
+      "walletFactory":""
+    },
+    "staging": {
+      "cloneableWallet":"",
+      "keyManager":"",
+      "walletFactory":""
+    },
+    "production": {
+      "cloneableWallet":"",
+      "keyManager":"",
+      "walletFactory":""
+    }
   },
   "node": {
     "https": "http://localhost:8545",
     "wss": "wss://rinkeby.infura.io/ws"
   },
   "host": {
-    "createWallet": "http://10.0.1.31:5000/createWallet",
-    "execute": "http://10.0.1.31:5000/execute/",
-    "getWalletBalance": "http://10.0.1.31:5000/getWalletBalance/",
-    "getWalletData": "http://10.0.1.31:5000/getWalletData/",
-    "getToWeiValue": "http://10.0.1.31:5000/getToWeiValue/"
+    "sand": "http://172.20.10.3:5000/",
+    "development": "http://172.20.10.3:5000/",
+    "staging": "",
+    "production": ""
+  },
+  "url": {
+    "createWallet": "createWallet",
+    "execute": "execute/",
+    "getWalletBalance": "getWalletBalance/",
+    "getWalletData": "getWalletData/",
+    "getToWeiValue": "getToWeiValue/"
   }
 }

@@ -2,51 +2,52 @@ import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 import { Card, ListItem } from 'react-native-elements'
 import { NavigationActions } from 'react-navigation'
-
+//MaterialIcons
 class SettingScreen extends React.Component {
 	static navigationOptions = {
-		title: 'Setting',
+		title: '',
 	}
 	render() {
 		const { navigate } = this.props.navigation
 		const users = [
 			{
 			   name: '一般設定',
-				 icon: 'av-timer',
-				 subtitle: 'Vice Chairman',
-				 uri: 'https://twitter.com/'
+				 icon: 'build',
+				 subtitle: 'You can make general settings.',
+				 uri: 'https://twitter.com/Daiki_k21'
 			},
 			{
 				name: 'プロフィール',
-				icon: 'flight-takeoff',
-				subtitle: 'Vice Chairman',
-				uri: 'https://note.mu/'
+				icon: 'face',
+				subtitle: 'You can set profile settings.',
+				uri: 'https://twitter.com/Daiki_k21'
 		  },
 		  {
 				name: '画面設定',
-				icon: 'av-timer',
-				subtitle: 'Vice Chairman',
-				uri: 'https://scrapbox.io/dkunii-70603727/'
+				icon: 'phonelink-setup',
+				subtitle: 'You can set screen settings.',
+				uri: 'https://twitter.com/Daiki_k21'
 			},
 			{
 			   name: '利用規約',
-				 icon: 'flight-takeoff',
-				 subtitle: 'Vice Chairman',
-				 uri: 'https://block-base.co/'
+				 icon: 'security',
+				 subtitle: 'You can see the terms of service.',
+				 uri: 'https://docs.google.com/document/d/1dvHim2yzTXIt_ySZmb7sxCVtMpnMt4CKJQlpZ3dWm9E/edit?usp=sharing'
 			},
 			{
 				name: 'プライバシーポリシー',
-				icon: 'flight-takeoff',
-				subtitle: 'Vice Chairman',
-				uri: 'https://block-base.co/#COMPANY'
+				icon: 'new-releases',
+				subtitle: 'You can see the privacy policy.',
+				uri: 'https://docs.google.com/document/d/1sLTECxh_OVooPFcH_Yo3qcU9X20ObUc7wEeiZMPY-UE/edit?usp=sharing'
 		 },
 			{
 				name: '運営詳細',
-				icon: 'av-timer',
-				subtitle: 'Vice Chairman',
-				uri: 'https://block-base.co/#CONTACT'
+				icon: 'business',
+				subtitle: 'You can see the operation details.',
+				uri: 'https://twitter.com/Daiki_k21'
 		 },
 		]
+		//vpn-key
 		return (
 				<Card containerStyle={{padding: 0}}>
 					{
@@ -66,7 +67,6 @@ class SettingScreen extends React.Component {
 					}
 				</Card>
 		)
-
 	}
 }
 export default SettingScreen

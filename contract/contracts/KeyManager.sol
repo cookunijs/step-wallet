@@ -35,7 +35,7 @@ contract KeyManager {
 		require(_recover != address(0), "Invalid signature for recover.");
 		require(addresses[AUTHORIZED] == _signer, "Signature must be signed by authorized address");
 		require(addresses[RECOVERY] == _recover, "Signature must be signed by recovery address");
-	
+
 		address _previous;
 		_previous = addresses[_target];
 		addresses[_target] = _new;

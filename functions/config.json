@@ -1,0 +1,84 @@
+{
+  "abi":{
+    "airdrop":[{"constant":false,"inputs":[{"name":"_operator","type":"address"},{"name":"_from","type":"address"},{"name":"_tokenId","type":"uint256"},{"name":"_data","type":"bytes"}],"name":"onERC721Received","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"AUTHORIZED","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"ponoCore","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_operator","type":"address"},{"name":"_from","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"amount","type":"uint256"},{"name":"data","type":"bytes"}],"name":"onERC721XReceived","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"nonce","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_operator","type":"address"},{"name":"_from","type":"address"},{"name":"_types","type":"uint256[]"},{"name":"_amounts","type":"uint256[]"},{"name":"_data","type":"bytes"}],"name":"onERC721XBatchReceived","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"walletFactory","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_tokenId","type":"uint256"},{"name":"data","type":"bytes"}],"name":"onERC721Received","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_ponoCore","type":"address"},{"name":"_walletFactory","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_tokenId","type":"uint256"}],"name":"Airdropped","type":"event"},{"constant":false,"inputs":[{"name":"v","type":"uint8"},{"name":"r","type":"bytes32"},{"name":"s","type":"bytes32"},{"name":"_cosigner","type":"address"},{"name":"_nonce","type":"uint256"}],"name":"airdrop","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"v","type":"uint8"},{"name":"r","type":"bytes32"},{"name":"s","type":"bytes32"},{"name":"_nonce","type":"uint256"},{"name":"_to","type":"address"},{"name":"_tokenIds","type":"uint256[]"},{"name":"_amounts","type":"uint256[]"}],"name":"withdrow","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_nonce","type":"uint256"},{"name":"_to","type":"address"},{"name":"_tokenIds","type":"uint256[]"},{"name":"_amounts","type":"uint256[]"}],"name":"createHash","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}],
+    "walletFactory":[{"constant":true,"inputs":[],"name":"AUTHORIZED","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"cloneableWallet","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"RECOVERY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"nonce","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"keyManager","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_cloneableWallet","type":"address"},{"name":"_keyManager","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"wallet","type":"address"},{"indexed":false,"name":"keyManager","type":"address"},{"indexed":false,"name":"full","type":"bool"}],"name":"WalletCreated","type":"event"},{"constant":false,"inputs":[{"name":"v","type":"uint8"},{"name":"r","type":"bytes32"},{"name":"s","type":"bytes32"},{"name":"_cosigner","type":"address"},{"name":"_nonce","type":"uint256"}],"name":"deployCloneWallet","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_nonce","type":"uint256"},{"name":"_cosigner","type":"address"}],"name":"createHash","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}],
+    "cloneableWallet":[{"constant":true,"inputs":[],"name":"ERC223_ID","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_operator","type":"address"},{"name":"_from","type":"address"},{"name":"_tokenId","type":"uint256"},{"name":"_data","type":"bytes"}],"name":"onERC721Received","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"initialized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"AUTHORIZED","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"cosigner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"RECOVERY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_operator","type":"address"},{"name":"_from","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"amount","type":"uint256"},{"name":"data","type":"bytes"}],"name":"onERC721XReceived","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"nonce","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_operator","type":"address"},{"name":"_from","type":"address"},{"name":"_types","type":"uint256[]"},{"name":"_amounts","type":"uint256[]"},{"name":"_data","type":"bytes"}],"name":"onERC721XBatchReceived","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[{"name":"_from","type":"address"},{"name":"_value","type":"uint256"},{"name":"_data","type":"bytes"}],"name":"tokenFallback","outputs":[],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"keyManager","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_tokenId","type":"uint256"},{"name":"data","type":"bytes"}],"name":"onERC721Received","outputs":[{"name":"","type":"bytes4"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_keyManager","type":"address"},{"indexed":false,"name":"_cosigner","type":"address"}],"name":"Authorized","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_cosigner","type":"address"}],"name":"EmergencyRecovered","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"from","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Received","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_to","type":"address"},{"indexed":false,"name":"_data","type":"bytes"},{"indexed":false,"name":"success","type":"bool"}],"name":"InvocationSuccess","type":"event"},{"constant":false,"inputs":[{"name":"_cosigner","type":"address"},{"name":"_keyManager","type":"address"}],"name":"init","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"v","type":"uint8[2]"},{"name":"r","type":"bytes32[2]"},{"name":"s","type":"bytes32[2]"},{"name":"_nonce","type":"uint256"},{"name":"_authorized","type":"address"},{"name":"_data","type":"bytes"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"invoke","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"v","type":"uint8[2]"},{"name":"r","type":"bytes32[2]"},{"name":"s","type":"bytes32[2]"},{"name":"_nonce","type":"uint256"},{"name":"_cosigner","type":"address"}],"name":"emergencyRecovery","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_nonce","type":"uint256"},{"name":"_authorized","type":"address"},{"name":"_data","type":"bytes"}],"name":"createHashInvoke","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_nonce","type":"uint256"},{"name":"_cosigner","type":"address"}],"name":"createHashRecovery","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}],
+    "keyManager":[{"constant":true,"inputs":[],"name":"AUTHORIZED","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"RECOVERY","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"nonce","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"addresses","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_authorized","type":"address"},{"name":"_recovery","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_authorized","type":"address"},{"indexed":false,"name":"_recovery","type":"address"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_previous","type":"address"},{"indexed":false,"name":"_new","type":"address"},{"indexed":false,"name":"_target","type":"uint256"}],"name":"Reset","type":"event"},{"constant":false,"inputs":[{"name":"v","type":"uint8[2]"},{"name":"r","type":"bytes32[2]"},{"name":"s","type":"bytes32[2]"},{"name":"_nonce","type":"uint256"},{"name":"_target","type":"uint256"},{"name":"_new","type":"address"}],"name":"update","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_nonce","type":"uint256"},{"name":"_target","type":"uint256"},{"name":"_new","type":"address"}],"name":"createHash","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}]
+  },
+  "contract":{
+    "sand":{
+      "cloneableWallet":"0x3d5a4656bf84B0A7114fb46BA8Fe5Ca9630be553",
+      "keyManager":"0x6949c80e3808e8e8B3092Fd5c6422893a0E216C3",
+      "walletFactory":"0x2E5bA81da7f6B06fAf99cFD8ebae2cfB64c29489"
+    },
+    "development":{
+      "cloneableWallet":"0x94A160214233761780Db0c24413C60Fe8C672b0F",
+      "keyManager":"0x0410BA47F346F9dD9890969eD90F44834306d7b6",
+      "walletFactory":"0x5890c9Bb809151c3dD6fB59548C7Ce3Aa57a346E"
+    },
+    "staging": {
+      "cloneableWallet":"",
+      "keyManager":"",
+      "walletFactory":""
+    },
+    "production": {
+      "cloneableWallet":"",
+      "keyManager":"",
+      "walletFactory":""
+    }
+  },
+  "node": {
+    "sand":{
+      "https": "http://localhost:8545",
+      "wss": ""
+    },
+    "development":{
+      "https":"https://rinkeby.infura.io",
+      "wss":"wss://rinkeby.infura.io/ws"
+    },
+    "staging": {
+      "https":"https://mainnet.infura.io",
+      "wss":"wss://mainnet.infura.io/ws"
+    },
+    "production": {
+      "https":"https://mainnet.infura.io",
+      "wss":"wss://mainnet.infura.io/ws"
+    }
+  },
+  "publicKey":{
+    "sand":{
+      "authorized":"0x951D94319cF3bC6B4BFF5A33779C5a723b0B0c4e",
+      "recovery":"0x46Bfe6f8492e30D8465Cfb8E71AC7b9C320E20e3"
+    },
+    "development":{
+      "authorized":"0x6E773b93eeA8E4333eFEA4d847a8F2eb29dcF7a4",
+      "recovery":"0x65CAb099B26E45C007BEcdb30e5ca592e85987Cf"
+    },
+    "staging": {
+      "authorized":"",
+      "recovery":""
+    },
+    "production": {
+      "authorized":"",
+      "recovery":""
+    }
+  },
+  "privateKey":{
+    "sand":{
+      "authorized":"0x26eca9d40ba07290aa3601e68d010d20116942eed3b7f1dd7bc33b219d00e4b6",
+      "recovery":"0xbfa75666ec62f476673084b4b4c91366394c030bf17445f72da9b90b48e757a2"
+    },
+    "development":{
+      "authorized":"0xD188779DBEF13E791540C32F61AF70C8C2D8472B2BC28D31497172DFA32B4212",
+      "recovery":"0x7E7D34D5B8195882FB7E9263D211C5D6933E5D9901CACD7912DBD40E9E4E1B14"
+    },
+    "staging": {
+      "authorized":"",
+      "recovery":""
+    },
+    "production": {
+      "authorized":"",
+      "recovery":""
+    }
+  }
+}

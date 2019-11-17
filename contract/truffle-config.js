@@ -18,11 +18,11 @@
  *
  */
 
-// const HDWalletProvider = require('truffle-hdwallet-provider');
-// const infuraKey = "fj4jll3k.....";
-//
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const HDWalletProvider = require('truffle-hdwallet-provider');
+const infuraKey = "3546af52ea3d44a3b9de3f93ad95c642";
+
+const fs = require('fs');
+const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
   /**
@@ -34,7 +34,7 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
-
+  
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
@@ -48,7 +48,27 @@ module.exports = {
       network_id: '*',
       gasPrice: 1
     },
-
+    rinkeby: {
+      provider: function() {
+        return new HDWalletProvider(
+          mnemonic,
+          "https://rinkeby.infura.io/v3/" + infuraKey
+        );
+      },
+      gasPrice: 12000000000, //ex. 10 gwei = 10000000000
+      network_id: 4
+    },
+    live: {
+      provider: function() {
+        return new HDWalletProvider(
+          mnemonic,
+          "https://mainnet.infura.io/v3/" + infuraKey
+        );
+      },
+      //It is recommend to set gasPrice (in wei)
+      gasPrice: 15000000000, //ex. 10 gwei = 10000000000
+      network_id: 1
+    },
     // Another network with more advanced options...
     // advanced: {
       // port: 8777,             // Custom port

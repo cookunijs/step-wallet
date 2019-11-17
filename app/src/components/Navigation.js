@@ -3,18 +3,18 @@ import { View } from 'react-native'
 import { createAppContainer } from 'react-navigation'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
 import Icon from 'react-native-vector-icons/Ionicons'
-import ChartScreen from '../screens/ChartScreen'
+import SimpleScreen from '../screens/SimpleScreen'
 import SecondScreen from '../screens/SecondScreen'
 import ThirdScreen from '../screens/ThirdScreen'
 
 const TabNavigator = createMaterialBottomTabNavigator(
 	{
-		Chart: { screen: ChartScreen,
+		Simple: { screen: SimpleScreen,
 			navigationOptions:{
-				tabBarLabel:'Chart',
+				tabBarLabel:'Simple',
 				tabBarIcon: ({ tintColor }) => (
 					<View>
-      			<Icon style={[{color: tintColor}]} size={25} name={'md-trending-up'}/>
+      			<Icon style={[{color: tintColor}]} size={25} name={'ios-rocket'}/>
 					</View>
 				),
 			}
@@ -29,12 +29,12 @@ const TabNavigator = createMaterialBottomTabNavigator(
 				),
 			}
 		},
-		Profile: { screen: ThirdScreen,
+		Setting: { screen: ThirdScreen,
 			navigationOptions:{
-				tabBarLabel:'Profile',
+				tabBarLabel:'Setting',
 				tabBarIcon: ({ tintColor }) => (
 					<View>
-						<Icon style={[{color: tintColor}]} size={25} name={'ios-person'}/>
+						<Icon style={[{color: tintColor}]} size={25} name={'ios-settings'}/>
 					</View>
 				),
 			}

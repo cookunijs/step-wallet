@@ -43,6 +43,13 @@ class WalletScreen extends React.Component {
     this.setState({ isDepositModalVisible: !this.state.isDepositModalVisible })
 	}
 	onChangeTo = (_to) => {
+		var searchTerm = 'ethereum:'
+		var result = _to.indexOf(searchTerm)
+		console.log(_to)
+		if(result !== -1) {
+			_to = _to.replace('ethereum:', '')
+		}
+		console.log(_to)
     this.setState({ to: _to })
 	}
 	onChangeQRCodeTo = () => {
@@ -53,7 +60,6 @@ class WalletScreen extends React.Component {
     this.setState({ value: _value })
 	}
 	createWallet = async () => {
-		if(await Wallet.getWalletAddress()) return
 		const _wallet = await Wallet.createWallet()
 		this.setState({
 	    wallet: _wallet
@@ -92,7 +98,7 @@ class WalletScreen extends React.Component {
 		</View>
 
 	component2 = () =>
-		<View　>
+		<View>
 			<Icon
 				name="minus"
 				size={50}
@@ -144,7 +150,7 @@ class WalletScreen extends React.Component {
 							style={styles.contentIcon}
 						/>  Address：
 					</Text>
-					<Text style={styles.contentText}>
+					<Text style={styles.contentAddressText}>
 						{this.state.wallet}
 					</Text>
 					<Text style={styles.contentTitle}>
@@ -155,8 +161,8 @@ class WalletScreen extends React.Component {
 							style={styles.contentIcon}
 						/>  Balance：
 					</Text>
-					<Text style={styles.contentText}>
-						{this.state.balance} ETH
+					<Text style={styles.contentBalanceText}>
+						{this.state.balance}  ETH
 					</Text>
 					<ButtonGroup
 						onPress={this.updateIndex}
@@ -296,7 +302,7 @@ class WalletScreen extends React.Component {
 					</Modal>
         <Button
 					buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
-					title="作成"
+					title="Create"
 					onPress={this.createWallet}
 					style={styles.button}
 				/>
@@ -345,11 +351,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginBottom: 10,
 	},
-	contentText: {
+	contentAddressText: {
 		padding: 10,
-    fontSize: 15,
+		color: "#000",
+		fontSize: 10,
+		fontWeight: 'bold',
     marginBottom: 10,
-  },
+	},
+	contentBalanceText: {
+		padding: 10,
+		color: "#808080",
+		fontSize: 35,
+		fontWeight: 'bold',
+    marginBottom: 10,
+	},
   button: {
 		padding: 5,
 		paddingLeft: 24,

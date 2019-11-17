@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, AsyncStorage } from 'react-native'
+import * as SecureStore from 'expo-secure-store';
+
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import { Notifications } from 'expo'
@@ -75,6 +77,8 @@ export default class App extends React.Component {
   async loadData () {
     try{
       // await AsyncStorage.clear()
+      // await SecureStore.deleteItemAsync('PrivateKey')
+      // await SecureStore.deleteItemAsync('wallet')
       const datas = []
       result = await AsyncStorage.getItem('notificationData')
       if (result) {
@@ -100,7 +104,7 @@ export default class App extends React.Component {
       <Provider store={store}>
         <Header
 					centerComponent={{ text: 'CONTRACT WALLET', style: { color: '#00acee' }}}
-					rightComponent={{ icon: 'settings', color: '#00acee' }}
+					// rightComponent={{ icon: 'settings', color: '#00acee' }}
 					containerStyle={{
 						backgroundColor: '#fff',
 						justifyContent: 'space-around',
