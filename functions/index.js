@@ -116,6 +116,21 @@ app.post('/createWallet', async function(req, res){
 
 //transferFromなどの関数の実行に対してユーザーのコントラクトウォレットに向けて命令を実行する関数
 app.post('/execute', async function(req, res){
+  //これはcreateWalletでも実装する必要あり。
+  //sender=>transactionHashでdbに保存
+  //そのsenderがpending中かどうかnullが返ってくるかで判定して、nullが返って来たら違うsenderの検証へ
+  //値が返って来たら処理が終了しているので安全、sender=>transactionHashをsender=>nullの初期状態に戻し、そのsenderでsendする。
+  // web3.eth.getTransactionReceipt(signedTx.transactionHash).then(console.log)
+  // if(process.env.transactionHash) {
+  //   if(!await web3.eth.getTransaction(process.env.transactionHash).then(console.log)) {
+  //     const a = {
+  //       a: 0
+  //     }
+  //     res.send(a)
+  //     return
+  //   }
+  // }
+
   const _authorizedPrivateKey = process.env.AUTHORIZEDPRIVATEKEY
   const param = req.body
   const _sigCosigner = param.sign
@@ -133,7 +148,6 @@ app.post('/execute', async function(req, res){
   const _cosignerSenderPubKey = await web3.eth.accounts.recover(_hash, _sigCosigner.signature)
 
   if(_cosigner === _cosignerSenderPubKey ) {
-
     //authKeyで署名を実行
     const _sigAuth = web3.eth.accounts.sign(_hash, _authorizedPrivateKey)
     const _v = [_sigAuth.v, _sigCosigner.v]
@@ -172,12 +186,6 @@ app.post('/execute', async function(req, res){
       res.send(receipt)
     })
     .on('error', console.error)
-    // await web3.eth.subscribe('logs', {
-    //   address: senderPublicKey,
-    // }, function(error, result){
-    //     // if (!error)
-    //       console.log(error)
-    // });
   } else {
     console.log("error")
   }
