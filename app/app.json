@@ -23,11 +23,15 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "packagerOpts": {
       "config": "./rn-cli.config.js"
+    },
+    "ios": {
+      "bundleIdentifier": "com.daikikunii.MyContractWalletApp",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.daikikunii.MyContractWalletApp"
     }
   }
 }

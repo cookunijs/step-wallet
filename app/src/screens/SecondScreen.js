@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 import { createAppContainer } from 'react-navigation'
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator } from 'react-navigation-stack'
 import WalletScreen from '../screens/WalletScreen'
 import ScannerScreen from '../screens/ScannerScreen'
 
@@ -10,16 +10,22 @@ const AppNavigator = createStackNavigator({
 		screen: WalletScreen,
 		navigationOptions: {
       headerStyle: {
-        marginTop: -100
+        marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,
 			},
+			headerBackTitle: null,
+			headerShown: false,
+			header:null,
 		}
 	},
     ScannerScreen: {
 		screen: ScannerScreen,
 		navigationOptions: {
       headerStyle: {
-        marginTop: -45
+        marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,
 			},
+			headerBackTitle: null,
+			headerShown: false,
+			header:null,
 		}
 	},
 	initialRouteName: "WalletScreen",

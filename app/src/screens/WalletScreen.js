@@ -1,11 +1,14 @@
 import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Image, ScrollView, RefreshControl } from 'react-native'
-import { Card, Button, ButtonGroup, Input } from 'react-native-elements'
+import { Text, View, StyleSheet, Image, ScrollView, RefreshControl, Clipboard,  } from 'react-native'
+import { Header, Card, Button, ButtonGroup, Input, ListItem } from 'react-native-elements'
 import { NavigationActions } from 'react-navigation'
 import Modal from "react-native-modal"
 import QRCode from 'react-native-qrcode-svg'
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome'
+import EvilIcon from 'react-native-vector-icons/EvilIcons'
+import ActionButton from 'react-native-action-button'
+import { Madoka } from 'react-native-textinput-effects'
 
 class WalletScreen extends React.Component {
 	static navigationOptions = {
@@ -16,6 +19,7 @@ class WalletScreen extends React.Component {
     this.state = {
 			wallet: "",
 			balance: "0",
+			isSettingsModalVisible: false,
 			isDepositModalVisible: false,
 			isWithdrawModalVisible: false,
 			to: "",
@@ -35,7 +39,10 @@ class WalletScreen extends React.Component {
     this.loadData().then(() => {
       this.setState({refreshing: false});
     });
-  }
+	}
+	toggleSettingsModal = () => {
+    this.setState({ isSettingsModalVisible: !this.state.isSettingsModalVisible })
+	}
 	toggleWithdrawModal = () => {
     this.setState({ isWithdrawModalVisible: !this.state.isWithdrawModalVisible })
 	}
@@ -59,6 +66,9 @@ class WalletScreen extends React.Component {
 	onChangeValue = (_value) => {
     this.setState({ value: _value })
 	}
+	setClipboardContent(_content) {
+		Clipboard.setString(_content)
+	}
 	createWallet = async () => {
 		const _wallet = await Wallet.createWallet()
 		this.setState({
@@ -66,6 +76,7 @@ class WalletScreen extends React.Component {
 		})
 	}
 	transferEth = async () => {
+		console.log(this.state.value)
 		this.toggleWithdrawModal()
 		await Wallet.execute(this.state.to, "0x", this.state.value)
 		this.setState({
@@ -86,7 +97,7 @@ class WalletScreen extends React.Component {
 	component1 = () =>
 		<View>
 			<Icon
-				name="plus"
+				name="qrcode"
 				size={50}
 				color="#00acee"
 				style={{
@@ -117,6 +128,33 @@ class WalletScreen extends React.Component {
 			>出金</Text> */}
 		</View>
   render() {
+		const users = [
+			{
+			   name: 'Setting',
+				 icon: 'build',
+				 uri: 'https://twitter.com/Daiki_k21'
+			},
+			{
+				name: 'Recovery',
+				icon: 'face',
+				uri: 'https://twitter.com/Daiki_k21'
+		  },
+			{
+			   name: 'Terms',
+				 icon: 'security',
+				 uri: 'https://docs.google.com/document/d/1dvHim2yzTXIt_ySZmb7sxCVtMpnMt4CKJQlpZ3dWm9E/edit?usp=sharing'
+			},
+			{
+				name: 'Privacy Policy',
+				icon: 'new-releases',
+				uri: 'https://docs.google.com/document/d/1sLTECxh_OVooPFcH_Yo3qcU9X20ObUc7wEeiZMPY-UE/edit?usp=sharing'
+		 },
+			{
+				name: 'Operation',
+				icon: 'business',
+				uri: 'https://twitter.com/Daiki_k21'
+		 },
+		]
 		const { navigate } = this.props.navigation
 		if(this.props.navigation.state.params) {
 			this.setState({ isWithdrawModalVisible: true })
@@ -127,6 +165,20 @@ class WalletScreen extends React.Component {
 		const buttons = [{ element: this.component1 }, { element: this.component2 }]
   	const selectedIndex = this.state.selectedIndex
     return (
+			<React.Fragment>
+			<Header
+				placement="left"
+				statusBarProps={{ barStyle: 'light-content' }}
+				barStyle="light-content" // or directly
+				centerComponent={{ text: 'Wallet', style: { color: '#000', fontSize: 35, fontWeight: 'bold' } }}
+				rightComponent={{ icon: 'dehaze', color: '#000', paddingRight: 20, size: 35, onPress:this.toggleSettingsModal}}//this.props.navigation.goBack()
+				containerStyle={{
+					backgroundColor: '#fff',
+					paddingTop: 30,
+					paddingRight: 25,
+					flex: 0.15,
+				}}
+			/>
       <ScrollView
 				refreshControl={
 					<RefreshControl
@@ -138,11 +190,11 @@ class WalletScreen extends React.Component {
           flex: 1,
           flexDirection: 'column',
         }}>
-					<Card
+					{/* <Card
 						style={styles.card}
 						title="Ethereum"
-					>
-					<Text style={styles.contentTitle}>
+					> */}
+					{/* <Text style={styles.contentTitle}>
 						<Icon
 							name='user'
 							size={24}
@@ -152,25 +204,41 @@ class WalletScreen extends React.Component {
 					</Text>
 					<Text style={styles.contentAddressText}>
 						{this.state.wallet}
-					</Text>
-					<Text style={styles.contentTitle}>
+					</Text> */}
+				
+					{/* <Text style={styles.contentTitle}>
 						<Icon
 							name='database'
 							size={24}
 							color='black'
 							style={styles.contentIcon}
 						/>  Balance：
-					</Text>
-					<Text style={styles.contentBalanceText}>
-						{this.state.balance}  ETH
-					</Text>
-					<ButtonGroup
+					</Text> */}
+						<Text style={styles.contentBalanceText}>
+							{this.state.balance}
+						</Text>
+						<Text style={styles.contentEthText}>
+							ETH
+						</Text>
+						<Button
+								type="Clear"
+								style={styles.contentOpenQRcode}
+								onPress={this.toggleDepositModal}
+								icon={
+									<Icon
+										name="qrcode"
+										size={35}
+										color="#404040"
+									/>
+								}
+							/>
+					{/* <ButtonGroup
 						onPress={this.updateIndex}
 						selectedIndex={selectedIndex}
 						buttons={buttons}
 						containerStyle={{height: 90}}
-					/>
-					</Card>
+					/> */}
+					{/* </Card> */}
 					{/* <Button
 						icon={
 							<Icon
@@ -204,16 +272,54 @@ class WalletScreen extends React.Component {
 						onPress={this.toggleWithdrawModal}
 					/> */}
 					<Modal
+						isVisible={this.state.isSettingsModalVisible}
+						onSwipeComplete={() => this.setState({ isSettingsModalVisible: false })}
+						swipeDirection={['up', 'left', 'right', 'down']}
+						style={styles.bottomModal}
+        	>
+						<View style={styles.contentSettings}>
+							<Text style={styles.contentSettingsTitle}>Menu</Text>
+								{
+									users.map((u, i) => {
+										return (
+											<ListItem
+												style={styles.contentListItemSettings}
+												key={i}
+												leftIcon={{ name: u.icon, color: "#303030", size: 30, paddingLeft: 5 }}
+												title={u.name}
+												titleStyle={{ color: "#303030", fontSize: 25, fontWeight: 'bold', paddingLeft: 15 }}
+												bottomDivider
+												onPress={() => navigate('WelcomeScreen', {uri: u.uri}, NavigationActions.navigate({ routeName: 'ProfileScreen' }))}
+											>
+											</ListItem>
+										)
+									})
+								}
+								<Button
+									type="Clear"
+									style={styles.contentCloseSetting}
+									onPress={this.toggleSettingsModal}
+									icon={
+										<EvilIcon
+											name="close"
+											size={60}
+											color="#404040"
+										/>
+									}
+								/>
+							</View>
+					</Modal>
+					<Modal
 						isVisible={this.state.isDepositModalVisible}
 						onSwipeComplete={() => this.setState({ isDepositModalVisible: false })}
 						swipeDirection={['up', 'left', 'right', 'down']}
-						// style={styles.bottomModal}
+						style={styles.bottomModal}
         	>
 						<View style={styles.content}>
-							<Text style={styles.contentTitle}>QR Code</Text>
+							<Text style={styles.contentQRcodeTitle}>My QRCode</Text>
 								<QRCode
 									value={this.state.wallet}
-									size={200}
+									size={220}
 									bgColor='#00acee'
 									fgColor='white'
 									logo={{
@@ -225,14 +331,20 @@ class WalletScreen extends React.Component {
 									logoBorderRadius={50}
 									logoBackgroundColor="white"
 								/>
-								<Text style={styles.contentModalText}>{this.state.wallet}</Text>
-								<View style={styles.fixToText}>
+								{/* <Text style={styles.contentModalText}>{this.state.wallet}</Text> */}
+								<View>
 									<Button
 										type="Clear"
-										buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
-										title="閉じる"
-										onPress={this.toggleDepositModal}
-										style={styles.button}
+										icon={
+											<Icon
+												size={70}
+												name='paperclip'
+												color='#00acee'
+												onPress={this.setClipboardContent(this.state.wallet)}
+												style={styles.copeButton}
+												iconStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
+											/>
+										}
 									/>
 								</View>
 							</View>
@@ -241,11 +353,11 @@ class WalletScreen extends React.Component {
 						isVisible={this.state.isWithdrawModalVisible}
 						onSwipeComplete={() => this.setState({ isWithdrawModalVisible: false })}
 						swipeDirection={['up', 'left', 'right', 'down']}
-						// style={styles.bottomModal}
+						style={styles.bottomModal}
         	>
-						<View style={styles.content}>
-							<Text style={styles.contentTitle}></Text>
-							<Input
+						<View style={styles.contentSend}>
+							<Text style={styles.contentSendTitle}>Send</Text>
+							{/* <Input
 								label="ADDRESS"
 								placeholder='送金先'
 								value={this.state.to}
@@ -268,9 +380,62 @@ class WalletScreen extends React.Component {
 								}
 								style={{ height: 30, width: 300, borderColor: 'gray', borderWidth: 1, marginBottom: 20 }}
 								onChangeText={this.onChangeTo}
+							/> */}
+								<Madoka
+									value={this.state.to}
+									style={styles.textInputMadokaAddress}
+									label={'ADDRESS'}
+									// this is used as active and passive border color
+									borderColor={'#11bdff'}
+									inputPadding={16}
+									labelHeight={24}
+									labelStyle={{ color: '#909090' }}
+									inputStyle={{ color: '#909090' }}
+									onPress={this.onChangeQRCodeTo}
+								/>
+							<Button
+								type="Clear"
+								style={styles.contentReadQRcode}
+								onPress={this.onChangeQRCodeTo}
+								icon={
+									<Icon
+										name="qrcode"
+										size={35}
+										color="#909090"
+									/>
+								}
 							/>
-							<Text style={styles.contentTitle}></Text>
-							<Input
+							<Madoka
+								style={styles.textInputMadoka}
+								label={'VALUE'}
+								// this is used as active and passive border color
+								borderColor={'#11bdff'}
+								inputPadding={16}
+								labelHeight={24}
+								labelStyle={{ color: '#909090' }}
+								inputStyle={{ color: '#909090' }}
+								onChangeText={this.onChangeValue}
+							/>
+							{/* <Hideo
+								style={styles.fixToFumi}
+								iconClass={FontAwesomeIcon}
+								iconName={'dollar'}
+								iconColor={'white'}
+								// this is used as backgroundColor of icon container view.
+								iconBackgroundColor={'#f2a59d'}
+								inputStyle={{ color: '#464949' }}
+							/>
+							<Text style={styles.contentTitle}>VALUE</Text>
+							<Hideo
+								style={styles.fixToFumi}
+								iconClass={FontAwesomeIcon}
+								iconName={'qrcode'}
+								iconColor={'white'}
+								// this is used as backgroundColor of icon container view.
+								iconBackgroundColor={'#f2a59d'}
+								inputStyle={{ color: '#4649' }}
+							/> */}
+							{/* <Input
 								label="VALUE"
 								placeholder='金額'
 								leftIcon={
@@ -282,31 +447,64 @@ class WalletScreen extends React.Component {
 									/>
 								}
 								style={{ height: 30, width: 300, borderColor: 'gray', borderWidth: 1, marginBottom: 20}}
-								onChangeText={this.onChangeValue}
-							/>
+								onChangeText={this.onChangeValue}/> */}
 							<View style={styles.fixToText}>
 								<Button
 									type="Clear"
+									icon={
+										<Icon
+											size={70}
+											name='send-o'
+											color='#11bdff'
+											onPress={this.setClipboardContent(this.state.wallet)}
+											style={styles.sendButton}
+											iconStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
+										/>
+									}
 									style={styles.button}
-									title="送金"
+									// title="送金"
 									onPress={this.transferEth}
 								/>
-								<Button
+								{/* <Button
 									type="Clear"
+									icon={
+										<Icon
+											size={70}
+											name='paperclip'
+											color='#00acee'
+											onPress={this.setClipboardContent(this.state.wallet)}
+											style={styles.copeButton}
+											iconStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
+										/>
+									}
 									style={styles.button}
-									title="閉じる"
+									// title="閉じる"
 									onPress={this.toggleWithdrawModal}
-								/>
+								/> */}
 							</View>
 						</View>
 					</Modal>
-        <Button
+        {/* <Button
 					buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
 					title="Create"
 					onPress={this.createWallet}
 					style={styles.button}
-				/>
-      </ScrollView>
+				/> */}
+				</ScrollView>
+				<ActionButton
+				style={styles.actionButtonIcon}
+				buttonColor="#00acee"
+				onPress={this.toggleWithdrawModal}
+				size={65}
+				icon={
+					<Icon
+						name="send"
+						size={28}
+						color="#fff"
+					/>
+				}
+			/>
+      </React.Fragment>
     )
   }
 }
@@ -322,9 +520,20 @@ const styles = StyleSheet.create({
 		color: "red",
     backgroundColor: 'red',
 	},
+	textInputMadoka: {
+    width:300,
+		height:100,
+	},
+	textInputMadokaAddress: {
+		paddingTop: -400,
+		marginTop: 150,
+		marginBottom: 30,
+    width:300,
+    height:100,
+	},
   image: {
     width:200,
-    height:200,
+		height:200,
     borderWidth: 1,
   },
   content: {
@@ -334,17 +543,69 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
+	},
+	contentSend: {
+    backgroundColor: 'white',
+    paddingBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+	},
+	contentSettings: {
+		backgroundColor: 'white',
+		paddingTop: 40,
+		paddingBottom: 40,
+		paddingLeft: 25,
+    paddingRight: 25,
+		paddingBottom: 270
+	},
+	contentListItemSettings: {
+		padding: 5,
+		fontSize: 30,
+		fontWeight: 'bold'
+	},
   fixToText: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    margin: 40
+	},
+	fixToFumi: {
+		flexDirection: 'row',
+		alignItems: 'center',
+    justifyContent: 'center',
+		margin: 20
+	},
+	fixToIcon: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		size: 200,
     margin: 10
-
   },
   contentTitle: {
 		padding: 5,
-    fontSize: 20,
-    marginBottom: 12,
+		fontSize: 20,
+    marginBottom: 12
+	},
+	contentQRcodeTitle: {
+		padding: 12,
+		fontSize: 30,
+		fontWeight: 'bold',
+		marginTop: 40,
+    marginBottom: 30,
+	},
+	contentSettingsTitle: {
+		fontSize: 35,
+		fontWeight: 'bold',
+		marginTop: 30,
+    marginBottom: 20,
+	},
+	contentSendTitle: {
+		fontSize: 35,
+		fontWeight: 'bold',
+		paddingTop: 180,
+		paddingRight: 230,
+		marginBottom: -30,
 	},
 	contentModalText: {
 		padding: 15,
@@ -359,11 +620,35 @@ const styles = StyleSheet.create({
     marginBottom: 10,
 	},
 	contentBalanceText: {
+		marginLeft: 40,
+		color: "#404040",
+		fontSize: 95,
+		fontWeight: 'bold',
+		marginTop: 40,
+	},
+	contentEthText: {
 		padding: 10,
-		color: "#808080",
+		color: "#404040",
 		fontSize: 35,
 		fontWeight: 'bold',
-    marginBottom: 10,
+		marginLeft: 254,
+		marginTop: -65,
+	},
+	contentOpenQRcode: {
+		marginLeft: 182,
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginTop: -145,
+	},
+	contentReadQRcode: {
+		marginLeft: 250,
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginTop: -170,
+	},
+	contentCloseSetting: {
+		marginTop: 230,
+		marginBottom: -210,
 	},
   button: {
 		padding: 5,
@@ -374,6 +659,30 @@ const styles = StyleSheet.create({
     marginRight: 10,
 		fontSize: 10,
 	},
+	copeButton: {
+		padding: 5,
+		paddingLeft: 24,
+		paddingRight: 24,
+		marginTop: 150,
+		marginLeft: 20,
+		marginRight: 10,
+    marginBottom: 70,
+	},
+	sendButton: {
+		padding: 5,
+		paddingLeft: 24,
+		paddingRight: 24,
+		marginTop: 150,
+		marginLeft: 20,
+		marginRight: 10,
+    marginBottom: 70,
+	},
+	actionButtonIcon: {
+    fontSize: 20,
+    marginBottom: 40,
+		marginRight: 10,
+    color: '#00acee',
+  },
 	bottomModal: {
     justifyContent: 'flex-end',
     margin: 0,

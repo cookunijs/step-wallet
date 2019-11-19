@@ -13,6 +13,7 @@ import jwtDecode from 'jwt-decode'
 import reducers from './src/reducers'
 import { storeDToken, storeNotificationData } from './src/actions'
 const store = createStore(reducers)
+import SecondScreen from './src/screens/SecondScreen'
 
 export default class App extends React.Component {
   constructor(props){
@@ -102,19 +103,8 @@ export default class App extends React.Component {
   render () {
     return (
       <Provider store={store}>
-        <Header
-					centerComponent={{ text: 'CONTRACT WALLET', style: { color: '#00acee' }}}
-					// rightComponent={{ icon: 'settings', color: '#00acee' }}
-					containerStyle={{
-						backgroundColor: '#fff',
-						justifyContent: 'space-around',
-					}}
-				/>
-        <AppContainer
-          screenProps={{
-            data: this.state.data,
-          }}
-        />
+        <SecondScreen/>
+        {/*   */}
       </Provider>
     )
   }
