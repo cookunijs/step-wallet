@@ -52,11 +52,9 @@ class WalletScreen extends React.Component {
 	onChangeTo = (_to) => {
 		var searchTerm = 'ethereum:'
 		var result = _to.indexOf(searchTerm)
-		console.log(_to)
 		if(result !== -1) {
 			_to = _to.replace('ethereum:', '')
 		}
-		console.log(_to)
     this.setState({ to: _to })
 	}
 	onChangeQRCodeTo = () => {
@@ -66,8 +64,8 @@ class WalletScreen extends React.Component {
 	onChangeValue = (_value) => {
     this.setState({ value: _value })
 	}
-	setClipboardContent(_content) {
-		Clipboard.setString(_content)
+	setClipboardContent = () => {
+		Clipboard.setString(this.state.wallet)
 	}
 	createWallet = async () => {
 		const _wallet = await Wallet.createWallet()
@@ -76,13 +74,14 @@ class WalletScreen extends React.Component {
 		})
 	}
 	transferEth = async () => {
-		console.log(this.state.value)
-		this.toggleWithdrawModal()
-		await Wallet.execute(this.state.to, "0x", this.state.value)
-		this.setState({
-			balance: await Wallet.getWalletBalance(),
-			to: ''
-		})
+		if(this.state.isWithdrawModalVisible){
+			this.toggleWithdrawModal()
+			await Wallet.execute(this.state.to, "0x", this.state.value)
+			this.setState({
+				balance: await Wallet.getWalletBalance(),
+				to: ''
+			})
+		}
 	}
 	async componentDidMount() {
 		await this.loadData()
@@ -94,39 +93,39 @@ class WalletScreen extends React.Component {
 			this.toggleWithdrawModal()
 		}
 	}
-	component1 = () =>
-		<View>
-			<Icon
-				name="qrcode"
-				size={50}
-				color="#00acee"
-				style={{
-					alignItems: 'center',
-					justifyContent: 'center',
-        }}
-			/>
-			{/* <Text>入金</Text> */}
-		</View>
+	// component1 = () =>
+	// 	<View>
+	// 		<Icon
+	// 			name="qrcode"
+	// 			size={50}
+	// 			color="#00acee"
+	// 			style={{
+	// 				alignItems: 'center',
+	// 				justifyContent: 'center',
+  //       }}
+	// 		/>
+	// 		{/* <Text>入金</Text> */}
+	// 	</View>
 
-	component2 = () =>
-		<View>
-			<Icon
-				name="minus"
-				size={50}
-				color="#00acee"
-				style={{
-					alignItems: 'center',
-					justifyContent: 'center',
-        }}
-			/>
-			{/* <Text 
-				style={{
-					fontSize: 20,
-					alignItems: 'center',
-					justifyContent: 'center',
-        }}
-			>出金</Text> */}
-		</View>
+	// component2 = () =>
+	// 	<View>
+	// 		<Icon
+	// 			name="minus"
+	// 			size={50}
+	// 			color="#00acee"
+	// 			style={{
+	// 				alignItems: 'center',
+	// 				justifyContent: 'center',
+  //       }}
+	// 		/>
+	// 		{/* <Text
+	// 			style={{
+	// 				fontSize: 20,
+	// 				alignItems: 'center',
+	// 				justifyContent: 'center',
+  //       }}
+	// 		>出金</Text> */}
+	// 	</View>
   render() {
 		const users = [
 			{
@@ -221,17 +220,17 @@ class WalletScreen extends React.Component {
 							ETH
 						</Text>
 						<Button
-								type="Clear"
-								style={styles.contentOpenQRcode}
-								onPress={this.toggleDepositModal}
-								icon={
-									<Icon
-										name="qrcode"
-										size={35}
-										color="#404040"
-									/>
-								}
-							/>
+							type="Clear"
+							style={styles.contentOpenQRcode}
+							onPress={this.toggleDepositModal}
+							icon={
+								<Icon
+									name="qrcode"
+									size={35}
+									color="#404040"
+								/>
+							}
+						/>
 					{/* <ButtonGroup
 						onPress={this.updateIndex}
 						selectedIndex={selectedIndex}
@@ -340,11 +339,11 @@ class WalletScreen extends React.Component {
 												size={70}
 												name='paperclip'
 												color='#00acee'
-												onPress={this.setClipboardContent(this.state.wallet)}
 												style={styles.copeButton}
 												iconStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
 											/>
 										}
+										onPress={this.setClipboardContent}
 									/>
 								</View>
 							</View>
@@ -391,7 +390,7 @@ class WalletScreen extends React.Component {
 									labelHeight={24}
 									labelStyle={{ color: '#909090' }}
 									inputStyle={{ color: '#909090' }}
-									onPress={this.onChangeQRCodeTo}
+									onChangeText={this.onChangeTo}
 								/>
 							<Button
 								type="Clear"
@@ -456,7 +455,6 @@ class WalletScreen extends React.Component {
 											size={70}
 											name='send-o'
 											color='#11bdff'
-											onPress={this.setClipboardContent(this.state.wallet)}
 											style={styles.sendButton}
 											iconStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
 										/>
