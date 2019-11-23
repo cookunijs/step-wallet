@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Button } from 'react-native'
+import { Text, View, StyleSheet } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import * as Permissions from 'expo-permissions'
 import { BarCodeScanner } from 'expo-barcode-scanner'
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from 'expo-secure-store'
+import { Header, Icon, Button } from 'react-native-elements'
 
-import { connect } from 'react-redux';
-import { storeDid, storePubEncKey } from '../actions';
+import { connect } from 'react-redux'
+import { storeDid, storePubEncKey } from '../actions'
 
 class ScannerScreen extends React.Component {
-  static navigationOptions = {
-		title: 'Scanner',
-	}
   state = {
     hasCameraPermission: null,
     scanned: false,
@@ -74,6 +72,18 @@ class ScannerScreen extends React.Component {
       return <Text>No access to camera</Text>
     }
     return (
+      <React.Fragment>
+			<Header
+				placement="left"
+				statusBarProps={{ barStyle: 'light-content' }}
+				barStyle="light-content"
+				centerComponent={{ text: 'QR Scan', style: { color: '#000', fontSize: 35, fontWeight: 'bold' } }}
+				containerStyle={{
+					backgroundColor: '#fff',
+					paddingTop: 30,
+					flex: 0.15,
+				}}
+			/>
       <View
         style={{
           flex: 1,
@@ -84,10 +94,29 @@ class ScannerScreen extends React.Component {
           onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned}
           style={StyleSheet.absoluteFillObject}
         />
+          <Icon
+            name='crop-free'
+            color='#404040'
+            size= '350'
+            iconStyle={styles.qr}
+          />
+        <Button
+          type="Clear"
+          style={styles.contentCloseQRcode}
+          onPress={() => this.props.navigation.goBack()}
+          icon={
+            <Icon
+              name="clear"
+              size={60}
+              color="#404040"
+            />
+          }
+        />
         {scanned && (
           <Button title={'Tap to Scan Again'} onPress={() => this.setState({ scanned: false })} />
         )}
       </View>
+      </React.Fragment>
     )
   }
 
@@ -113,4 +142,12 @@ const styles = StyleSheet.create({
     height:200,
     borderWidth: 1,
   },
+  qr: {
+    marginBottom: 130,
+  },
+  contentCloseQRcode: {
+		alignItems: 'center',
+		justifyContent: 'center',
+    marginBottom: 60,
+	},
 })

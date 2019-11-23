@@ -11,11 +11,11 @@ import * as SecureStore from 'expo-secure-store';
 
 const createWallet = async () => {
 	console.log("start")
-	if(await getWalletAddress()) return
-	if (!await getCosignerPrivateKey()){
+	// if(await getWalletAddress()) return
+	// if (!await getCosignerPrivateKey()){
 		const _privateKey = await client.createAccount()
 		setPrivateKey(_privateKey)
-	}
+	// }
 	return await fetch(client.config.host[project] + client.config.url.createWallet, {
 		method: 'POST',
 		headers: {
