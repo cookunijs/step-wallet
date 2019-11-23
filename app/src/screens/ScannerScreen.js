@@ -76,7 +76,7 @@ class ScannerScreen extends React.Component {
 			<Header
 				placement="left"
 				statusBarProps={{ barStyle: 'light-content' }}
-				barStyle="light-content" // or directly
+				barStyle="light-content"
 				centerComponent={{ text: 'QR Scan', style: { color: '#000', fontSize: 35, fontWeight: 'bold' } }}
 				containerStyle={{
 					backgroundColor: '#fff',
@@ -96,7 +96,7 @@ class ScannerScreen extends React.Component {
         />
           <Icon
             name='crop-free'
-            color='#a9a9a9'
+            color='#404040'
             size= '350'
             iconStyle={styles.qr}
           />
