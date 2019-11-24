@@ -1,41 +1,45 @@
 pragma solidity ^0.5.10;
 
+import "./KeyStation.sol";
 import "./CloneableWallet.sol";
 
 contract WalletFactory {
 
 	uint public constant AUTHORIZED = 1;
-	uint public constant RECOVERY = 2;
 	uint public nonce;
 	address public cloneableWallet;
-	address public keyManager;
+	address public keyStation;
 
-	event WalletCreated(address wallet, address keyManager, bool full);
+	event WalletCreated(address wallet, address keyStation, bool full);
 
-	constructor(address _cloneableWallet, address _keyManager) public {
+	constructor(address _cloneableWallet, address _keyStation) public {
 		cloneableWallet = _cloneableWallet;
-		keyManager = _keyManager;
+		keyStation = _keyStation;
 	}
 
-	function deployCloneWallet(uint8 v, bytes32 r, bytes32 s, address _cosigner, uint _nonce) external returns (address payable){
+	function deployCloneWallet(uint8 v, bytes32 r, bytes32 s, uint _nonce, address _cosigner, address _recover) external returns (address payable){
 		require(nonce == _nonce, "invalid nonce");
 		require(v == 27 || v == 28, "invalid signature version");
-		bytes32 _operationHash = createHash(_nonce, _cosigner);
-		require(KeyManager(keyManager).addresses(AUTHORIZED) == ecrecover(_operationHash, v, r, s), "Signature must be signed by authorized address");
+
+		bytes32 _operationHash = createHash(_nonce, _cosigner, _recover);
+
+		require(KeyStation(keyStation).addresses(AUTHORIZED) == ecrecover(_operationHash, v, r, s), "Signature must be signed by authorized address");
+
 		address payable clone = createClone(cloneableWallet);
-		CloneableWallet(clone).init(_cosigner, keyManager);
+		CloneableWallet(clone).init(_cosigner, _recover, keyStation);
 		nonce++;
 
-		emit WalletCreated(clone, keyManager, false);
+		emit WalletCreated(clone, keyStation, false);
 		return clone;
 	}
 
-	function createHash(uint _nonce, address _cosigner) public view returns(bytes32){
+	function createHash(uint _nonce, address _cosigner, address _recover) public view returns(bytes32){
 		bytes32 _hash = keccak256(
 			abi.encodePacked(
 				this,
 				_nonce,
-				_cosigner
+				_cosigner,
+				_recover
 			)
 		);
 		return keccak256(

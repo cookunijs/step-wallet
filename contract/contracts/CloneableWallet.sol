@@ -1,23 +1,22 @@
 pragma solidity ^0.5.10;
 
 import "./ERC721/ERC721Receivable.sol";
-import "./ERC721X/ERC721XReceiver.sol";
 import "./ERC223/ERC223Receiver.sol";
-import "./KeyManager.sol";
+import "./KeyStation.sol";
 
-contract CloneableWallet is ERC721Receivable, ERC223Receiver, ERC721XReceiver {
+contract CloneableWallet is ERC721Receivable, ERC223Receiver {
 
-	uint public constant AUTHORIZED = 1;
-	uint public constant RECOVERY = 2;
-	uint public nonce;
-	address public keyManager;
-	address public cosigner;
-	bool public initialized;
-
-	event Authorized(address _keyManager, address _cosigner);
+	event Authorized(address _cosigner, address _recover, address _keyStation);
 	event EmergencyRecovered(address _cosigner);
 	event Received(address from, uint value);
 	event InvocationSuccess(address _to, bytes _data, bool success);
+
+	uint public constant AUTHORIZED = 1;
+	uint public nonce;
+	address public keyStation;
+	address public cosigner;
+  address public recover;
+	bool public initialized;
 
 	function() external payable {
 		require(msg.data.length == 0, "Invalid transaction.");
@@ -26,55 +25,49 @@ contract CloneableWallet is ERC721Receivable, ERC223Receiver, ERC721XReceiver {
 		}
 	}
 
-	function init(address _cosigner, address _keyManager) external {
+	function init(address _cosigner, address _recover, address _keyStation) external {
 		require(!initialized, "must not already be initialized");
-		require(_cosigner != KeyManager(_keyManager).addresses(AUTHORIZED), "Do not use the authorized address as a cosigner.");
-		require(_cosigner != KeyManager(_keyManager).addresses(RECOVERY), "Do not use the recovery address as a cosigner.");
-		require(_cosigner != address(0), "Initial cosigner must not be zero.");
-		require(_keyManager != address(0), "Authorized addresses must not be zero.");
+		require(_cosigner != _recover || _recover != KeyStation(_keyStation).addresses(AUTHORIZED) || KeyStation(_keyStation).addresses(AUTHORIZED) != _cosigner, "Do not use the authorized address as a cosigner.");
+		require(_cosigner != address(0) && _recover != address(0) && _keyStation != address(0), "Initial all address must not be zero.");
 
 		cosigner = _cosigner;
-		keyManager = _keyManager;
+    recover = _recover;
+		keyStation = _keyStation;
 		initialized = true;
 
-		emit Authorized(_keyManager, _cosigner);
+		emit Authorized(_cosigner, _recover, _keyStation);
 	}
 
 	function invoke(uint8[2] calldata v, bytes32[2] calldata r, bytes32[2] calldata s, uint _nonce, address _authorized, bytes calldata _data, address _to, uint _value) external {
-		require(nonce == _nonce, "invalid nonce");
+		require(_nonce == nonce, "invalid nonce");
 		require(v[0] == 27 || v[0] == 28, "invalid signature version v[0]");
 		require(v[1] == 27 || v[1] == 28, "invalid signature version v[1]");
 
-	  bytes32 _operationHash = createHashInvoke(_nonce, _authorized, _data);
+	  bytes32 _operationHash = createHash(_nonce, _authorized, _data);
 		address _signer = ecrecover(_operationHash, v[0], r[0], s[0]);
 		address _cosigner = ecrecover(_operationHash, v[1], r[1], s[1]);
 
-		require(_signer != address(0), "Invalid signature for signer.");
-		require(_cosigner != address(0), "Invalid signature for cosigner.");
-		require(_signer == KeyManager(keyManager).addresses(AUTHORIZED), "authorized addresses must be equal");
-		require(_cosigner == cosigner, "cosigner addresses must be equal");
+		require(_signer != address(0) && _cosigner != address(0), "Invalid signature for signer and cosigner.");
+		require(_signer == KeyStation(keyStation).addresses(AUTHORIZED) && _cosigner == cosigner, "authorized and cosigner addresses must be equal");
 
 		nonce++;
 
 		require(executeCall(_to, _value, _data));
 	}
 
-	function emergencyRecovery(uint8[2] calldata v, bytes32[2] calldata r, bytes32[2] calldata s, uint _nonce, address _cosigner) external {
+	function emergencyRecovery(uint8[2] calldata v, bytes32[2] calldata r, bytes32[2] calldata s, uint _nonce, address _cosigner, bytes calldata _data) external {
 		require(nonce == _nonce, "invalid nonce");
 		require(v[0] == 27 || v[0] == 28, "invalid signature version v[0]");
 		require(v[1] == 27 || v[1] == 28, "invalid signature version v[1]");
-		require(_cosigner != KeyManager(keyManager).addresses(AUTHORIZED), "Do not use the authorized address as a cosigner.");
-		require(_cosigner != KeyManager(keyManager).addresses(RECOVERY), "Do not use the recovery address as a cosigner.");
+		require(_cosigner != KeyStation(keyStation).addresses(AUTHORIZED) || _cosigner != recover, "Do not use the authorized address or recover address as a cosigner.");
 		require(_cosigner != address(0), "The cosigner must not be zero.");
 
-		bytes32 _operationHash = createHashRecovery(_nonce, _cosigner);
+		bytes32 _operationHash = createHash(_nonce, _cosigner, _data);
 		address _signer = ecrecover(_operationHash, v[0], r[0], s[0]);
 		address _recover = ecrecover(_operationHash, v[1], r[1], s[1]);
 
-		require(_signer != address(0), "Invalid signature for signer.");
-		require(_recover != address(0), "Invalid signature for recover.");
-		require(KeyManager(keyManager).addresses(AUTHORIZED) == _signer, "Invalid authorization in signer");
-		require(KeyManager(keyManager).addresses(RECOVERY) == _recover, "Invalid authorization in recover");
+		require(_signer != address(0) && _recover != address(0), "Invalid signature for signer and recover.");
+		require(_signer == KeyStation(keyStation).addresses(AUTHORIZED) && _recover == recover, "Invalid authorization in signer and recover");
 
 		nonce++;
 		cosigner = _cosigner;
@@ -82,38 +75,24 @@ contract CloneableWallet is ERC721Receivable, ERC223Receiver, ERC721XReceiver {
 		emit EmergencyRecovered(_cosigner);
 	}
 
-	function createHashInvoke(uint _nonce, address _authorized, bytes memory _data) public view returns(bytes32) {
-		bytes32 _hash = keccak256(
-			abi.encodePacked(
-				this,
-				_nonce,
-				_authorized,
-				_data
-			)
-		);
-		return keccak256(
-			abi.encodePacked(
-					"\x19Ethereum Signed Message:\n32",
-					_hash
-			)
-		);
-	}
-
-	function createHashRecovery(uint _nonce, address _cosigner) public view returns(bytes32) {
-		bytes32 _hash = keccak256(
-			abi.encodePacked(
-				this,
-				_nonce,
-				_cosigner
-			)
-		);
-		return keccak256(
-			abi.encodePacked(
-				"\x19Ethereum Signed Message:\n32",
-				_hash
-			)
-		);
-	}
+  function createHash(uint _nonce, address _address, bytes memory _data) public view returns(bytes32) {
+    bytes32 _hash = keccak256(
+      abi.encodePacked(
+        this,
+        _nonce,
+        _address,
+        _data
+      )
+    );
+    return keccak256(
+      abi.encodePacked(
+          "\x19Ethereum Signed Message:\n32",
+          _hash
+      )
+    );
+  }
+  //createHashInvoke
+  //createHashRecoveryの時は_dataに0xを代入する。
 
 	function executeCall(address _to, uint256 _value, bytes memory _data) internal returns (bool success) {
 		assembly {
