@@ -86,7 +86,7 @@ class AppIntroScreen extends React.Component {
   loadData = async() => {
     if(await Wallet.getWalletAddress()) {
       this.setState({
-        appStatus: 0,//0：AppIntroSliderから、３：wallet作成済みの場合はwalletから
+        appStatus: 0, //0：AppIntroSliderから、３：wallet作成済みの場合はwalletから
       })
     } else {
       this.setState({

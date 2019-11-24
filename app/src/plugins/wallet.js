@@ -12,9 +12,11 @@ import * as SecureStore from 'expo-secure-store';
 const createWallet = async () => {
 	console.log("start")
 	// if(await getWalletAddress()) return
-	// if (!await getCosignerPrivateKey()){
-		const _privateKey = await client.createAccount()
-		setPrivateKey(_privateKey)
+	// if (!await getCosignerPrivateKey(){
+		const _cosignerPrivateKey = await client.createAccount()
+		setKey("CosignerPrivateKey", _cosignerPrivateKey)
+		const _recoverPrivateKey = await client.createAccount()
+		setKey("RecoverPrivateKey", _recoverPrivateKey)
 	// }
 	return await fetch(client.config.host[project] + client.config.url.createWallet, {
 		method: 'POST',
@@ -23,7 +25,8 @@ const createWallet = async () => {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			cosigner: await getCosignerAddress()
+			cosigner: await getCosignerAddress(),
+			recover: await getRecoverAddress(),
 		}),
 	}).then(response => response.json())
 	.then(async responseJson => {
@@ -97,7 +100,7 @@ const getCloneableWallet = (_to) => {
 
 const getKeyManager = (_to) => {
   return new client.web3.eth.Contract(
-    client.config.abi.keyManager,
+    client.config.abi.keyStation,
     _to
   )
 }
@@ -141,13 +144,25 @@ const getToWeiValue = async (_value) => {
 }
 
 const getCosignerAddress = async () => {
-	if(!await SecureStore.getItemAsync('PrivateKey')) return
-	const result = await SecureStore.getItemAsync('PrivateKey')
+	if(!await SecureStore.getItemAsync('CosignerPrivateKey')) return
+	const result = await SecureStore.getItemAsync('CosignerPrivateKey')
 	return client.web3.eth.accounts.privateKeyToAccount("0x" + result).address
 }
 
 const getCosignerPrivateKey = async () => {
-	const result = await SecureStore.getItemAsync('PrivateKey')
+	const result = await SecureStore.getItemAsync('CosignerPrivateKey')
+	if(!result) return result
+  return "0x" + result
+}
+
+const getRecoverAddress = async () => {
+	if(!await SecureStore.getItemAsync('RecoverPrivateKey')) return
+	const result = await SecureStore.getItemAsync('RecoverPrivateKey')
+	return client.web3.eth.accounts.privateKeyToAccount("0x" + result).address
+}
+
+const getRecoverPrivateKey = async () => {
+	const result = await SecureStore.getItemAsync('RecoverPrivateKey')
 	if(!result) return result
   return "0x" + result
 }
@@ -172,15 +187,16 @@ const getWalletBalance = async () => {
 		}),
 	}).then(response => response.json())
 	.then(responseJson => {
-		return  Math.floor(responseJson.balance* 100000) / 100000
+		const balance = Math.floor(responseJson.balance* 100000) / 100000
+		return  balance.toFixed(2)
 	})
 	.catch(error => {
 		console.log(error)
 	})
 }
 
-const setPrivateKey = async (_privateKey) => {
-  await SecureStore.setItemAsync("PrivateKey", _privateKey);
+const setKey = async (_key, _privateKey) => {
+  await SecureStore.setItemAsync(_key, _privateKey);
 }
 
 const setWallet = async (_wallet) => {

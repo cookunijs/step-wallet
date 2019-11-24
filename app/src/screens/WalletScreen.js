@@ -18,7 +18,7 @@ class WalletScreen extends React.Component {
     super(props)
     this.state = {
 			wallet: "",
-			balance: "0",
+			balance: "0.00",
 			isSettingsModalVisible: false,
 			isDepositModalVisible: false,
 			isWithdrawModalVisible: false,
@@ -204,7 +204,7 @@ class WalletScreen extends React.Component {
 					<Text style={styles.contentAddressText}>
 						{this.state.wallet}
 					</Text> */}
-				
+
 					{/* <Text style={styles.contentTitle}>
 						<Icon
 							name='database'
