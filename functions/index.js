@@ -11,9 +11,8 @@
 // SENDERPRIVATEKEY: "0x2afd91ee7448708b7be2f7c4b6973bf6ba02973bdc2b8b10aeec3dfa632add06",
 // AUTHORIZEDPRIVATEKEY: "0x26eca9d40ba07290aa3601e68d010d20116942eed3b7f1dd7bc33b219d00e4b6",
 
-// const project = process.env.PROJECT
-const config = require('./config.json')
 const project = "development"
+const config = require('./config.json')
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
@@ -37,9 +36,9 @@ const contract = {
     config.abi.walletFactory,
     config.contract[project].walletFactory
   ),
-  keyManager: new web3.eth.Contract(
-    config.abi.keyManager,
-    config.contract[project].keyManager
+  keyStation: new web3.eth.Contract(
+    config.abi.keyStation,
+    config.contract[project].keyStation
   )
 }
 
@@ -56,6 +55,7 @@ app.post('/createWallet', async function(req, res){
   const _authorizedPrivateKey = process.env.AUTHORIZEDPRIVATEKEY
   const param = req.body
   const _cosigner = param.cosigner
+  const _recover = param.recover
   const _walletFactory = config.contract[project].walletFactory
   const _nonce = await contract.walletFactory.methods.nonce().call()
 
@@ -63,7 +63,8 @@ app.post('/createWallet', async function(req, res){
   const _hash = await web3.utils.soliditySha3(
     _walletFactory,
     _nonce,
-    _cosigner
+    _cosigner,
+    _recover
   )
 
   //authKeyで署名を実行
@@ -77,8 +78,9 @@ app.post('/createWallet', async function(req, res){
     sign.v,
     sign.r,
     sign.s,
+    _nonce,
     _cosigner,
-    _nonce
+    _recover
   ).encodeABI()
   const _gasLimit = await getGasLimit(_walletFactory, _result)
   const _gasPrice = await getGasPrice()
@@ -147,7 +149,7 @@ app.post('/execute', async function(req, res){
   //ユーザーの署名を復元
   const _cosignerSenderPubKey = await web3.eth.accounts.recover(_hash, _sigCosigner.signature)
 
-  if(_cosigner === _cosignerSenderPubKey ) {
+  if(_cosigner === _cosignerSenderPubKey) {
     //authKeyで署名を実行
     const _sigAuth = web3.eth.accounts.sign(_hash, _authorizedPrivateKey)
     const _v = [_sigAuth.v, _sigCosigner.v]
@@ -204,7 +206,7 @@ app.post('/recoveryUser', async function(req, res){
 
   //recoveryの署名を復元
   const _recoveryPublicKey = await web3.eth.accounts.recover(_hash, _sigRecovery.signature)
-  const recoveryPublicKey = await contract.keyManager.methods.addresses(RECOVERY).call()
+  const recoveryPublicKey = await contract.keyStation.methods.addresses(RECOVERY).call()
   if(_recoveryPublicKey === recoveryPublicKey) {
 
     //authKeyで署名を実行
@@ -257,11 +259,11 @@ app.post('/keyUpdate', async function(req, res){
   const _nonce = param.nonce
   const _target = param.target
   const _new = param.new
-  const _keyManager = config.contract[project].keyManager
+  const _keyStation = config.contract[project].keyStation
 
   //recoveryの署名を復元
   const _recoveryPublicKey = await web3.eth.accounts.recover(_hash, _sigRecovery.signature)
-  const recoveryPublicKey = await contract.keyManager.methods.addresses(RECOVERY).call()
+  const recoveryPublicKey = await contract.keyStation.methods.addresses(RECOVERY).call()
 
   if(_recoveryPublicKey === recoveryPublicKey) {
 
@@ -272,7 +274,7 @@ app.post('/keyUpdate', async function(req, res){
     const _s = [_sigAuth.s, _sigRecovery.s]
 
 　  //signedTxに含める関数の実行データを作成(encodeABI)
-    const _result = await contract.keyManager.methods.update(
+    const _result = await contract.keyStation.methods.update(
       _v,
       _r,
       _s,
@@ -280,7 +282,7 @@ app.post('/keyUpdate', async function(req, res){
       _target,
       _new,
     ).encodeABI()
-    const _gasLimit = await getGasLimit(_keyManager, _result)
+    const _gasLimit = await getGasLimit(_keyStation, _result)
     const _gasPrice = await getGasPrice()
     const nonce = await web3.eth.getTransactionCount(senderPublicKey)
     var transactionObj = {
@@ -288,7 +290,7 @@ app.post('/keyUpdate', async function(req, res){
       gasPrice: _gasPrice,
       gas: _gasLimit,
       from: recoveryPublicKey,
-      to: _keyManager,
+      to: _keyStation,
       value: web3.utils.numberToHex(web3.utils.toWei('0', 'ether')),
       data: _result
     }
@@ -329,8 +331,8 @@ app.post('/getWalletData', async function(req, res){
   const param = req.body
   const CloneableWallet = getCloneableWallet(param.wallet)
 	const _nonce = await CloneableWallet.methods.nonce().call()
-	const _keyManager = await CloneableWallet.methods.keyManager().call()
-	const KeyManager = getKeyManager(_keyManager)
+	const _keyStation = await CloneableWallet.methods.keyStation().call()
+	const KeyManager = getKeyManager(_keyStation)
 	const AUTHORIZED = await KeyManager.methods.AUTHORIZED().call()
   const _authorized = await KeyManager.methods.addresses(AUTHORIZED).call()
   const _result = {
@@ -358,7 +360,7 @@ const getCloneableWallet = (_to) => {
 
 const getKeyManager = (_to) => {
   return new web3.eth.Contract(
-    config.abi.keyManager,
+    config.abi.keyStation,
     _to
   )
 }
