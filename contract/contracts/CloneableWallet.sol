@@ -69,8 +69,8 @@ contract CloneableWallet is ERC721Receivable, ERC223Receiver {
 		require(_signer != address(0) && _recover != address(0), "Invalid signature for signer and recover.");
 		require(_signer == KeyStation(keyStation).addresses(AUTHORIZED) && _recover == recover, "Invalid authorization in signer and recover");
 
-		nonce++;
 		cosigner = _cosigner;
+		nonce++;
 
 		emit EmergencyRecovered(_cosigner);
 	}

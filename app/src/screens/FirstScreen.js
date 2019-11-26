@@ -2,12 +2,36 @@ import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
-import WalletScreen from '../screens/WalletScreen'
-import ScannerScreen from '../screens/ScannerScreen'
+import GoogleLoginScreen from '../screens/GoogleLoginScreen'
+import SettingPassScreen from '../screens/SettingPassScreen'
+import SecondScreen from '../screens/SecondScreen'
+import LoaderScreen from '../screens/LoaderScreen'
 
 const AppNavigator = createStackNavigator({
-	WalletScreen: {
-		screen: WalletScreen,
+	GoogleLoginScreen: {
+		screen: GoogleLoginScreen,
+		navigationOptions: {
+      headerStyle: {
+        marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,
+			},
+			headerBackTitle: null,
+			headerShown: false,
+			header:null,
+		}
+  },
+  SettingPassScreen: {
+		screen: SettingPassScreen,
+		navigationOptions: {
+      headerStyle: {
+        marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,
+			},
+			headerBackTitle: null,
+			headerShown: false,
+			header:null,
+		}
+  },
+  SecondScreen: {
+		screen: SecondScreen,
 		navigationOptions: {
       headerStyle: {
         marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,
@@ -17,22 +41,12 @@ const AppNavigator = createStackNavigator({
 			header:null,
 		}
 	},
-  ScannerScreen: {
-		screen: ScannerScreen,
-		navigationOptions: {
-      headerStyle: {
-        marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,
-			},
-			headerBackTitle: null,
-			headerShown: false,
-			header:null,
-		}
-	},
-	initialRouteName: "WalletScreen",
-});
+	initialRouteName: "GoogleLoginScreen",
+})
+
 const App = createAppContainer(AppNavigator)
 
-class SecondScreen extends React.Component {
+class FirstScreen extends React.Component {
 	render() {
 			return (
 				<App
@@ -42,7 +56,7 @@ class SecondScreen extends React.Component {
 			)
 	}
 }
-export default SecondScreen
+export default FirstScreen
 
 const styles = StyleSheet.create({
   container: {

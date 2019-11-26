@@ -7,6 +7,8 @@ import SecondScreen from './SecondScreen'
 import CreateScreen from './CreateScreen'
 import LoaderScreen from './LoaderScreen'
 import WaitingScreen from './WaitingScreen'
+import FirstScreen from './FirstScreen'
+import GoogleLoginScreen from './GoogleLoginScreen'
 
 import Wallet from '../plugins/wallet'
 
@@ -120,17 +122,17 @@ class AppIntroScreen extends React.Component {
               style={{ backgroundColor: 'transparent' }}
             />
           }
-					onPress={this.createWallet}
+					onPress={this.onDone}
 					style={styles.button}
 				/>
       </View>
     );
   };
   onDone = () => {
-    this.setState({ appStatus: 2 });
+    this.setState({ appStatus: 3 });
   }
   createWallet = async () => {
-    Wallet.createWallet().then(result => {
+    Wallet.createWallet().then(async result => {
       this.setState({
         appStatus: 3
       })
@@ -143,7 +145,7 @@ class AppIntroScreen extends React.Component {
       } else if (this.state.appStatus === 2) {
         return <LoaderScreen />
       } else if (this.state.appStatus === 3) {
-        return <SecondScreen />
+        return <FirstScreen />
       } else {
         return <AppIntroSlider
           slides={slides}

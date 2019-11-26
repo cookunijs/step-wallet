@@ -13,7 +13,7 @@ export default class LoaderScreen extends React.Component {
       this.setState({
         visible: !this.state.visible
       });
-    }, 30000);
+    }, 300000);
   }
 
   render() {

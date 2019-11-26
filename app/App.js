@@ -13,8 +13,9 @@ import jwtDecode from 'jwt-decode'
 import reducers from './src/reducers'
 import { storeDToken, storeNotificationData } from './src/actions'
 const store = createStore(reducers)
-// import SecondScreen from './src/screens/SecondScreen'
 import AppIntroScreen from './src/screens/AppIntroScreen'
+import GoogleLoginScreen from './src/screens/GoogleLoginScreen'
+
 
 export default class App extends React.Component {
   constructor(props){
@@ -106,6 +107,7 @@ export default class App extends React.Component {
       <Provider store={store}>
         {/* <SecondScreen/> */}
         <AppIntroScreen/>
+        {/* <GoogleLoginScreen/> */}
       </Provider>
     )
   }
