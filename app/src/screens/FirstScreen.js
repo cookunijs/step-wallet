@@ -4,8 +4,9 @@ import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import GoogleLoginScreen from '../screens/GoogleLoginScreen'
 import SettingPassScreen from '../screens/SettingPassScreen'
+import AppIntroScreen from '../screens/AppIntroScreen'
 import SecondScreen from '../screens/SecondScreen'
-import LoaderScreen from '../screens/LoaderScreen'
+import RecoveryScreen from '../screens/RecoveryScreen'
 
 const AppNavigator = createStackNavigator({
 	GoogleLoginScreen: {
@@ -18,9 +19,31 @@ const AppNavigator = createStackNavigator({
 			headerShown: false,
 			header:null,
 		}
-  },
+	},
+	RecoveryScreen: {
+		screen: RecoveryScreen,
+		navigationOptions: {
+      headerStyle: {
+        marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,
+			},
+			headerBackTitle: null,
+			headerShown: false,
+			header:null,
+		}
+	},
   SettingPassScreen: {
 		screen: SettingPassScreen,
+		navigationOptions: {
+      headerStyle: {
+        marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,
+			},
+			headerBackTitle: null,
+			headerShown: false,
+			header:null,
+		}
+	},
+	AppIntroScreen: {
+		screen: AppIntroScreen,
 		navigationOptions: {
       headerStyle: {
         marginTop: Platform.OS === 'android' && options.headerShown !== false ? 56 : 0,

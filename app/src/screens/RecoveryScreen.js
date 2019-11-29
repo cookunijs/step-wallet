@@ -7,9 +7,9 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { Madoka } from 'react-native-textinput-effects'
 import LoaderScreen from './LoaderScreen'
 
-class SettingPassScreen extends React.Component {
+class RecoveryScreen extends React.Component {
 	static navigationOptions = {
-		title: 'SettingPass',
+		title: 'Recovery',
 	}
 	constructor(props){
     super(props)
@@ -18,18 +18,12 @@ class SettingPassScreen extends React.Component {
       appStatus: 0
     }
 	}
-	loadData = async() => {
-		this.setState({
-			wallet: await Wallet.getWalletAddress(),
-			balance: await Wallet.getWalletBalance()
-		})
-  }
 	onChangePass = (_pass) => {
     this.setState({ pass: _pass })
   }
-  setPass = async () => {
-    Wallet.setPass(this.state.pass).then(async () => {
-      await this.props.navigation.navigate('AppIntroScreen', {}, NavigationActions.navigate({ routeName: 'SettingPassScreen' }))
+  recoveryWallet = async () => {
+    Wallet.recoveryWallet(this.props.navigation.state.params.user, "0x",this.state.pass).then(async (data) => {
+      await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'RecoveryScreen' }))
       this.setState({ appStatus: 0 })
     })
     this.setState({ appStatus: 1 })
@@ -64,7 +58,7 @@ class SettingPassScreen extends React.Component {
               />
             }
             style={styles.button}
-            onPress={this.setPass}
+            onPress={this.recoveryWallet}
           />
         </View>
       )
@@ -72,7 +66,7 @@ class SettingPassScreen extends React.Component {
   }
 }
 
-export default SettingPassScreen
+export default RecoveryScreen
 
 const styles = StyleSheet.create({
   container: {

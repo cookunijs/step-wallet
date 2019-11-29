@@ -43,6 +43,7 @@
   },
   "url": {
     "createWallet": "createWallet/",
+    "recoveryWallet":"recoveryWallet/",
     "setUser": "setUser/",
     "setPass":"setPass/",
     "execute": "execute/",
@@ -51,6 +52,7 @@
     "getToWeiValue": "getToWeiValue/",
     "getKeyStorageData": "getKeyStorageData/",
     "getPass": "getPass/",
-    "getValUser": "getValUser/"
+    "getValUser": "getValUser/",
+    "getRecoverKeyHash": "getRecoverKeyHash/"
   }
 }

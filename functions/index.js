@@ -32,6 +32,7 @@ const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider(config.node[project].https))
 const senderPublicKey = process.env.SENDERPUBLICKEY
 const senderPrivateKey = process.env.SENDERPRIVATEKEY
+const hashWord = process.env.HASHWORD
 
 const RECOVERY = 2
 
@@ -56,6 +57,44 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
+})
+
+app.post('/getRecoverKeyHash', async (req, res) => {
+  const _authorizedPrivateKey = process.env.AUTHORIZEDPRIVATEKEY
+  const param = req.body
+  const _getValUserResult = await getValUser(param.user.email)
+  const _wallet = _getValUserResult.wallet.address
+  const _result = {
+    wallet: _wallet,
+    unregistered: _getValUserResult.unregistered,
+    recoverKeyHash: ""
+  }
+  if(_getValUserResult.unregistered){
+    res.send(_result)
+    return
+  }
+  const _keyStorage = config.contract[project].keyStorage
+  const _nonce = await contract.KeyStorage.methods.nonce().call()
+  const _hash = await web3.utils.soliditySha3(
+    _keyStorage,
+    _nonce,
+    _wallet,
+    hashWord
+  )
+  const sign = web3.eth.accounts.sign(
+    _hash,
+    _authorizedPrivateKey
+  )
+  _result.recoverKeyHash = await contract.KeyStorage.methods.getStorage(
+    sign.v,
+    sign.r,
+    sign.s,
+    _nonce,
+    _wallet,
+    hashWord
+  ).call()
+
+  res.send(_result)
 })
 
 app.post('/getValUser', async (req, res) => {
@@ -329,8 +368,8 @@ app.post('/getPass', async function(req, res){
   res.send(_result)
 })
 
-//recoveryの署名が必要
-app.post('/recoveryUser', async function(req, res){
+//recoverの署名が必要
+app.post('/recoveryWallet', async function(req, res){
   const _authorizedPrivateKey = process.env.AUTHORIZEDPRIVATEKEY
   const param = req.body
   const _sigRecovery = param.sign
@@ -338,11 +377,12 @@ app.post('/recoveryUser', async function(req, res){
   const _new = param.new
   const _wallet = param.wallet
   const _nonce = param.nonce
+  const _data = param.data
   const Wallet = new web3.eth.Contract(config.abi.cloneableWallet, _wallet)
 
   //recoveryの署名を復元
   const _recoveryPublicKey = await web3.eth.accounts.recover(_hash, _sigRecovery.signature)
-  const recoveryPublicKey = await contract.KeyStation.methods.addresses(RECOVERY).call()
+  const recoveryPublicKey = await Wallet.methods.recover().call()
   if(_recoveryPublicKey === recoveryPublicKey) {
 
     //authKeyで署名を実行
@@ -358,15 +398,18 @@ app.post('/recoveryUser', async function(req, res){
       _s,
       _nonce,
       _new,
+      _data
     ).encodeABI()
-    const _gasLimit = await getGasLimit(_wallet, _result)
-    const _gasPrice = await getGasPrice()
+    console.log(_result)
+    // const _gasLimit = await getGasLimit(_wallet, _result)
+    // console.log(_gasLimit)
+    // const _gasPrice = await getGasPrice()
+    // console.log(_gasPrice)
     const nonce = await web3.eth.getTransactionCount(senderPublicKey)
     var transactionObj = {
       nonce: nonce,
-      gasPrice: _gasPrice,
-      gas: _gasLimit,
-      from: recoveryPublicKey,
+      gas: 750000,
+      from: _recoveryPublicKey,
       to: _wallet,
       value: web3.utils.numberToHex(web3.utils.toWei('0', 'ether')),
       data: _result
@@ -378,7 +421,11 @@ app.post('/recoveryUser', async function(req, res){
     await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
     .on('receipt', receipt => {
       console.log(`Success!!`)
-      res.send(receipt)
+      const _result = {
+        wallet: _wallet,
+        receipt: receipt
+      }
+      res.send(_result)
     })
     .on('error', console.error)
   } else {
@@ -519,6 +566,7 @@ const getKeyStorage = (_to) => {
 
 const getGasPrice = async() => {
   const result = await web3.eth.getGasPrice()
+  console.log(result)
   return await web3.utils.toHex(web3.utils.toWei(result, 'wei'))
 }
 

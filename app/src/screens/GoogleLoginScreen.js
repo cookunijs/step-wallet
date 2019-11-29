@@ -30,21 +30,6 @@ class GoogleLoginScreen extends Component {
       appStatus: 0
     }
 	}
-  render() {
-    if (this.state.appStatus === 1) {
-      return <LoaderScreen />
-    } else {
-      return (
-        <View style={styles.container}>
-          <Button
-            onPress={this.signInWithGoogle}
-            title="Sign in with Google"
-          />
-        </View>
-      )
-    }
-  }
-
   // Google OAuth認証メソッド
   signInWithGoogle = async () => {
     try {
@@ -80,6 +65,51 @@ class GoogleLoginScreen extends Component {
     }
   }
 
+  signInRecoveryWithGoogle = async () => {
+    try {
+      await Google.logInAsync({
+        behavior: 'web',
+        iosClientId: GOOGLE_IOS_CLIENTID,
+        scopes: ['profile', 'email'],
+      }).then(async (result) => {
+        console.log(result.user.email)
+        this.setState({ appStatus: 1 })
+        if (result.type === 'success') {
+          const { idToken, accessToken } = result
+          const credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken)
+          await auth.signInWithCredential(credential)
+          .catch(({ message }) => {
+            console.log(message)
+          })
+          this.props.navigation.navigate('RecoveryScreen', {user: result.user}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
+          this.setState({ appStatus: 0 })
+        } else {
+          console.log('ERROR');
+        }
+      })
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  render() {
+    if (this.state.appStatus === 1) {
+      return <LoaderScreen />
+    } else {
+      return (
+        <View style={styles.container}>
+          <Button
+            onPress={this.signInWithGoogle}
+            title="Sign in with Google"
+          />
+          <Button
+            onPress={this.signInRecoveryWithGoogle}
+            title="Sign in with recovery"
+          />
+        </View>
+      )
+    }
+  }
 }
 
 export default GoogleLoginScreen

@@ -42,6 +42,10 @@ const createAccount = async () => {
   return x.privateKey.substring(2)
 }
 
+const getAccountMetaData = async (_privateKey) => {
+  return await web3.eth.accounts.privateKeyToAccount(_privateKey)
+}
+
 const client = {
   account: account,
   activate: activate,
@@ -49,6 +53,7 @@ const client = {
   utils: web3.utils,
   web3: web3,
   createAccount: createAccount,
+  getAccountMetaData: getAccountMetaData,
   config: config
 }
 

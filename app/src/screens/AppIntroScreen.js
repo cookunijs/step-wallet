@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text, Image } from 'react-native';
-import { Header, Card, Button, ButtonGroup, Input, ListItem } from 'react-native-elements'
+import { NavigationActions } from 'react-navigation'
+import { Button } from 'react-native-elements'
 import AppIntroSlider from 'react-native-app-intro-slider';
-import SecondScreen from './SecondScreen'
-import CreateScreen from './CreateScreen'
 import LoaderScreen from './LoaderScreen'
 import WaitingScreen from './WaitingScreen'
-import FirstScreen from './FirstScreen'
-import GoogleLoginScreen from './GoogleLoginScreen'
-
-import Wallet from '../plugins/wallet'
 
 const slides = [
   {
@@ -79,7 +74,7 @@ class AppIntroScreen extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      appStatus: 1,
+      appStatus: 0,
     }
   }
   async componentDidMount() {
@@ -128,24 +123,14 @@ class AppIntroScreen extends React.Component {
       </View>
     );
   };
-  onDone = () => {
-    this.setState({ appStatus: 3 });
+  onDone = async () => {
+    await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'AppIntroScreen' }))
   }
-  createWallet = async () => {
-    Wallet.createWallet().then(async result => {
-      this.setState({
-        appStatus: 3
-      })
-    })
-    this.setState({ appStatus: 2 })
-	}
   render() {
       if (this.state.appStatus === 1) {
         return <WaitingScreen />
       } else if (this.state.appStatus === 2) {
         return <LoaderScreen />
-      } else if (this.state.appStatus === 3) {
-        return <FirstScreen />
       } else {
         return <AppIntroSlider
           slides={slides}

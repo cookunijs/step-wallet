@@ -17,7 +17,6 @@ const createWallet = async (_user) => {
 		user: _user
 	}
 	const _getValUserUrlResult = await reqPost(_getValUserUrl, _getValUserBody)
-	console.log(_getValUserUrlResult)
 	if(!_getValUserUrlResult.unregistered){
 		await setWallet(_getValUserUrlResult.wallet)
 		return _getValUserUrlResult
@@ -86,15 +85,54 @@ const execute = async (_to, _encodeABI, _value) => {
 	return _result.balance
 }
 
-const recovery = async (_password) => { //ユーザーのmaillいるかも、serverの方でdbからemail->wallet（address）を取り出す。
-	const _crypted = await getPass()
+const recoveryWallet = async (_user, _encodeABI, _password) => { //ユーザーのmaillいるかも、serverの方でdbからemail->wallet（address）を取り出す。
+	const _getRecoverKeyHashUrl = client.config.host[project] + client.config.url.getRecoverKeyHash
+	const _getRecoverKeyHashBody = {
+		user: _user,
+	}
+	const _getRecoverKeyHashResult = await reqPost(_getRecoverKeyHashUrl, _getRecoverKeyHashBody)
+	const _wallet = _getRecoverKeyHashResult.wallet
+
+	if(_getRecoverKeyHashResult.unregistered) return
+	const _crypted = _getRecoverKeyHashResult.recoverKeyHash
 	const _decipher = crypto.createDecipher('aes-256-cbc', _password)
 	let _dec = _decipher.update(_crypted, 'hex', 'utf-8')
-	.catch(error => {
-		console.error(error)
-	})
-	_dec += _decipher.final('utf-8')
-	await setRecoverPrivateKey(_dec)
+	const recoverPrivateKey = _dec + _decipher.final('utf-8')
+	const _cosignerPrivateKey = await client.createAccount()
+	await setCosignerPrivateKey(_cosignerPrivateKey)
+	const _cosignerAddress = await getCosignerAddress()
+
+	const data = await getWalletData(_wallet)
+	const _nonce = data.nonce
+
+	const _hash = await client.web3.utils.soliditySha3(
+		_wallet,
+		_nonce,
+		_cosignerAddress,
+		_encodeABI
+	)
+	const _sign = client.web3.eth.accounts.sign(
+		_hash,
+		recoverPrivateKey
+	)
+	const _recoveryWalletUrl = client.config.host[project] + client.config.url.recoveryWallet
+	const _recoveryWalletBody = {
+		new: _cosignerAddress,
+		wallet: _wallet,
+		sign: _sign,
+		hash: _hash,
+		nonce: _nonce,
+		data: _encodeABI
+	}
+	const _recoveryWalletResult = await reqPost(_recoveryWalletUrl, _recoveryWalletBody)
+	// if(_createWalletResult.unregistered){
+	// 	await setWallet(_createWalletResult.wallet)
+	// 	await setUser(_user)
+	// 	return _createWalletResult
+	// }
+	console.log(_recoveryWalletResult.wallet)
+	setWallet(_recoveryWalletResult.wallet)
+	return _recoveryWalletResult
 }
 const setUser = async (_user) => {
 	console.log("start: setUser")
@@ -271,6 +309,7 @@ const reqPost = async (_url, _body) => {
 const Wallet = {
 	web3: client.web3,
 	createWallet: createWallet,
+	recoveryWallet: recoveryWallet,
 	setUser: setUser,
 	setPass: setPass,
 	execute: execute,
