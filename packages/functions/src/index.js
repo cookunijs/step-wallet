@@ -13,13 +13,13 @@
 // AUTHORIZEDPRIVATEKEY: "0x26eca9d40ba07290aa3601e68d010d20116942eed3b7f1dd7bc33b219d00e4b6",
 
 const project = "development"
-const config = require('./config.json.js.js')
+const config = require('./config.json')
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp({
   credential: admin.credential.applicationDefault()
-})
+});
 const db = admin.firestore()
 
 const express = require('express')

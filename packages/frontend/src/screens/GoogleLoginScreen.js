@@ -213,7 +213,7 @@ class GoogleLoginScreen extends Component {
               backgroundColor:'#DD5144'
             }}
             title="  Sign in with Google"
-            onPress={this.signInWithGoogle}
+            onPress={this.signInAsyncWithGoogle}
           />
           <Button
             icon={
