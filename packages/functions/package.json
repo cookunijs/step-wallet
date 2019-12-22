@@ -8,7 +8,8 @@
     "node": "10"
   },
   "scripts": {
-    "serve": "firebase serve --only functions",
+    "local": "PROJECT_ENV=development node ./src/index",
+    "serve": "PROJECT_ENV=development firebase serve --only functions --host 0.0.0.0",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",

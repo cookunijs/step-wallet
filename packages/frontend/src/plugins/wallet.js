@@ -1,10 +1,5 @@
-//環境変数に設定する値
-const process = {
-  env: {
-    PROJECT: "development",
-  }
-}
-const project = process.env.PROJECT
+import { PROJECT_ENV } from 'react-native-dotenv'
+const project = PROJECT_ENV
 
 import client from './ethereum-client.js'
 import crypto from 'crypto'
