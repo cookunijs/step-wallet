@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "my-react-native-contract-wallet",
+  "version": "1.0.0",
+  "description": "",
+  "workspaces": [
+    "packages/*"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "firebase:login": "firebase login",
+    "local": "run-p local:*",
+    "local:frontend": "PROJECT=local yarn workspace frontend start",
+    "local:functions": "PROJECT=local yarn workspace functions serve",
+    "dev": "run-p dev:*",
+    "dev:frontend": "yarn workspace frontend start",
+    "deploy:sand": "firebase use my-contract-wallet-development && firebase deploy --only functions"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daiki0129/my-react-native-contract-wallet.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Daiki0129/my-react-native-contract-wallet/issues"
+  },
+  "homepage": "https://github.com/Daiki0129/my-react-native-contract-wallet#readme",
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "firebase-tools": "7.10.0",
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.7.7"
+  }
+}
