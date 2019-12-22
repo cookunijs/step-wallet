@@ -28,6 +28,6 @@
     "firebase-functions": "^3.3.0",
     "path": "^0.12.7",
     "web3": "^1.0.0-beta.37"
-  },
+  },
   "private": true
 }

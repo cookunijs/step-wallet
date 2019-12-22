@@ -89,11 +89,14 @@ node_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+packages/frontend/.env
+packages/functions/.env
 
+# node_modules file
 packages/frontend/node_modules/
 packages/functions/node_modules/
 packages/backend/contract/node_modules/
+packages/backend/server/node_modules/
+
 packages/backend/contract/build/
 packages/backend/contract/.secret/
-packages/backend/server/node_modules/

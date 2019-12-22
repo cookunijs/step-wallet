@@ -46,31 +46,12 @@ const slides = [
     titleStyle: {fontSize: '35', color:'#404040'},
     text: 'I m already out of descriptions\n\nLorem ipsum bla bla bla',
     textStyle: {color:'#000'},
-    image: require('../../assets/images/page5.png'),
+    image: require('../../assets/images/mello.png'),
     imageStyle: {width:270, height:270},
     backgroundColor: '#fff',
   }
 ];
 // const slides = config.screens.appIntro.slides
-
-const styles = StyleSheet.create({
-  buttonCircle: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'rgba(85, 172, 238, .8)',
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonCircleDone: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'rgba(0, 230, 0, .5)',
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-})
 
 class AppIntroScreen extends React.Component {
   constructor(props){
@@ -145,5 +126,24 @@ class AppIntroScreen extends React.Component {
     }
   }
 }
+
+const styles = StyleSheet.create({
+  buttonCircle: {
+    width: 50,
+    height: 50,
+    backgroundColor: 'rgba(85, 172, 238, .8)',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonCircleDone: {
+    width: 50,
+    height: 50,
+    backgroundColor: 'rgba(0, 230, 0, .5)',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+})
 
 export default AppIntroScreen

@@ -38,7 +38,7 @@
     "android": {
       "package": "com.daikikunii.MyContractWalletApp",
       "permissions": [],
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./docs/google-services.json"
     }
   }
 }

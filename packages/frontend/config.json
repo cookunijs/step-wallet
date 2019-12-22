@@ -94,7 +94,7 @@
           "titleStyle": {"fontSize": 35, "color": "#404040"},
           "text": "I m already out of descriptions\n\nLorem ipsum bla bla bla",
           "textStyle": {"color": "#000"},
-          "image": "require('../../assets/images/page5.png')",
+          "image": "require('../../assets/images/mello.png')",
           "imageStyle": {"width": 270, "height": 270},
           "backgroundColor": "#fff"
         }

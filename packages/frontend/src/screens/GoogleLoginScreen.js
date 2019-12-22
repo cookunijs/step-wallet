@@ -1,35 +1,24 @@
 import Wallet from '../plugins/wallet'
-import React, { Component } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Button, Text } from 'react-native-elements'
-import Icon from 'react-native-vector-icons/FontAwesome';
-
+import React, { Component } from 'react'
+import { View, StyleSheet, Image } from 'react-native'
 import { NavigationActions } from 'react-navigation'
-import * as AppAuth from 'expo-app-auth';
+import { Button, Text } from 'react-native-elements'
+import Icon from 'react-native-vector-icons/FontAwesome'
+
+import * as AppAuth from 'expo-app-auth'
 import * as Google from 'expo-google-app-auth'
-import * as GoogleSignIn from 'expo-google-sign-in';
-
-import LoaderScreen from './LoaderScreen'
-
-const config = {
-  apiKey: "AIzaSyDwHlc13ZqyjIQs7ARsoUDSlGA75vo_Lr8",
-  authDomain: "my-contract-wallet-development.firebaseapp.com",
-  databaseURL: "https://my-contract-wallet-development.firebaseio.com",
-  projectId: "my-contract-wallet-development",
-  storageBucket: "my-contract-wallet-development.appspot.com",
-  messagingSenderId: "538365545759",
-  appId: "1:538365545759:web:7b8a1b3936f4ff2e70b42a",
-  measurementId: "G-RYQM0FEGN8"
-}
-
-import firebase from 'firebase';
-firebase.initializeApp(config)
+import * as GoogleSignIn from 'expo-google-sign-in'
+import firebase from './../plugins/firebase'
 const auth = firebase.auth()
 
-const GOOGLE_IOS_CLIENTID = '538365545759-uf0cdohaiesod91ua7rkpandmc0u6lob.apps.googleusercontent.com'
-const GOOGLE_IOS_CLIENTID_FOR_EXPO = '538365545759-audut0sg98ispigd73gjboh2mskkr66v.apps.googleusercontent.com'
-const GOOGLE_ANDROID_CLIENTID = '538365545759-37vfkj2bc0mmcnaov4e40qavn68f1om7.apps.googleusercontent.com'
-const GOOGLE_ANDROID_CLIENTID_FOR_EXPO = '538365545759-v4s9m708be5qbph267aputpl1j9vm324.apps.googleusercontent.com'
+import {
+  GOOGLE_IOS_CLIENTID,
+  GOOGLE_IOS_CLIENTID_FOR_EXPO,
+  GOOGLE_ANDROID_CLIENTID,
+  GOOGLE_ANDROID_CLIENTID_FOR_EXPO,
+} from 'react-native-dotenv'
+
+import LoaderScreen from './LoaderScreen'
 
 class GoogleLoginScreen extends Component {
   constructor(props){
@@ -101,7 +90,6 @@ class GoogleLoginScreen extends Component {
   signOutAsync = async () => {
     try {
       await GoogleSignIn.signOutAsync()
-      // this.setState({ user: null })
     } catch ({ message }) {
       alert('signOutAsync: ' + message)
     }
@@ -213,7 +201,7 @@ class GoogleLoginScreen extends Component {
               backgroundColor:'#DD5144'
             }}
             title="  Sign in with Google"
-            onPress={this.signInAsyncWithGoogle}
+            onPress={this.signInWithGoogle}
           />
           <Button
             icon={

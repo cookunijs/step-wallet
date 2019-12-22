@@ -38,7 +38,6 @@ class RecoveryScreen extends React.Component {
             value={this.state.pass}
             style={styles.textInputMadokaPass}
             label={'PASS WORD'}
-            // this is used as active and passive border color
             borderColor={'#11bdff'}
             inputPadding={20}
             labelHeight={25}

@@ -29,10 +29,12 @@ const createWallet = async (_user) => {
 		await setRecoverPrivateKey(_recoverPrivateKey)
 	// }
 	const _createWalletUrl = client.config.host[project] + client.config.url.createWallet
+	const _cosigner = await getCosignerAddress()
+	const _recover = await getRecoverAddress()
 	const _createWalletBody = {
 		user: _user,
-		cosigner: await getCosignerAddress(),
-		recover: await getRecoverAddress(),
+		cosigner: _cosigner,
+		recover: _recover,
 	}
 	const _createWalletResult = await reqPost(_createWalletUrl, _createWalletBody)
 	if(_createWalletResult.unregistered){
@@ -46,9 +48,9 @@ const createWallet = async (_user) => {
 
 const execute = async (_to, _encodeABI, _value) => {
 	console.log("start: execute")
+
 	const result = await getToWeiValue(_value)
 	_value = result.value
-
 	if(_value != 0) {
 		_value = _value
 	} else {
@@ -56,22 +58,25 @@ const execute = async (_to, _encodeABI, _value) => {
 	}
 
 	const _wallet = await getWalletAddress()
-	const data = await getWalletData(_wallet)
-	const _nonce = data.nonce
-	const _authorized = data.authorized
+	const _data = await getWalletData(_wallet)
+	const _nonce = _data.nonce
+	const _authorized = _data.authorized
 	const _hash = await client.web3.utils.soliditySha3(
 		_wallet,
 		_nonce,
 		_authorized,
 		_encodeABI
 	)
+	const _cosignerPrivateKey = await getCosignerPrivateKey()
 	const _sign = client.web3.eth.accounts.sign(
 		_hash,
-		await getCosignerPrivateKey()
+		_cosignerPrivateKey
 	)
-	const _url = client.config.host[project] + client.config.url.execute
-	const _body = {
-		address: await getCosignerAddress(),
+
+	const _executeUrl = client.config.host[project] + client.config.url.execute
+	const _cosigner = await getCosignerAddress()
+	const _executeBody = {
+		address: _cosigner,
 		wallet: _wallet,
 		data: _encodeABI,
 		sign: _sign,
@@ -81,7 +86,7 @@ const execute = async (_to, _encodeABI, _value) => {
 		to: _to,
 		value: _value,
 	}
-	const _result = await reqPost(_url, _body)
+	const _result = await reqPost(_executeUrl, _executeBody)
 	return _result.balance
 }
 
@@ -100,11 +105,10 @@ const recoveryWallet = async (_user, _encodeABI, _password) => { //ユーザー�
 	const recoverPrivateKey = _dec + _decipher.final('utf-8')
 	const _cosignerPrivateKey = await client.createAccount()
 	await setCosignerPrivateKey(_cosignerPrivateKey)
+
 	const _cosignerAddress = await getCosignerAddress()
-
-	const data = await getWalletData(_wallet)
-	const _nonce = data.nonce
-
+	const _data = await getWalletData(_wallet)
+	const _nonce = _data.nonce
 	const _hash = await client.web3.utils.soliditySha3(
 		_wallet,
 		_nonce,
@@ -115,6 +119,7 @@ const recoveryWallet = async (_user, _encodeABI, _password) => { //ユーザー�
 		_hash,
 		recoverPrivateKey
 	)
+
 	const _recoveryWalletUrl = client.config.host[project] + client.config.url.recoveryWallet
 	const _recoveryWalletBody = {
 		new: _cosignerAddress,
@@ -133,12 +138,14 @@ const recoveryWallet = async (_user, _encodeABI, _password) => { //ユーザー�
 	setWallet(_recoveryWalletResult.wallet)
 	return _recoveryWalletResult
 }
+
 const setUser = async (_user) => {
 	console.log("start: setUser")
 	const _url = client.config.host[project] + client.config.url.setUser
+	const _wallet = await getWalletAddress()
 	const _body = {
 		user: _user,
-		wallet: await getWalletAddress(),
+		wallet: _wallet,
 	}
 	const _result = await reqPost(_url, _body)
 	return _result
@@ -146,11 +153,13 @@ const setUser = async (_user) => {
 
 const setPass = async (_password) => {
 	console.log("start: setPass")
+
 	const _cipher = crypto.createCipher('aes-256-cbc', _password)
 	let _crypted = _cipher.update(await getRecoverPrivateKey(), 'utf-8', 'hex')
 	_crypted += _cipher.final('hex')
 	await setRecoverPassword(_password)
 	await deleteRecoverKey()
+
 	const _wallet = await getWalletAddress()
 	const _keyStorage = await getKeyStorageData()
 	const _nonce = _keyStorage.nonce
@@ -164,9 +173,11 @@ const setPass = async (_password) => {
 		_hash,
 		await getCosignerPrivateKey()
 	)
-	const _url = client.config.host[project] + client.config.url.setPass
-	const _body = {
-		address: await getCosignerAddress(),
+
+	const _setPassUrl = client.config.host[project] + client.config.url.setPass
+	const _cosigner = await getCosignerAddress()
+	const _setPassUrlBody = {
+		address: _cosigner,
 		keyStorage: client.config.contract[project].keyStorage,
 		wallet: _wallet,
 		nonce: _nonce,
@@ -174,21 +185,21 @@ const setPass = async (_password) => {
 		hash: _hash,
 		sign: _sign
 	}
-	const _result = await reqPost(_url, _body)
-	return _result
+	const _setPassResult = await reqPost(_setPassUrl, _setPassUrlBody)
+	return _setPassResult
 }
 
 const getPass = async () => { //ユーザーのmaillいるかも、serverの方でdbからemail->wallet（address）を取り出す。
 	const _wallet = await getWalletAddress()
 	const _keyStorage = await getKeyStorageData()
 	const _nonce = _keyStorage.nonce
-	const _url = client.config.host[project] + client.config.url.getPass
-	const _body = {
+	const _getPassUrl = client.config.host[project] + client.config.url.getPass
+	const _getPassUrlBody = {
 		wallet: _wallet,
 		nonce: _nonce
 	}
-	const _result = await reqPost(_url, _body)
-	return _result.crypted
+	const _getPassResult = await reqPost(_getPassUrl, _getPassUrlBody)
+	return _getPassResult.crypted
 }
 
 const getKeyStorageData = async () => {
@@ -208,20 +219,20 @@ const getKeyStorageData = async () => {
 }
 
 const getWalletData = async (_wallet) => {
-	const _url = client.config.host[project] + client.config.url.getWalletData
-	const _body = {
+	const _getWalletDataUrl = client.config.host[project] + client.config.url.getWalletData
+	const _getWalletDataBody = {
 		wallet: _wallet,
 	}
-	const _result = await reqPost(_url, _body)
-	return _result
+	const _getWalletResult = await reqPost(_getWalletDataUrl, _getWalletDataBody)
+	return _getWalletResult
 }
 
 const getToWeiValue = async (_value) => {
-	const _url = client.config.host[project] + client.config.url.getToWeiValue
-	const _body = {
+	const _getToWeiValueUrl = client.config.host[project] + client.config.url.getToWeiValue
+	const _getToWeiValueBody = {
 		value: _value,
 	}
-	const _result = await reqPost(_url, _body)
+	const _result = await reqPost(_getToWeiValueUrl, _getToWeiValueBody)
 	return _result
 }
 
@@ -254,11 +265,12 @@ const getWalletAddress = async () => {
 }
 
 const getWalletBalance = async () => {
-	const _url = client.config.host[project] + client.config.url.getWalletBalance
-	const _body = {
-		address: await getWalletAddress(),
+	const _getWalletBalanceUrl = client.config.host[project] + client.config.url.getWalletBalance
+	const _wallet = await getWalletAddress()
+	const _getWalletBalanceBody = {
+		address: _wallet,
 	}
-	const _result = await reqPost(_url, _body)
+	const _result = await reqPost(_getWalletBalanceUrl, _getWalletBalanceBody)
 	const balance = Math.floor(_result.balance* 100000) / 100000
 	return balance.toFixed(2)
 }
