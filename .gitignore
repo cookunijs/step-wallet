@@ -100,3 +100,6 @@ packages/backend/server/node_modules/
 
 packages/backend/contract/build/
 packages/backend/contract/.secret/
+
+
+packages/functions/my-contract-wallet-development-service-account-file.json

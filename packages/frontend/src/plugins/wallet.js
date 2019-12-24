@@ -16,6 +16,7 @@ const createWallet = async (_user) => {
 		await setWallet(_getValUserUrlResult.wallet)
 		return _getValUserUrlResult
 	}
+	console.log(_getValUserUrlResult)
 	// if(await getWalletAddress()) return
 	// if (!await getCosignerPrivateKey()){
 		const _cosignerPrivateKey = await client.createAccount()

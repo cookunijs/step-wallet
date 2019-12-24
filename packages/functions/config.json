@@ -7,10 +7,10 @@
   },
   "contract":{
     "local":{
-      "keyStation": "",
-      "cloneableWallet": "",
-      "walletFactory": "",
-      "keyStorage": ""
+      "keyStation": "0x1DDb20B1aEb38a01654C2adD1A800155ED41218E",
+      "cloneableWallet": "0x8434b5d468574371c686F47FB876aD881abe08f1",
+      "walletFactory": "0xAb9B6b433b5d2f3F61Eb60c2cc70Af077D710188",
+      "keyStorage": "0xdE3a6f1b56e8CbC9DdfFB475dbD7041229D07010"
     },
     "development":{
       "keyStation": "0x1DDb20B1aEb38a01654C2adD1A800155ED41218E",
@@ -33,8 +33,8 @@
   },
   "node": {
     "local":{
-      "https": "http://localhost:8545",
-      "wss": ""
+      "https": "https://rinkeby.infura.io",
+      "wss": "wss://rinkeby.infura.io/ws"
     },
     "development":{
       "https":"https://rinkeby.infura.io",
@@ -51,8 +51,8 @@
   },
   "publicKey":{
     "local":{
-      "authorized":"0x951D94319cF3bC6B4BFF5A33779C5a723b0B0c4e",
-      "recovery":"0x46Bfe6f8492e30D8465Cfb8E71AC7b9C320E20e3"
+      "authorized":"0x6E773b93eeA8E4333eFEA4d847a8F2eb29dcF7a4",
+      "recovery":"0x65CAb099B26E45C007BEcdb30e5ca592e85987Cf"
     },
     "development":{
       "authorized":"0x6E773b93eeA8E4333eFEA4d847a8F2eb29dcF7a4",
@@ -69,8 +69,8 @@
   },
   "privateKey":{
     "local":{
-      "authorized":"0x26eca9d40ba07290aa3601e68d010d20116942eed3b7f1dd7bc33b219d00e4b6",
-      "recovery":"0xbfa75666ec62f476673084b4b4c91366394c030bf17445f72da9b90b48e757a2"
+      "authorized":"0xD188779DBEF13E791540C32F61AF70C8C2D8472B2BC28D31497172DFA32B4212",
+      "recovery":"0x7E7D34D5B8195882FB7E9263D211C5D6933E5D9901CACD7912DBD40E9E4E1B14"
     },
     "development":{
       "authorized":"0xD188779DBEF13E791540C32F61AF70C8C2D8472B2BC28D31497172DFA32B4212",

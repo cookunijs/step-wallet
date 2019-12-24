@@ -8,6 +8,7 @@ admin.initializeApp({
   credential: admin.credential.applicationDefault()
 });
 const db = admin.firestore()
+// db.settings({ host: 'localhost:8080', ssl: false }) //delete when deploy
 
 const express = require('express')
 const host = process.env.HOST || '0.0.0.0'
@@ -115,7 +116,6 @@ app.post('/setUser', async (req, res) => {
 app.post('/createWallet', async function(req, res){
   const _authorizedPrivateKey = process.env.AUTHORIZEDPRIVATEKEY
   const param = req.body
-  console.log(param)
   const _getValUserResult = await getValUser(param.user.email)
   if(!_getValUserResult.unregistered){
     const _result = {
@@ -171,7 +171,7 @@ app.post('/createWallet', async function(req, res){
     const signedTx = await web3.eth.accounts.signTransaction(transactionObj, senderPrivateKey)
 
     //senderKeyにてtransactionを送信する
-		await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+		web3.eth.sendSignedTransaction(signedTx.rawTransaction)
 		.on('receipt', async (receipt) => {
 			const wallet = receipt.logs[0].address
 			const _result = {
@@ -406,7 +406,7 @@ app.post('/recoveryWallet', async function(req, res){
     console.log('Sending.......')
 
     //senderKeyにてtransactionを送信する
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction)
     .on('receipt', receipt => {
       console.log(`Success!!`)
       const _result = {
@@ -469,7 +469,7 @@ app.post('/keyUpdate', async function(req, res){
     console.log('Sending.......')
 
     //senderKeyにてtransactionを送信する
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction)
     .on('receipt', receipt => {
       console.log(`Success!!`)
       res.send(receipt)
@@ -583,6 +583,6 @@ const getValUser = async(_email) => {
 const api = functions.https.onRequest(app)
 module.exports = { api }
 
-app.listen(port, function() {
-  console.log(`Ready on http://localhost:${port}`)
-})
+// app.listen(port, function() {
+//   console.log(`Ready on http://localhost:${port}`)
+// })
