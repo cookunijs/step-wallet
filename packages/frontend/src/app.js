@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { AsyncStorage } from 'react-native'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import { Notifications } from 'expo'
+import { Notifications, registerRootComponent } from 'expo'
 import * as Permissions from 'expo-permissions'
 import Constants from 'expo-constants'
 import jwtDecode from 'jwt-decode'
@@ -103,3 +103,5 @@ export default class App extends React.Component {
     )
   }
 }
+
+registerRootComponent(App)

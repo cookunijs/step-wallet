@@ -8,10 +8,16 @@
     "node": "10"
   },
   "scripts": {
-    "serve": "firebase serve --only functions",
+    "login:firebase": "firebase login",
+    "setup:firestore": "firebase setup:emulators:firestore",
+    "local:functions": "NODE_ENV=local firebase serve --only functions --host 0.0.0.0",
+    "local:firestore": "NODE_ENV=local firebase serve --only firestore",
+    "dev": "run-p dev:*",
+    "dev:functions": "NODE_ENV=development firebase serve --only functions --host 0.0.0.0",
+    "dev:firestore": "NODE_ENV=development firebase serve --only firestore",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
+    "deploy": "NODE_ENV=local firebase use my-contract-wallet-development && firebase deploy --only functions && firebase deploy --only firestore",
     "logs": "firebase functions:log",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,5 +35,8 @@
     "path": "^0.12.7",
     "web3": "^1.0.0-beta.37"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
 }

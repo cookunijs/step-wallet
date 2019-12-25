@@ -36,7 +36,7 @@
     "wss": "wss://rinkeby.infura.io/ws"
   },
   "host": {
-    "local": "http://172.20.10.3:5000/",
+    "local": "http://172.20.10.3:5000/my-contract-wallet-development/us-central1/api/",
     "development": "https://us-central1-my-contract-wallet-development.cloudfunctions.net/api/",
     "staging": "",
     "production": ""

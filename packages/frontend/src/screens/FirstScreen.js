@@ -38,7 +38,7 @@ const AppNavigator = createStackNavigator({
 		screen: SecondScreen,
 		navigationOptions: _navigationOptions
 	},
-	initialRouteName: "GoogleLoginScreen",
+	initialRouteName: 'GoogleLoginScreen',
 })
 
 const App = createAppContainer(AppNavigator)

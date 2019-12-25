@@ -1,18 +1,5 @@
-//環境変数に設定する値
-// const process = {
-//   env: {
-//     PROJECT: "development",
-//     SENDERPUBLICKEY: "0x7A7A156dC4754f6ff7Cf0D66aB56a9c85b49fe13",
-//     SENDERPRIVATEKEY: "0x73109EC5629ECFF977ACF3801418A63802229171BC4EB1C764A056C67758DFCE",
-//     AUTHORIZEDPRIVATEKEY: "0xD188779DBEF13E791540C32F61AF70C8C2D8472B2BC28D31497172DFA32B4212",
-//     HASHWORD: "kunii"
-//   }
-// }
-// SENDERPUBLICKEY: "0x4fDD03ea775a490242Cbe1382997F477d2ccC59E",
-// SENDERPRIVATEKEY: "0x2afd91ee7448708b7be2f7c4b6973bf6ba02973bdc2b8b10aeec3dfa632add06",
-// AUTHORIZEDPRIVATEKEY: "0x26eca9d40ba07290aa3601e68d010d20116942eed3b7f1dd7bc33b219d00e4b6",
-
-const project = "development"
+require('dotenv').config()
+const project = process.env.NODE_ENV
 const config = require('../config.json')
 
 const functions = require('firebase-functions')
@@ -21,6 +8,7 @@ admin.initializeApp({
   credential: admin.credential.applicationDefault()
 });
 const db = admin.firestore()
+// db.settings({ host: 'localhost:8080', ssl: false }) //delete when deploy
 
 const express = require('express')
 const host = process.env.HOST || '0.0.0.0'
@@ -183,7 +171,7 @@ app.post('/createWallet', async function(req, res){
     const signedTx = await web3.eth.accounts.signTransaction(transactionObj, senderPrivateKey)
 
     //senderKeyにてtransactionを送信する
-		await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+		web3.eth.sendSignedTransaction(signedTx.rawTransaction)
 		.on('receipt', async (receipt) => {
 			const wallet = receipt.logs[0].address
 			const _result = {
@@ -418,7 +406,7 @@ app.post('/recoveryWallet', async function(req, res){
     console.log('Sending.......')
 
     //senderKeyにてtransactionを送信する
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction)
     .on('receipt', receipt => {
       console.log(`Success!!`)
       const _result = {
@@ -481,7 +469,7 @@ app.post('/keyUpdate', async function(req, res){
     console.log('Sending.......')
 
     //senderKeyにてtransactionを送信する
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction)
     .on('receipt', receipt => {
       console.log(`Success!!`)
       res.send(receipt)
@@ -596,5 +584,5 @@ const api = functions.https.onRequest(app)
 module.exports = { api }
 
 // app.listen(port, function() {
-//   console.log('Node app is running')
+//   console.log(`Ready on http://localhost:${port}`)
 // })

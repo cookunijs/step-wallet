@@ -28,8 +28,13 @@ class GoogleLoginScreen extends Component {
     }
   }
 
-  componentDidMount() {
-    this.initAsync();
+  async componentWillMount() {
+    const wallet = await Wallet.getWalletAddress()
+    const cosignerPrivateKey = await Wallet.getCosignerPrivateKey()
+    if(wallet && cosignerPrivateKey) {
+      await this.props.navigation.navigate('SecondScreen')
+    }
+    this.initAsync()
   }
 
   initAsync = async () => {
@@ -167,14 +172,12 @@ class GoogleLoginScreen extends Component {
       return (
         <View style={styles.container}>
           <Text
-            h3
+            h2
             style={{
-              fontSize: 40,
               color: "#404040",
               fontWeight: 'bold',
             }}
-          >
-            First Step Wallet
+          >Step Wallet
           </Text>
           <Image
             source={require('../../assets/images/paper_airplane1.png')}
@@ -201,7 +204,7 @@ class GoogleLoginScreen extends Component {
               backgroundColor:'#DD5144'
             }}
             title="  Sign in with Google"
-            onPress={this.signInWithGoogle}
+            onPress={this.signInAsyncWithGoogle}
           />
           <Button
             icon={

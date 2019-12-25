@@ -1,10 +1,5 @@
-//環境変数に設定する値
-const process = {
-  env: {
-    PROJECT: "development",
-  }
-}
-const project = process.env.PROJECT
+import { PROJECT_ENV } from 'react-native-dotenv'
+const project = PROJECT_ENV
 
 import client from './ethereum-client.js'
 import crypto from 'crypto'
@@ -21,6 +16,7 @@ const createWallet = async (_user) => {
 		await setWallet(_getValUserUrlResult.wallet)
 		return _getValUserUrlResult
 	}
+	console.log(_getValUserUrlResult)
 	// if(await getWalletAddress()) return
 	// if (!await getCosignerPrivateKey()){
 		const _cosignerPrivateKey = await client.createAccount()
@@ -325,7 +321,8 @@ const Wallet = {
 	execute: execute,
 	getCosignerAddress: getCosignerAddress,
 	getWalletAddress: getWalletAddress,
-	getWalletBalance: getWalletBalance
+	getWalletBalance: getWalletBalance,
+	getCosignerPrivateKey: getCosignerPrivateKey
 }
 
 export default Wallet

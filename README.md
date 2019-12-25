@@ -1,4 +1,8 @@
-# my-react-native-contract-wallet
+<p align="center">
+  <img src="./images/Logo_step_wallet.png" width="1280">
+</p>
+
+# STEP WALLET
 
 ### ganacheの立ち上げ(~/)
 ```

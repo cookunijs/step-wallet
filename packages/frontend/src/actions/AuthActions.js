@@ -1,7 +1,7 @@
 import {
   STORE_D_TOKEN,
   STORE_NOTIFICATION_DATA
-} from './types';
+} from './types'
 
 export const storeDToken = (token) => {
   return {

@@ -1,23 +1,23 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import AnimatedLoader from "react-native-animated-loader";
+import React from 'react'
+import { StyleSheet } from 'react-native'
+import AnimatedLoader from "react-native-animated-loader"
 
 export default class LoaderScreen extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = { visible: true };
+    super(props)
+    this.state = { visible: true }
   }
 
   componentDidMount() {
     setInterval(() => {
       this.setState({
         visible: !this.state.visible
-      });
-    }, 300000);
+      })
+    }, 300000)
   }
 
   render() {
-    const { visible } = this.state;
+    const { visible } = this.state
     return (
       <AnimatedLoader
         visible={visible}
@@ -26,7 +26,7 @@ export default class LoaderScreen extends React.Component {
         animationStyle={styles.lottie}
         speed={1}
       />
-    );
+    )
   }
 }
 
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200
   }
-});
+})
