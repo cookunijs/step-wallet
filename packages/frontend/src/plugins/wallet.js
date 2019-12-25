@@ -321,7 +321,8 @@ const Wallet = {
 	execute: execute,
 	getCosignerAddress: getCosignerAddress,
 	getWalletAddress: getWalletAddress,
-	getWalletBalance: getWalletBalance
+	getWalletBalance: getWalletBalance,
+	getCosignerPrivateKey: getCosignerPrivateKey
 }
 
 export default Wallet

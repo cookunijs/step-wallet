@@ -35,10 +35,10 @@ class WalletScreen extends React.Component {
 		})
   }
 	onRefresh = () => {
-    this.setState({refreshing: true});
+    this.setState({refreshing: true})
     this.loadData().then(() => {
-      this.setState({refreshing: false});
-    });
+      this.setState({refreshing: false})
+    })
 	}
 	toggleSettingsModal = () => {
     this.setState({ isSettingsModalVisible: !this.state.isSettingsModalVisible })
