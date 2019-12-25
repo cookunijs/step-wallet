@@ -101,5 +101,5 @@ packages/backend/server/node_modules/
 packages/backend/contract/build/
 packages/backend/contract/.secret/
 
-
+packages/functions/firepit-log.txt
 packages/functions/my-contract-wallet-development-service-account-file.json
