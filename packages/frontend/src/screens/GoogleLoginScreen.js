@@ -24,16 +24,11 @@ class GoogleLoginScreen extends Component {
   constructor(props){
     super(props)
     this.state = {
-      appStatus: 0
+      appStatus: "SignIn"
     }
   }
 
-  async componentWillMount() {
-    const wallet = await Wallet.getWalletAddress()
-    const cosignerPrivateKey = await Wallet.getCosignerPrivateKey()
-    if(wallet && cosignerPrivateKey) {
-      await this.props.navigation.navigate('SecondScreen')
-    }
+  componentWillMount = () => {
     this.initAsync()
   }
 
@@ -50,7 +45,7 @@ class GoogleLoginScreen extends Component {
       await GoogleSignIn.askForPlayServicesAsync()
       const { type, user } = await GoogleSignIn.signInAsync()
       if (type === 'success') {
-        this.setState({ appStatus: 1 })
+        this.setState({ appStatus: "Loading" })
         const credential = firebase.auth.GoogleAuthProvider.credential(user.auth.idToken, user.auth.accessToken)
         await auth.signInWithCredential(credential)
         .catch(({ message }) => {
@@ -59,10 +54,10 @@ class GoogleLoginScreen extends Component {
         await Wallet.createWallet(user).then(async (data) => {
           if(data.unregistered){
             await this.props.navigation.navigate('SettingPassScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-            this.setState({ appStatus: 0 })
+            this.setState({ appStatus: "SignIn" })
           } else {
             await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-            this.setState({ appStatus: 0 })
+            this.setState({ appStatus: "SignIn" })
           }
         })
       }
@@ -78,14 +73,14 @@ class GoogleLoginScreen extends Component {
       const { type, user } = await GoogleSignIn.signInAsync()
       // alert(JSON.stringify(user))
       if (type === 'success') {
-        this.setState({ appStatus: 1 })
+        this.setState({ appStatus: "Loading" })
         const credential = firebase.auth.GoogleAuthProvider.credential(user.auth.idToken, user.auth.accessToken)
         await auth.signInWithCredential(credential)
         .catch(({ message }) => {
           console.log(message)
         })
         this.props.navigation.navigate('RecoveryScreen', {user: user}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-        this.setState({ appStatus: 0 })
+        this.setState({ appStatus: "SignIn" })
       }
     } catch ({ message }) {
       alert('login: Error:' + message)
@@ -113,8 +108,8 @@ class GoogleLoginScreen extends Component {
       }).catch((e) => {
         alert(e)
       })
-      this.setState({ appStatus: 1 })
       if (type === 'success') {
+        this.setState({ appStatus: "Loading" })
         const credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken)
         await auth.signInWithCredential(credential)
         .catch(({ message }) => {
@@ -123,10 +118,10 @@ class GoogleLoginScreen extends Component {
         await Wallet.createWallet(user).then(async (data) => {
           if(data.unregistered){
             await this.props.navigation.navigate('SettingPassScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-            this.setState({ appStatus: 0 })
+            this.setState({ appStatus: "SignIn" })
           } else {
             await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-            this.setState({ appStatus: 0 })
+            this.setState({ appStatus: "SignIn" })
           }
         })
       } else {
@@ -148,7 +143,7 @@ class GoogleLoginScreen extends Component {
         scopes: ['profile', 'email'],
         redirectUrl: `${AppAuth.OAuthRedirect}:/oauth2redirect/google`
       })
-      this.setState({ appStatus: 1 })
+      this.setState({ appStatus: "Loading" })
       if (type === 'success') {
         const credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken)
         await auth.signInWithCredential(credential)
@@ -156,7 +151,7 @@ class GoogleLoginScreen extends Component {
           console.log(message)
         })
         this.props.navigation.navigate('RecoveryScreen', {user: user}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-        this.setState({ appStatus: 0 })
+        this.setState({ appStatus: "SignIn" })
       } else {
         alert('ERROR')
       }
@@ -166,24 +161,24 @@ class GoogleLoginScreen extends Component {
   }
 
   render() {
-    if (this.state.appStatus === 1) {
+    if (this.state.appStatus === "Loading") {
       return <LoaderScreen />
-    } else {
+    } else if (this.state.appStatus === "SignIn"){
       return (
         <View style={styles.container}>
           <Text
             h2
-            style={{
-              color: "#404040",
-              fontWeight: 'bold',
-            }}
+            style={styles.textAppTitle}
           >Step Wallet
           </Text>
           <Image
             source={require('../../assets/images/paper_airplane1.png')}
-            style={{ width: 230, height: 230, marginTop: 80, marginBottom: 90, }}
+            style={styles.imagePaperAirplane}
           />
           <Button
+            large
+            title="Sign in with Google"
+            titleStyle={styles.signInWithGoogleButtonTitle}
             icon={
               <Icon
                 name="google"
@@ -191,22 +186,14 @@ class GoogleLoginScreen extends Component {
                 color="white"
               />
             }
-            large
-            iconContainerStyle={{
-              padding: 10,
-            }}
-            buttonStyle={{
-              margin: 10,
-              padding: 10,
-              paddingRight: 24,
-              paddingLeft: 16,
-              borderRadius: 5,
-              backgroundColor:'#DD5144'
-            }}
-            title="  Sign in with Google"
+            iconContainerStyle={styles.signInWithGoogleButtonIcon}
+            buttonStyle={styles.signInWithGoogleButton}
             onPress={this.signInAsyncWithGoogle}
           />
           <Button
+            large
+            title="Sign in with Recovery"
+            titleStyle={styles.signInWithRecoveryButtonTitle}
             icon={
               <Icon
                 name="key"
@@ -214,15 +201,7 @@ class GoogleLoginScreen extends Component {
                 color="white"
               />
             }
-            large
-            buttonStyle={{
-              margin: 10,
-              padding: 10,
-              paddingLeft: 14,
-              borderRadius: 5,
-              backgroundColor:'#1DA1F2'
-            }}
-            title="  Sign in with Recovery"
+            buttonStyle={styles.signInWithRecoveryButton}
             onPress={this.signInAsyncRecoveryWithGoogle}
           />
         </View>
@@ -240,4 +219,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  textAppTitle: {
+    color: "#404040",
+    fontWeight: 'bold'
+  },
+  imagePaperAirplane: {
+    width: 230,
+    height: 230,
+    marginTop: 80,
+    marginBottom: 90
+  },
+  signInWithGoogleButtonTitle: {
+    marginLeft: 15
+  },
+  signInWithRecoveryButtonTitle: {
+    marginLeft: 15
+  },
+  signInWithGoogleButtonIcon: {
+    padding: 10
+  },
+  signInWithGoogleButton: {
+    margin: 10,
+    padding: 10,
+    paddingRight: 24,
+    paddingLeft: 16,
+    borderRadius: 5,
+    backgroundColor:'#DD5144'
+  },
+  signInWithRecoveryButton: {
+    margin: 10,
+    padding: 10,
+    paddingLeft: 14,
+    borderRadius: 5,
+    backgroundColor:'#1DA1F2'
+  }
 })

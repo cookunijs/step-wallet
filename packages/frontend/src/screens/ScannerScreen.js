@@ -16,7 +16,7 @@ class ScannerScreen extends React.Component {
   data = ""
   chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-  async componentDidMount() {
+  componentDidMount = async() => {
     this.getPermissionsAsync()
   }
 
@@ -77,11 +77,7 @@ class ScannerScreen extends React.Component {
 				statusBarProps={{ barStyle: 'light-content' }}
 				barStyle="light-content"
 				centerComponent={{ text: 'QR Scan', style: { color: '#000', fontSize: 35, fontWeight: 'bold' } }}
-				containerStyle={{
-					backgroundColor: '#fff',
-					paddingTop: 30,
-					flex: 0.15,
-				}}
+				containerStyle={styles.headerContainer}
 			/>
       <View
         style={{
@@ -131,6 +127,11 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps,{ storeDid, storePubEncKey })(ScannerScreen);
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#fff',
+    paddingTop: 30,
+    flex: 0.15
+  },
   container: {
     color: "#000",
     backgroundColor: '#fff',

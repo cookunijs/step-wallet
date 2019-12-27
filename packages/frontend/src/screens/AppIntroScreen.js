@@ -60,7 +60,7 @@ class AppIntroScreen extends React.Component {
       appStatus: 0,
     }
   }
-  async componentDidMount() {
+  componentDidMount = async() => {
 		await this.loadData()
   }
   loadData = async () => {
@@ -81,7 +81,7 @@ class AppIntroScreen extends React.Component {
           name="md-arrow-round-forward"
           color="rgba(255, 255, 255, .9)"
           size={30}
-          style={{ backgroundColor: 'transparent' }}
+          style={styles.buttonIcon}
         />
       </View>
     );
@@ -90,14 +90,14 @@ class AppIntroScreen extends React.Component {
     return (
       <View style={styles.buttonCircleDone}>
         <Button
-          buttonStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
+          buttonStyle={styles.renderDoneButton}
           type="Clear"
           icon={
             <Ionicons
               name="md-checkmark"
               color="rgba(255, 255, 255, .9)"
               size={30}
-              style={{ backgroundColor: 'transparent' }}
+              style={styles.buttonIcon}
             />
           }
 					onPress={this.onDone}
@@ -117,8 +117,8 @@ class AppIntroScreen extends React.Component {
     } else {
       return <AppIntroSlider
         slides={slides}
-        dotStyle={{backgroundColor: 'rgba(0, 0, 0, .1)'}}
-        activeDotStyle={{backgroundColor: 'rgba(85, 172, 238, .8)'}}
+        dotStyle={styles.appIntroSliderDot}
+        activeDotStyle={styles.appIntroSliderActiveDot}
         renderDoneButton={this.renderDoneButton}
         renderNextButton={this.renderNextButton}
         onDone={this.onDone}
@@ -128,6 +128,21 @@ class AppIntroScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  appIntroSliderDot: {
+    backgroundColor: 'rgba(0, 0, 0, .1)'
+  },
+  appIntroSliderActiveDot: {
+    backgroundColor: 'rgba(85, 172, 238, .8)'
+  },
+  buttonIcon: {
+    backgroundColor: 'transparent'
+  },
+  renderDoneButton: {
+    borderRadius: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 5
+  },
   buttonCircle: {
     width: 50,
     height: 50,

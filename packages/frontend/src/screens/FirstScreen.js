@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Platform } from 'react-native';
+import { Platform } from 'react-native'
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import GoogleLoginScreen from './GoogleLoginScreen'
@@ -7,6 +7,7 @@ import SettingPassScreen from './SettingPassScreen'
 import AppIntroScreen from './AppIntroScreen'
 import SecondScreen from './SecondScreen'
 import RecoveryScreen from './RecoveryScreen'
+import AuthScreen from './AuthScreen'
 
 const _navigationOptions = {
 	headerStyle: {
@@ -18,6 +19,10 @@ const _navigationOptions = {
 }
 
 const AppNavigator = createStackNavigator({
+	AuthScreen: {
+		screen: AuthScreen,
+		navigationOptions: _navigationOptions
+	},
 	GoogleLoginScreen: {
 		screen: GoogleLoginScreen,
 		navigationOptions: _navigationOptions
@@ -38,7 +43,7 @@ const AppNavigator = createStackNavigator({
 		screen: SecondScreen,
 		navigationOptions: _navigationOptions
 	},
-	initialRouteName: 'GoogleLoginScreen',
+	initialRouteName: 'AuthScreen',
 })
 
 const App = createAppContainer(AppNavigator)

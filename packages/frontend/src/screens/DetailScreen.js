@@ -14,12 +14,7 @@ class DetailScreen extends React.Component {
           barStyle="light-content"
           centerComponent={{ text: name, style: { color: '#000', fontSize: 35, fontWeight: 'bold' } }}
           rightComponent={{ icon: 'close', color: '#000', paddingRight: 20, size: 35, onPress:() => this.props.navigation.goBack()}}
-          containerStyle={{
-            backgroundColor: '#fff',
-            paddingTop: 30,
-            paddingRight: 25,
-            flex: 0.15,
-          }}
+          containerStyle={styles.headerContainer}
         />
         <ScrollView>
           <WebView source={{ uri: uri }} style={styles.container}/>
@@ -30,6 +25,12 @@ class DetailScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#fff',
+    paddingTop: 30,
+    paddingRight: 25,
+    flex: 0.15,
+  },
   container: {
 		width: 375,
     height: 500,

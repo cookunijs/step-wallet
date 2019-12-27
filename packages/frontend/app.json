@@ -29,6 +29,9 @@
     "ios": {
       "bundleIdentifier": "com.daikikunii.MyContractWalletApp",
       "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets."
+      },
       "config": {
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.538365545759-uf0cdohaiesod91ua7rkpandmc0u6lob"

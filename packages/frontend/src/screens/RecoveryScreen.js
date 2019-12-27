@@ -36,13 +36,13 @@ class RecoveryScreen extends React.Component {
         <View>
           <Madoka
             value={this.state.pass}
-            style={styles.textInputMadokaPass}
+            style={styles.madokaTextInputPass}
             label={'PASS WORD'}
             borderColor={'#11bdff'}
             inputPadding={20}
             labelHeight={25}
-            labelStyle={{ color: '#909090' }}
-            inputStyle={{ color: '#909090' }}
+            labelStyle={styles.madokaLabel}
+            inputStyle={styles.madokaInput}
             onChangeText={this.onChangePass}
           />
           <Button
@@ -53,7 +53,7 @@ class RecoveryScreen extends React.Component {
                 name='key'
                 color='#11bdff'
                 style={styles.sendButton}
-                iconStyle={{borderRadius: 5, marginLeft: 5, marginRight: 5, marginBottom: 5}}
+                iconStyle={styles.madokaButtonIcon}
               />
             }
             style={styles.button}
@@ -70,23 +70,30 @@ export default RecoveryScreen
 const styles = StyleSheet.create({
   container: {
     color: "#000",
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
 	},
   button: {
     marginTop: 250,
     margin: 15,
-    fontSize: 10,
+    fontSize: 10
   },
-	textInputMadoka: {
-    width:300,
-		height:100,
-	},
-	textInputMadokaPass: {
+  madokaLabel: {
+    color: '#909090'
+  },
+  madokaInput: {
+    color: '#909090'
+  },
+	madokaTextInputPass: {
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 100,
     margin: 15,
-    height:100,
-    // flex: 3
-	}
+    height:100
+  },
+  madokaButtonIcon: {
+    borderRadius: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 5
+  }
 })
