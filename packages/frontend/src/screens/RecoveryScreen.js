@@ -23,7 +23,7 @@ class RecoveryScreen extends React.Component {
   }
   recoveryWallet = async () => {
     Wallet.recoveryWallet(this.props.navigation.state.params.user, "0x", this.state.pass).then(async (data) => {
-      await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'RecoveryScreen' }))
+      await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'SetupScreens' }))
       this.setState({ appStatus: 0 })
     })
     this.setState({ appStatus: 1 })

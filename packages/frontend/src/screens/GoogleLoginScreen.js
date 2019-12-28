@@ -56,7 +56,7 @@ class GoogleLoginScreen extends Component {
             await this.props.navigation.navigate('SettingPassScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
             this.setState({ appStatus: "SignIn" })
           } else {
-            await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
+            await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
             this.setState({ appStatus: "SignIn" })
           }
         })
@@ -120,7 +120,7 @@ class GoogleLoginScreen extends Component {
             await this.props.navigation.navigate('SettingPassScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
             this.setState({ appStatus: "SignIn" })
           } else {
-            await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
+            await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
             this.setState({ appStatus: "SignIn" })
           }
         })

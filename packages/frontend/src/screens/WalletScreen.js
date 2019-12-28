@@ -1,6 +1,6 @@
 import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Image, ScrollView, RefreshControl, Clipboard,  } from 'react-native'
+import { Text, View, StyleSheet, Image, ScrollView, RefreshControl, Clipboard, AppState } from 'react-native'
 import { Header, Button, ListItem } from 'react-native-elements'
 import { NavigationActions } from 'react-navigation'
 import Modal from "react-native-modal"
@@ -25,10 +25,24 @@ class WalletScreen extends React.Component {
 			wallet: "",
 			to: "",
 			value: "",
-			balance: "0.00",
+      balance: "0.00",
+      appState: AppState.currentState,
     }
   }
+
+  handleAppStateChange = async (nextAppState) => {
+    if(nextAppState.match(/inactive|background/)) {
+      await this.props.navigation.navigate('AuthScreen', { inactive: true }, NavigationActions.navigate({ routeName: 'WalletScreen' }))
+    }
+    this.setState({ appState: nextAppState })
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
+
   componentDidMount = async () => {
+    AppState.addEventListener('change', this.handleAppStateChange)
 		await this.loadData()
   }
 	loadData = async () => {
@@ -97,7 +111,7 @@ class WalletScreen extends React.Component {
   render() {
 		const users = config.screens.wallet.menus
 
-		if(this.props.navigation.state.params) {
+		if(this.props.navigation.state.params.to) {
 			this.setState({ isWithdrawModalVisible: true })
 			const { to } = this.props.navigation.state.params
 			this.onChangeTo(to)

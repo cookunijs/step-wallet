@@ -9,7 +9,7 @@ import jwtDecode from 'jwt-decode'
 import reducers from './reducers'
 import { storeDToken, storeNotificationData } from './actions'
 const store = createStore(reducers)
-import FirstScreen from './screens/FirstScreen'
+import NavigationScreen from './screens/NavigationScreen'
 
 export default class App extends React.Component {
   constructor(props){
@@ -98,7 +98,7 @@ export default class App extends React.Component {
   render () {
     return (
       <Provider store={store}>
-        <FirstScreen/>
+        <NavigationScreen/>
       </Provider>
     )
   }

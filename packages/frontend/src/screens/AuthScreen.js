@@ -1,6 +1,6 @@
 import Wallet from '../plugins/wallet'
 import React from 'react'
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, Image, AppState } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { Button, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -14,9 +14,12 @@ class AuthScreen extends React.Component {
     super(props)
     this.state = {
       authenticated: false,
+      appState: AppState.currentState
     }
   }
-  componentDidMount = async() => {
+
+  componentDidMount = async () => {
+    AppState.addEventListener('change', this.handleAppStateChange)
     const wallet = await Wallet.getWalletAddress()
     const cosignerPrivateKey = await Wallet.getCosignerPrivateKey()
     if(wallet && cosignerPrivateKey) {
@@ -26,10 +29,28 @@ class AuthScreen extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
+
+  handleAppStateChange = async (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      if(this.props.navigation.state.params.inactive) {
+        this.localAuthentication()
+        this.props.navigation.state.params = undefined
+      } else {
+        this.setState({ authenticated: true })
+      }
+    } else if (nextAppState.match(/inactive|background/)) {
+      this.setState({ authenticated: false })
+    }
+    this.setState({ appState: nextAppState })
+  }
+
   localAuthentication = async () => {
     const results = await LocalAuth.scanFingerPrint()
     if (results.success) {
-      await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'AuthScreen' }))
+      await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'AuthScreen' }))
     } else {
       this.setState({ authenticated: true })
     }
@@ -38,18 +59,23 @@ class AuthScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.state.authenticated && (
-          <React.Fragment>
-             <Text
+        <React.Fragment>
+          {this.state.authenticated && (
+            <Text
               h2
               style={styles.textAppTitle}
             >
               Step Wallet
             </Text>
-            <Image
-              source={require('../../assets/images/paper_airplane1.png')}
-              style={styles.imagePaperAirplane}
-            />
+          )}
+          <Image
+            source={require('../../assets/images/paper_airplane1.png')}
+            style={
+              !this.state.authenticated && (styles.authenticatedFalseimagePaperAirplane) ||
+              this.state.authenticated && (styles.authenticatedTrueimagePaperAirplane)
+            }
+          />
+          {this.state.authenticated && (
             <Button
               large
               title="Authentication"
@@ -65,8 +91,8 @@ class AuthScreen extends React.Component {
               buttonStyle={styles.signInButton}
               onPress={this.localAuthentication}
             />
-          </React.Fragment>
-        )}
+          )}
+        </React.Fragment>
       </View>
     )
   }
@@ -88,7 +114,13 @@ const styles = StyleSheet.create({
     color: "#404040",
     fontWeight: 'bold'
   },
-  imagePaperAirplane: {
+  authenticatedFalseimagePaperAirplane: {
+    width: 200,
+    height: 200,
+    marginTop: 80,
+    marginBottom: 90
+  },
+  authenticatedTrueimagePaperAirplane: {
     width: 230,
     height: 230,
     marginTop: 80,

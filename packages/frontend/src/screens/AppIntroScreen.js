@@ -107,7 +107,7 @@ class AppIntroScreen extends React.Component {
     );
   };
   onDone = async () => {
-    await this.props.navigation.navigate('SecondScreen', {}, NavigationActions.navigate({ routeName: 'AppIntroScreen' }))
+    await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'AppIntroScreen' }))
   }
   render() {
     if (this.state.appStatus === 1) {

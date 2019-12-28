@@ -291,6 +291,11 @@ const deleteRecoverKey = async () => {
 	await SecureStore.deleteItemAsync("RecoverPrivateKey")
 }
 
+const deleteWallet = async () => {
+	await SecureStore.deleteItemAsync("wallet")
+	await SecureStore.deleteItemAsync("CosignerPrivateKey")
+}
+
 const reqPost = async (_url, _body) => {
 	console.log("start: reqPost")
 	return await fetch(_url, {
