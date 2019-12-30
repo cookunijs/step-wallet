@@ -10,6 +10,7 @@
   "scripts": {
     "login:firebase": "firebase login",
     "setup:firestore": "firebase setup:emulators:firestore",
+    "local": "run-p local:*",
     "local:functions": "NODE_ENV=local firebase serve --only functions --host 0.0.0.0",
     "local:firestore": "NODE_ENV=local firebase serve --only firestore",
     "dev": "run-p dev:*",
@@ -17,7 +18,7 @@
     "dev:firestore": "NODE_ENV=development firebase serve --only firestore",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "NODE_ENV=local firebase use my-contract-wallet-development && firebase deploy --only functions && firebase deploy --only firestore",
+    "deploy": "firebase use my-contract-wallet-development && firebase deploy --only functions && firebase deploy --only firestore",
     "logs": "firebase functions:log",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

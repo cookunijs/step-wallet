@@ -7,6 +7,7 @@ import * as SecureStore from 'expo-secure-store'
 
 const createWallet = async (_user) => {
 	console.log("start: createWallet")
+	console.log(_user)
 	const _getValUserUrl = client.config.host[project] + client.config.url.getValUser
 	const _getValUserBody = {
 		user: _user
@@ -316,7 +317,7 @@ const reqPost = async (_url, _body) => {
 		console.error(error)
 	})
 }
-
+// deleteWallet()
 const Wallet = {
 	web3: client.web3,
 	createWallet: createWallet,

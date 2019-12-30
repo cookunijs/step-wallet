@@ -74,8 +74,6 @@ export default class App extends React.Component {
   async loadData () {
     try{
       // await AsyncStorage.clear()
-      // await SecureStore.deleteItemAsync('PrivateKey')
-      // await SecureStore.deleteItemAsync('wallet')
       const datas = []
       result = await AsyncStorage.getItem('notificationData')
       if (result) {

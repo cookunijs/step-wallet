@@ -3,8 +3,12 @@ import * as LocalAuthentication from 'expo-local-authentication'
 
 scanFingerPrint = async () => {
   try {
-    let results = await LocalAuthentication.authenticateAsync()
-    return results
+    const results = await LocalAuthentication.authenticateAsync()
+    if (results.success) {
+      return true
+    } else {
+      return false
+    }
   } catch (err) {
     console.log(err)
   }

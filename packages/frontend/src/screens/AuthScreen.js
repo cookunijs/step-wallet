@@ -5,7 +5,6 @@ import { NavigationActions } from 'react-navigation'
 import { Button, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Constants from 'expo-constants'
-import { ButtonGroup } from 'react-native-elements'
 import LocalAuth from '../plugins/localAuth'
 
 class AuthScreen extends React.Component {
@@ -48,8 +47,8 @@ class AuthScreen extends React.Component {
   }
 
   localAuthentication = async () => {
-    const results = await LocalAuth.scanFingerPrint()
-    if (results.success) {
+    const result = await LocalAuth.scanFingerPrint()
+    if (result) {
       await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'AuthScreen' }))
     } else {
       this.setState({ authenticated: true })

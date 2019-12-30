@@ -1,4 +1,3 @@
-import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
 import { View, StyleSheet, Image } from 'react-native'
 import { NavigationActions } from 'react-navigation'
@@ -51,15 +50,7 @@ class GoogleLoginScreen extends Component {
         .catch(({ message }) => {
           console.log(message)
         })
-        await Wallet.createWallet(user).then(async (data) => {
-          if(data.unregistered){
-            await this.props.navigation.navigate('SettingPassScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-            this.setState({ appStatus: "SignIn" })
-          } else {
-            await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-            this.setState({ appStatus: "SignIn" })
-          }
-        })
+        await this.props.navigation.navigate('SmsAuthScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
       }
     } catch ({ message }) {
       alert('login: Error:' + message)
@@ -115,15 +106,7 @@ class GoogleLoginScreen extends Component {
         .catch(({ message }) => {
           console.log(message)
         })
-        await Wallet.createWallet(user).then(async (data) => {
-          if(data.unregistered){
-            await this.props.navigation.navigate('SettingPassScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-            this.setState({ appStatus: "SignIn" })
-          } else {
-            await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
-            this.setState({ appStatus: "SignIn" })
-          }
-        })
+        await this.props.navigation.navigate('SmsAuthScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
       } else {
         alert('ERROR')
       }

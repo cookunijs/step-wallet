@@ -10,6 +10,7 @@ import AuthScreen from './AuthScreen'
 import WalletScreen from './WalletScreen'
 import ScannerScreen from './ScannerScreen'
 import DetailScreen from './DetailScreen'
+import SmsAuthScreen from './SmsAuthScreen'
 
 const _navigationOptions = {
 	headerStyle: {
@@ -27,6 +28,10 @@ const SetupScreens = createSwitchNavigator({
 	},
 	GoogleLoginScreen: {
 		screen: GoogleLoginScreen,
+		navigationOptions: _navigationOptions
+	},
+	SmsAuthScreen: {
+		screen: SmsAuthScreen,
 		navigationOptions: _navigationOptions
 	},
 	RecoveryScreen: {

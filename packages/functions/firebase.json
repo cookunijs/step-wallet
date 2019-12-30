@@ -7,6 +7,7 @@
       "firestore-debug.log",
       "**/.*",
       "**/node_modules/**",
+      "public",
       "my-contract-wallet-development-service-account-file.json"
     ]
   },
@@ -18,5 +19,16 @@
     "firestore": {
       "port": "PORT"
     }
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "firepit-log.txt",
+      "firestore-debug.log",
+      "**/.*",
+      "**/node_modules/**",
+      "my-contract-wallet-development-service-account-file.json"
+    ]
   }
 }
