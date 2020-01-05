@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "main": "src/app.js",
+  "main": "main.js",
   "description": "",
   "author": "daiki kunii",
   "scripts": {

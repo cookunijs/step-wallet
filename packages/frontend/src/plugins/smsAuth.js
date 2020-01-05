@@ -10,8 +10,9 @@ const onPhoneComplete = async (_phone) => {
   const listener = ({url}) => {
     WebBrowser.dismissBrowser()
     const tokenEncoded = Linking.parse(url).queryParams['token']
-    if (tokenEncoded)
+    if (tokenEncoded){
       token = decodeURIComponent(tokenEncoded)
+    }
   }
   Linking.addEventListener('url', listener)
   await WebBrowser.openBrowserAsync(captchaUrl)
@@ -23,7 +24,7 @@ const onPhoneComplete = async (_phone) => {
     }
     try {
       const confirmationResult = await auth.signInWithPhoneNumber(_phone, captchaVerifier)
-      this.setState({confirmationResult})
+      return confirmationResult
     } catch (error) {
       console.warn(error)
     }
