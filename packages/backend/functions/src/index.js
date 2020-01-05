@@ -1,6 +1,6 @@
 require('dotenv').config()
 const project = process.env.NODE_ENV
-const config = require('../config.json')
+const config = require('../config.json.js')
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
@@ -189,7 +189,7 @@ app.post('/createWallet', async function(req, res){
   }
 })
 
-app.post('/setPass', async function(req, res){
+app.post('/setRecoveryHash', async function(req, res){
   const _authorizedPrivateKey = process.env.AUTHORIZEDPRIVATEKEY
   const param = req.body
   const _sigCosigner = param.sign

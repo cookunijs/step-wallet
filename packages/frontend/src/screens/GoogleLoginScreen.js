@@ -108,10 +108,10 @@ class GoogleLoginScreen extends Component {
         })
         await this.props.navigation.navigate('SmsAuthScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
       } else {
-        alert('ERROR')
+        console.log('ERROR')
       }
     } catch (e) {
-      alert(e)
+      console.log(e)
     }
   }
 
@@ -136,10 +136,10 @@ class GoogleLoginScreen extends Component {
         this.props.navigation.navigate('RecoveryScreen', {user: user}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
         this.setState({ appStatus: "SignIn" })
       } else {
-        alert('ERROR')
+        console.log('ERROR')
       }
     } catch (e) {
-      alert(e)
+      console.log(e)
     }
   }
 
@@ -171,7 +171,7 @@ class GoogleLoginScreen extends Component {
             }
             iconContainerStyle={styles.signInWithGoogleButtonIcon}
             buttonStyle={styles.signInWithGoogleButton}
-            onPress={this.signInAsyncWithGoogle}
+            onPress={this.signInWithGoogle}
           />
           <Button
             large
@@ -185,7 +185,7 @@ class GoogleLoginScreen extends Component {
               />
             }
             buttonStyle={styles.signInWithRecoveryButton}
-            onPress={this.signInAsyncRecoveryWithGoogle}
+            onPress={this.signInRecoveryWithGoogle}
           />
         </View>
       )
