@@ -4,27 +4,42 @@ import {Text, View, ScrollView, TextInput, Button} from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import LoaderScreen from './LoaderScreen'
 import { Linking } from 'expo'
-import * as WebBrowser from 'expo-web-browser';
+import * as WebBrowser from 'expo-web-browser'
 
 import firebase from './../plugins/firebase'
 const auth = firebase.auth()
 
 const captchaUrl = `https://my-contract-wallet-development.firebaseapp.com/index.html?appurl=${Linking.makeUrl('')}`
 
-export default class SmsAuthScreen extends React.Component {
+export default class SmsLoginScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       phone: '',
       confirmationResult: undefined,
       code: '',
-      appStatus: "SignIn"
+      appStatus: "SignIn",
+      createErrorStatus: false
     }
+  }
+
+  reset = () => {
+    this.setState({
+      phone: '',
+      phoneCompleted: false,
+      confirmationResult: undefined,
+      code: ''
+    })
   }
 
   onPhoneChange = (phone) => {
     this.setState({phone})
   }
+
+  onCodeChange = (code) => {
+    this.setState({code})
+  }
+
   onPhoneComplete = async () => {
     let token = null
     const listener = ({url}) => {
@@ -50,43 +65,35 @@ export default class SmsAuthScreen extends React.Component {
       }
     }
   }
-  onCodeChange = (code) => {
-    this.setState({code})
-  }
 
   onSignIn = async () => {
     const {confirmationResult, code} = this.state
+    this.setState({ appStatus: "Loading" })
     try {
-      this.setState({ appStatus: "Loading" })
-      const prevUser = await firebase.auth().currentUser
-      if (!prevUser) return
-      await confirmationResult.confirm(code)
-      const credential = firebase.auth.PhoneAuthProvider.credential(confirmationResult.verificationId, code)
-      await auth.signInWithCredential(credential)
-      await firebase.auth().currentUser.delete()
-      await prevUser.linkWithCredential(credential)
-      await auth.signInWithCredential(credential)
-      await Wallet.createWallet(prevUser.providerData[0]).then(async (data) => { //[TODO]: firebase.functions().httpsCallable('')で呼び出せるようにする。認証情報をcontext記載したいので。
-        if(data.unregistered){
-          await this.props.navigation.navigate('SettingPassScreen', {}, NavigationActions.navigate({ routeName: 'SmsAuthScreen' }))
-          this.setState({ appStatus: "SignIn" })
-        } else {
-          await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'SmsAuthScreen' }))
-          this.setState({ appStatus: "SignIn" })
-        }
+      const next = this.props.navigation.state.params.nextScreen
+      const { user } = await confirmationResult.confirm(code).catch(() => {
+        this.setState({ appStatus: "SignIn" })
+        return
       })
+      if(next === 'SettingPassScreen'){
+        const prevUser = await firebase.auth().currentUser
+        await Wallet.createWallet(prevUser.providerData[0])
+        .catch((error) => {
+          console.log(error)
+          this.setState({ createErrorStatus: true })
+        })
+      }
+      if(this.state.createErrorStatus) {
+        await this.props.navigation.navigate('TopLoginScreen', {}, NavigationActions.navigate({ routeName: 'SmsLoginScreen' }))
+      } else {
+        await this.props.navigation.navigate(next, { user: user }, NavigationActions.navigate({ routeName: 'SmsLoginScreen' }))
+      }
+      this.setState({ appStatus: "SignIn" })
     } catch (error) {
-      console.warn(error)
+      this.setState({ appStatus: "SignIn" })
+      return
     }
     this.reset()
-  }
-  reset = () => {
-    this.setState({
-      phone: '',
-      phoneCompleted: false,
-      confirmationResult: undefined,
-      code: ''
-    })
   }
 
   render() {
