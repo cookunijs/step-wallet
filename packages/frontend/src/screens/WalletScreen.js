@@ -105,7 +105,6 @@ class WalletScreen extends React.Component {
 
   render() {
 		const users = config.screens.wallet.menus
-		console.log(this.props.navigation.state.params)
 		if(this.props.navigation.state.params.to) {
 			this.setState({ isWithdrawModalVisible: true })
 			const to = this.props.navigation.state.params.to

@@ -32,27 +32,22 @@
     }
   },
   "node": {
-    "https": "http://localhost:8545",
-    "wss": "wss://rinkeby.infura.io/ws"
-  },
-  "host": {
-    "local": "http://172.20.10.3:5000/my-contract-wallet-development/us-central1/api/",
-    "development": "https://us-central1-my-contract-wallet-development.cloudfunctions.net/api/",
-    "staging": "",
-    "production": ""
-  },
-  "url": {
-    "createWallet": "createWallet/",
-    "recoveryWallet":"recoveryWallet/",
-    "setRecoveryHash":"setRecoveryHash/",
-    "execute": "execute/",
-    "getWalletBalance": "getWalletBalance/",
-    "getWalletData": "getWalletData/",
-    "getToWeiValue": "getToWeiValue/",
-    "getKeyStorageData": "getKeyStorageData/",
-    "getPass": "getPass/",
-    "getValUser": "getValUser/",
-    "getRecoverKeyHash": "getRecoverKeyHash/"
+    "local":{
+      "https": "https://rinkeby.infura.io",
+      "wss": "wss://rinkeby.infura.io/ws"
+    },
+    "development":{
+      "https":"https://rinkeby.infura.io",
+      "wss":"wss://rinkeby.infura.io/ws"
+    },
+    "staging": {
+      "https":"https://mainnet.infura.io",
+      "wss":"wss://mainnet.infura.io/ws"
+    },
+    "production": {
+      "https":"https://mainnet.infura.io",
+      "wss":"wss://mainnet.infura.io/ws"
+    }
   },
   "screens": {
     "appIntro": {
