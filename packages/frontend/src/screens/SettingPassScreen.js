@@ -27,8 +27,8 @@ class SettingPassScreen extends React.Component {
 	onChangePass = (_pass) => {
     this.setState({ pass: _pass })
   }
-  setPass = async () => {
-    Wallet.setPass(this.state.pass).then(async () => {
+  setRecoveryHash = async () => {
+    Wallet.setRecoveryHash(this.state.pass).then(async () => {
       await this.props.navigation.navigate('AppIntroScreen', {}, NavigationActions.navigate({ routeName: 'SettingPassScreen' }))
       this.setState({ appStatus: 0 })
     })
@@ -63,7 +63,7 @@ class SettingPassScreen extends React.Component {
               />
             }
             style={styles.button}
-            onPress={this.setPass}
+            onPress={this.setRecoveryHash}
           />
         </View>
       )

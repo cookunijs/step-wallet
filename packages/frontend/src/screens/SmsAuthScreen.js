@@ -64,9 +64,7 @@ export default class SmsAuthScreen extends React.Component {
       const credential = firebase.auth.PhoneAuthProvider.credential(confirmationResult.verificationId, code)
       await auth.signInWithCredential(credential)
       await firebase.auth().currentUser.delete()
-      console.log(prevUser)
       await prevUser.linkWithCredential(credential)
-      console.log(prevUser)
       await auth.signInWithCredential(credential)
       await Wallet.createWallet(prevUser.providerData[0]).then(async (data) => { //[TODO]: firebase.functions().httpsCallable('')で呼び出せるようにする。認証情報をcontext記載したいので。
         if(data.unregistered){

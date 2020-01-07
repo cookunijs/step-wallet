@@ -90,16 +90,11 @@ class WalletScreen extends React.Component {
 	setClipboardContent = () => {
 		Clipboard.setString(this.state.wallet)
 	}
-	createWallet = async () => {
-		const _wallet = await Wallet.createWallet()
-		this.setState({
-	    wallet: _wallet
-		})
-	}
 	transferEth = async () => {
 		if(this.state.isWithdrawModalVisible){
 			this.toggleWithdrawModal()
-      await Wallet.execute(this.state.to, "0x", this.state.value)
+			console.log(this.state.value)
+      await Wallet.executeWallet(this.state.to, "0x", this.state.value)
       const balance = await Wallet.getWalletBalance()
 			this.setState({
 				balance: balance,
@@ -110,12 +105,11 @@ class WalletScreen extends React.Component {
 
   render() {
 		const users = config.screens.wallet.menus
-
 		if(this.props.navigation.state.params.to) {
 			this.setState({ isWithdrawModalVisible: true })
-			const { to } = this.props.navigation.state.params
+			const to = this.props.navigation.state.params.to
 			this.onChangeTo(to)
-			this.props.navigation.state.params = undefined
+			this.props.navigation.state.params = {}
 		}
 
     return (

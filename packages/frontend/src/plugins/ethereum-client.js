@@ -1,13 +1,31 @@
+import { PROJECT_ENV } from 'react-native-dotenv'
 import config from'../../config.json'
 import '../../global'
 import crypto from 'crypto'
 import randomBytes from 'randombytes'
+
+const project = PROJECT_ENV
+
 global.Web3  = require('web3')
 global.web3  = new Web3(
-  new Web3.providers.HttpProvider(config.node.https)
+  new Web3.providers.HttpProvider(config.node[project].https)
 )
-
 const web3 = global.web3
+
+const contract = {
+  WalletFactory: new web3.eth.Contract(
+    config.abi.walletFactory,
+    config.contract[project].walletFactory
+  ),
+  KeyStation: new web3.eth.Contract(
+    config.abi.keyStation,
+    config.contract[project].keyStation
+  ),
+  KeyStorage: new web3.eth.Contract(
+    config.abi.keyStorage,
+    config.contract[project].keyStorage
+  )
+}
 
 const account = {
   address: null,
@@ -46,15 +64,23 @@ const getAccountMetaData = async (_privateKey) => {
   return await web3.eth.accounts.privateKeyToAccount(_privateKey)
 }
 
+const getCloneableWallet = (_to) => {
+  return new web3.eth.Contract(
+    config.abi.cloneableWallet,
+    _to
+  )
+}
+
 const client = {
+  web3: web3,
+  config: config,
+  contract: contract,
   account: account,
   activate: activate,
   ownedTokens: ownedTokens,
-  utils: web3.utils,
-  web3: web3,
   createAccount: createAccount,
   getAccountMetaData: getAccountMetaData,
-  config: config
+  getCloneableWallet: getCloneableWallet
 }
 
 export default client

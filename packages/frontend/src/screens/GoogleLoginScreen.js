@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Image } from 'react-native'
+import { Platform, View, StyleSheet, Image } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { Button, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
+import Constants from 'expo-constants'
 import * as AppAuth from 'expo-app-auth'
 import * as Google from 'expo-google-app-auth'
 import * as GoogleSignIn from 'expo-google-sign-in'
@@ -28,17 +29,41 @@ class GoogleLoginScreen extends Component {
   }
 
   componentWillMount = () => {
-    this.initAsync()
+    this.initStandalone()
   }
 
-  initAsync = async () => {
+  isStandaloneAndAndroid = () => {
+    return Platform.OS === "android" && Constants.appOwnership !== "expo";
+  }
+
+  isStandaloneAndIos = () => {
+    return Platform.OS === "ios" && Constants.appOwnership !== "expo";
+  }
+
+  signInWithGoogle = async () => {
+    if (this.isStandaloneAndIos()) {
+      this.signInWithGoogleStandalone()
+    } else {
+      this.signInWithGoogleExpo()
+    }
+  }
+
+  signInRecoveryWithGoogle = async () => {
+    if (this.isStandaloneAndIos()) {
+      this.signInRecoveryWithGoogleStandalone()
+    } else {
+      this.signInRecoveryWithGoogleExpo()
+    }
+  }
+
+  initStandalone = async () => {
     await GoogleSignIn.initAsync({
       clientId: GOOGLE_IOS_CLIENTID,
       scopes: ['profile', 'email']
     })
   }
 
-  signInAsyncWithGoogle = async () => {
+  signInWithGoogleStandalone = async () => {
     try {
       await GoogleSignIn.signOutAsync()
       await GoogleSignIn.askForPlayServicesAsync()
@@ -57,7 +82,7 @@ class GoogleLoginScreen extends Component {
     }
   }
 
-  signInAsyncRecoveryWithGoogle = async () => {
+  signInRecoveryWithGoogleStandalone = async () => {
     try {
       await GoogleSignIn.signOutAsync()
       await GoogleSignIn.askForPlayServicesAsync()
@@ -78,7 +103,7 @@ class GoogleLoginScreen extends Component {
     }
   }
 
-  signOutAsync = async () => {
+  signOutStandalone = async () => {
     try {
       await GoogleSignIn.signOutAsync()
     } catch ({ message }) {
@@ -87,7 +112,7 @@ class GoogleLoginScreen extends Component {
   }
 
   // Google OAuth認証メソッド
-  signInWithGoogle = async () => {
+  signInWithGoogleExpo = async () => {
     try {
       const { type, accessToken, idToken, user } = await Google.logInAsync({
         behavior: 'web',
@@ -108,14 +133,14 @@ class GoogleLoginScreen extends Component {
         })
         await this.props.navigation.navigate('SmsAuthScreen', {}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
       } else {
-        alert('ERROR')
+        console.log('ERROR')
       }
     } catch (e) {
-      alert(e)
+      console.log(e)
     }
   }
 
-  signInRecoveryWithGoogle = async () => {
+  signInRecoveryWithGoogleExpo = async () => {
     try {
       const { type, accessToken, idToken, user } = await Google.logInAsync({
         behavior: 'web',
@@ -136,10 +161,10 @@ class GoogleLoginScreen extends Component {
         this.props.navigation.navigate('RecoveryScreen', {user: user}, NavigationActions.navigate({ routeName: 'GoogleLoginScreen' }))
         this.setState({ appStatus: "SignIn" })
       } else {
-        alert('ERROR')
+        console.log('ERROR')
       }
     } catch (e) {
-      alert(e)
+      console.log(e)
     }
   }
 
@@ -171,7 +196,7 @@ class GoogleLoginScreen extends Component {
             }
             iconContainerStyle={styles.signInWithGoogleButtonIcon}
             buttonStyle={styles.signInWithGoogleButton}
-            onPress={this.signInAsyncWithGoogle}
+            onPress={this.signInWithGoogle}
           />
           <Button
             large
@@ -185,7 +210,7 @@ class GoogleLoginScreen extends Component {
               />
             }
             buttonStyle={styles.signInWithRecoveryButton}
-            onPress={this.signInAsyncRecoveryWithGoogle}
+            onPress={this.signInRecoveryWithGoogle}
           />
         </View>
       )

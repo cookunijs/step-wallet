@@ -94,12 +94,15 @@ packages/functions/.env
 
 # node_modules file
 packages/frontend/node_modules/
-packages/functions/node_modules/
+packages/server/node_modules/
 packages/backend/contract/node_modules/
 packages/backend/server/node_modules/
 
+# build file
+packages/server/functions/build/
 packages/backend/contract/build/
-packages/backend/contract/.secret/
 
-packages/functions/firepit-log.txt
-packages/functions/my-contract-wallet-development-service-account-file.json
+#etc..
+packages/backend/contract/.secret/
+packages/backend/functions/firepit-log.txt
+packages/backend/functions/my-contract-wallet-development-service-account-file.json
