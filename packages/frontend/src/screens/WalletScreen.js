@@ -30,21 +30,22 @@ class WalletScreen extends React.Component {
     }
   }
 
-  handleAppStateChange = async (nextAppState) => {
-    if(nextAppState.match(/inactive|background/)) {
-      await this.props.navigation.navigate('AuthScreen', { inactive: true }, NavigationActions.navigate({ routeName: 'WalletScreen' }))
-    }
-    this.setState({ appState: nextAppState })
-  }
-
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange)
-  }
+	}
 
   componentDidMount = async () => {
     AppState.addEventListener('change', this.handleAppStateChange)
 		await this.loadData()
-  }
+	}
+
+	handleAppStateChange = async (nextAppState) => {
+    if(nextAppState.match(/inactive|background/)) {
+      await this.props.navigation.navigate('AuthScreen', { inactive: true }, NavigationActions.navigate({ routeName: 'WalletScreen' }))
+    }
+    this.setState({ appState: nextAppState })
+	}
+
 	loadData = async () => {
     const wallet = await Wallet.getWalletAddress()
     const balance = await Wallet.getWalletBalance()
@@ -52,26 +53,32 @@ class WalletScreen extends React.Component {
 			wallet: wallet,
 			balance: balance
 		})
-  }
+	}
+
 	onRefresh = () => {
     this.setState({refreshing: true})
     this.loadData().then(() => {
       this.setState({refreshing: false})
     })
 	}
+
 	toggleSettingsModal = () => {
     this.setState({ isSettingsModalVisible: !this.state.isSettingsModalVisible })
 	}
+
 	toggleWithdrawModal = () => {
     this.setState({ isWithdrawModalVisible: !this.state.isWithdrawModalVisible })
 	}
+
 	toggleDepositModal = () => {
     this.setState({ isDepositModalVisible: !this.state.isDepositModalVisible })
 	}
+
 	toggleDetailScreen = (_name, _uri) => {
 		this.setState({ isSettingsModalVisible: !this.state.isSettingsModalVisible })
 		this.props.navigation.navigate('DetailScreen', { name: _name, uri: _uri }, NavigationActions.navigate({ routeName: 'WalletScreen' }))
 	}
+
 	onChangeTo = (_to) => {
 		var searchTerm = 'ethereum:'
 		var result = _to.indexOf(searchTerm)
@@ -80,16 +87,20 @@ class WalletScreen extends React.Component {
 		}
     this.setState({ to: _to })
 	}
+
 	onChangeQRCodeTo = () => {
     this.setState({ isWithdrawModalVisible: !this.state.isWithdrawModalVisible })
 		this.props.navigation.navigate('ScannerScreen', {}, NavigationActions.navigate({ routeName: 'WalletScreen' }))
 	}
+
 	onChangeValue = (_value) => {
     this.setState({ value: _value })
 	}
+
 	setClipboardContent = () => {
 		Clipboard.setString(this.state.wallet)
 	}
+
 	transferEth = async () => {
 		if(this.state.isWithdrawModalVisible){
 			this.toggleWithdrawModal()

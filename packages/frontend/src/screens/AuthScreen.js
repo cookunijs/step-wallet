@@ -24,7 +24,7 @@ class AuthScreen extends React.Component {
     if(wallet && cosignerPrivateKey) {
       await this.localAuthentication()
     } else {
-      await this.props.navigation.navigate('GoogleLoginScreen', {}, NavigationActions.navigate({ routeName: 'AuthScreen' }))
+      await this.props.navigation.navigate('TopLoginScreen', {}, NavigationActions.navigate({ routeName: 'AuthScreen' }))
     }
   }
 
@@ -46,7 +46,7 @@ class AuthScreen extends React.Component {
     this.setState({ appState: nextAppState })
   }
 
-  localAuthentication = async () => {
+  localAuthentication = async () => { //[TODO]: 1分たったらpsを要求する形へ。timestamp利用する。
     const result = await LocalAuth.scanFingerPrint()
     if (result) {
       await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'AuthScreen' }))

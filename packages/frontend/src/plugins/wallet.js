@@ -27,13 +27,14 @@ const createWallet = async (_user) => {
 		recover: recover,
 	}).catch((error) => {
 		console.log(error)　//登録されていた時はrecoveryを実行させる。
+		throw new Error("invalid-argument")
 	})
 	const data = _createWalletResult.data
 	if(data.unregistered){
 		await setWallet(data.wallet)
 		return data
 	} else {
-		return data
+		throw new Error("invalid-argument")
 	}
 }
 
@@ -245,7 +246,7 @@ const deleteWallet = async () => {
 	await SecureStore.deleteItemAsync("CosignerPrivateKey")
 }
 
-deleteWallet()
+// deleteWallet()
 
 const Wallet = {
 	web3: client.web3,

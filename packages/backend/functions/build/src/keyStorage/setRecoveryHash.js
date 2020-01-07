@@ -23,17 +23,14 @@ module.exports = functions.https.onCall((data, context) => __awaiter(void 0, voi
     const userUid = authData.uid;
     const docRefHash = yield db.collection('hashs').doc(userUid);
     const hashDoc = yield docRefHash.get();
-    console.log(hashDoc.data());
     const walletDoc = yield db
         .collection('wallets')
         .doc(userUid)
         .get();
-    console.log(walletDoc.data());
     const userDoc = yield db
         .collection('users')
         .doc(userUid)
         .get();
-    console.log(userDoc.data());
     if (!userDoc.data() || !walletDoc.data() || !hashDoc.data()) {
         throw new functions.https.HttpsError('invalid-argument', 'Not document.');
     }

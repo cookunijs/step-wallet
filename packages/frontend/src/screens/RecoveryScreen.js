@@ -1,6 +1,6 @@
 import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, RefreshControl, Clipboard } from 'react-native'
+import { Text, View, StyleSheet } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { Button, Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -10,17 +10,20 @@ import LoaderScreen from './LoaderScreen'
 class RecoveryScreen extends React.Component {
 	static navigationOptions = {
 		title: 'Recovery',
-	}
+  }
+
 	constructor(props){
     super(props)
     this.state = {
       pass: "",
       appStatus: 0
     }
-	}
+  }
+
 	onChangePass = (_pass) => {
     this.setState({ pass: _pass })
   }
+
   recoveryWallet = async () => {
     Wallet.recoveryWallet(this.props.navigation.state.params.user, "0x", this.state.pass).then(async (data) => {
       await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'SetupScreens' }))
@@ -28,6 +31,7 @@ class RecoveryScreen extends React.Component {
     })
     this.setState({ appStatus: 1 })
   }
+
   render() {
     if (this.state.appStatus === 1) {
       return <LoaderScreen />

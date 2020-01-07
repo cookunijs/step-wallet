@@ -30,9 +30,12 @@ module.exports = functions.https.onCall((data, context) => __awaiter(void 0, voi
     if (!userDoc.data() || !walletDoc.data()) {
         throw new functions.https.HttpsError('invalid-argument', 'The function must be called while authenticated.');
     }
-    if (!walletDoc.data().recoveryPhoneAuth) {
-        throw new functions.https.HttpsError('unauthenticated', 'phone unauthenticated.');
-    }
+    // if(!walletDoc.data().recoveryPhoneAuth) {
+    //   throw new functions.https.HttpsError(
+    //     'unauthenticated',
+    //     'phone unauthenticated.'
+    //   )
+    // }
     const wallet = data.wallet;
     const sigRecovery = data.sign;
     const newAddress = data.new;

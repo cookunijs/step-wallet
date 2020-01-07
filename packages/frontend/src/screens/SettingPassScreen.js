@@ -10,23 +10,27 @@ import LoaderScreen from './LoaderScreen'
 class SettingPassScreen extends React.Component {
 	static navigationOptions = {
 		title: 'SettingPass',
-	}
+  }
+
 	constructor(props){
     super(props)
     this.state = {
       pass: "",
       appStatus: 0
     }
-	}
+  }
+
 	loadData = async() => {
 		this.setState({
 			wallet: await Wallet.getWalletAddress(),
 			balance: await Wallet.getWalletBalance()
 		})
   }
+
 	onChangePass = (_pass) => {
     this.setState({ pass: _pass })
   }
+
   setRecoveryHash = async () => {
     Wallet.setRecoveryHash(this.state.pass).then(async () => {
       await this.props.navigation.navigate('AppIntroScreen', {}, NavigationActions.navigate({ routeName: 'SettingPassScreen' }))
@@ -34,6 +38,7 @@ class SettingPassScreen extends React.Component {
     })
     this.setState({ appStatus: 1 })
   }
+
   render() {
     if (this.state.appStatus === 1) {
       return <LoaderScreen />

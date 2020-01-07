@@ -32,12 +32,12 @@ module.exports = functions.https.onCall(async (data, context) => {
     )
   }
 
-  if(!walletDoc.data().recoveryPhoneAuth) {
-    throw new functions.https.HttpsError(
-      'unauthenticated',
-      'phone unauthenticated.'
-    )
-  }
+  // if(!walletDoc.data().recoveryPhoneAuth) {
+  //   throw new functions.https.HttpsError(
+  //     'unauthenticated',
+  //     'phone unauthenticated.'
+  //   )
+  // }
 
   const wallet: string = data.wallet
   const sigRecovery: any = data.sign
