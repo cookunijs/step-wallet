@@ -11,7 +11,8 @@ const funcs: object = {
   executeWallet: './wallets/executeWallet',
   recoveryWallet: './wallets/recoveryWallet',
   setRecoveryHash: './keyStorage/setRecoveryHash',
-  getRecoveryHash: './keyStorage/getRecoveryHash'
+  getRecoveryHash: './keyStorage/getRecoveryHash',
+  executeUnlock: './admin/executeUnlock'
 };
 
 const loadFunctions = (funcsObj: any) => {

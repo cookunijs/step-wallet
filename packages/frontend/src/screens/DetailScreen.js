@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import React, { Component } from 'react'
+import { ScrollView, StyleSheet, Dimensions } from 'react-native'
 import { Header } from 'react-native-elements'
-import { WebView } from 'react-native-webview';
-
+import { WebView } from 'react-native-webview'
+const width = Dimensions.get('screen').width;
+const height = Dimensions.get('screen').height;
 class DetailScreen extends React.Component {
   render() {
     const { name, uri } = this.props.navigation.state.params
@@ -16,7 +17,7 @@ class DetailScreen extends React.Component {
           rightComponent={{ icon: 'close', color: '#000', paddingRight: 20, size: 35, onPress:() => this.props.navigation.goBack()}}
           containerStyle={styles.headerContainer}
         />
-        <ScrollView>
+        <ScrollView style={styles.container}>
           <WebView source={{ uri: uri }} style={styles.container}/>
         </ScrollView>
       </React.Fragment>
@@ -29,14 +30,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: 30,
     paddingRight: 25,
-    flex: 0.15,
+    flex: 0.15
   },
   container: {
-		width: 375,
-    height: 500,
-    backgroundColor: '#fff',
+    flex: 1,
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 115,
+    width: width,
+    height: height,
+    backgroundColor: '#fff'
   },
   image: {
     width:400,

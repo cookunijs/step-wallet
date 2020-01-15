@@ -1,11 +1,11 @@
 import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, Image, ScrollView, RefreshControl, Clipboard, AppState } from 'react-native'
-import { Header, Button, ListItem } from 'react-native-elements'
+import { Header, Button, ListItem, Icon } from 'react-native-elements'
 import { NavigationActions } from 'react-navigation'
 import Modal from "react-native-modal"
 import QRCode from 'react-native-qrcode-svg'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import EvilIcon from 'react-native-vector-icons/EvilIcons'
 import ActionButton from 'react-native-action-button'
 import { Madoka } from 'react-native-textinput-effects'
@@ -156,7 +156,7 @@ class WalletScreen extends React.Component {
 						style={styles.contentOpenQRcode}
 						onPress={this.toggleDepositModal}
 						icon={
-							<Icon
+							<FontAwesomeIcon
 								name="qrcode"
 								size={35}
 								color="#404040"
@@ -166,7 +166,7 @@ class WalletScreen extends React.Component {
 					<Modal
 						isVisible={this.state.isSettingsModalVisible}
 						onSwipeComplete={() => this.setState({ isSettingsModalVisible: false })}
-						swipeDirection={['up', 'left', 'right', 'down']}
+						swipeDirection={['down']}
 						style={styles.bottomModal}
 					>
 						<View style={styles.contentSettings}>
@@ -204,7 +204,7 @@ class WalletScreen extends React.Component {
 					<Modal
 						isVisible={this.state.isDepositModalVisible}
 						onSwipeComplete={() => this.setState({ isDepositModalVisible: false })}
-						swipeDirection={['up', 'left', 'right', 'down']}
+						swipeDirection={['down']}
 						style={styles.bottomModal}
 					>
 						<View style={styles.content}>
@@ -224,7 +224,7 @@ class WalletScreen extends React.Component {
 									<Button
 										type="Clear"
 										icon={
-											<Icon
+											<FontAwesomeIcon
 												size={70}
 												name='paperclip'
 												color='#00acee'
@@ -240,7 +240,7 @@ class WalletScreen extends React.Component {
 					<Modal
 						isVisible={this.state.isWithdrawModalVisible}
 						onSwipeComplete={() => this.setState({ isWithdrawModalVisible: false })}
-						swipeDirection={['up', 'left', 'right', 'down']}
+						swipeDirection={['down']}
 						style={styles.bottomModal}
 					>
 						<View style={styles.contentSend}>
@@ -253,7 +253,11 @@ class WalletScreen extends React.Component {
 								inputPadding={16}
 								labelHeight={24}
 								labelStyle={{ color: '#909090' }}
-								inputStyle={{ color: '#909090' }}
+								inputStyle={{
+									paddingRight: 40,
+									color: '#909090'
+								}}
+								keyboardType="email-address"
 								onChangeText={this.onChangeTo}
 							/>
 							<Button
@@ -262,7 +266,7 @@ class WalletScreen extends React.Component {
 								onPress={this.onChangeQRCodeTo}
 								icon={
 									<Icon
-										name="qrcode"
+										name="crop-free"
 										size={35}
 										color="#909090"
 									/>
@@ -276,13 +280,14 @@ class WalletScreen extends React.Component {
 								labelHeight={24}
 								labelStyle={styles.madokaLabel}
 								inputStyle={styles.madokaInput}
+								keyboardType="numeric"
 								onChangeText={this.onChangeValue}
 							/>
 							<View style={styles.fixToText}>
 								<Button
 									type="Clear"
 									icon={
-										<Icon
+										<FontAwesomeIcon
 											size={70}
 											name='send-o'
 											color='#11bdff'
@@ -303,7 +308,7 @@ class WalletScreen extends React.Component {
 					onPress={this.toggleWithdrawModal}
 					size={65}
 					icon={
-						<Icon
+						<FontAwesomeIcon
 							name="send"
 							size={28}
 							color="#fff"
@@ -333,8 +338,7 @@ const styles = StyleSheet.create({
 		height:100
 	},
 	textInputMadokaAddress: {
-		paddingTop: -400,
-		marginTop: 150,
+		marginTop: 100,
 		marginBottom: 30,
     width:300,
     height:100
@@ -394,13 +398,13 @@ const styles = StyleSheet.create({
 	contentSettingsTitle: {
 		fontSize: 35,
 		fontWeight: 'bold',
-		marginTop: 30,
+		marginTop: 0,
     marginBottom: 20
 	},
 	contentSendTitle: {
 		fontSize: 35,
 		fontWeight: 'bold',
-		paddingTop: 180,
+		paddingTop: 40,
 		paddingRight: 230,
 		marginBottom: -30
 	},
@@ -444,8 +448,8 @@ const styles = StyleSheet.create({
 		marginTop: -170
 	},
 	contentCloseSetting: {
-		marginTop: 230,
-		marginBottom: -210
+		marginTop: 100,
+		marginBottom: -350
 	},
   button: {
 		padding: 5,
@@ -469,10 +473,10 @@ const styles = StyleSheet.create({
 		padding: 5,
 		paddingLeft: 24,
 		paddingRight: 24,
-		marginTop: 150,
+		marginTop: 60,
 		marginLeft: 20,
 		marginRight: 10,
-    marginBottom: 70
+    marginBottom: 80
 	},
 	actionButtonIcon: {
     fontSize: 20,

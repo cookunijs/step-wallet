@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const web3Client_1 = require("../../utlis/web3Client");
+const walletClient_1 = require("../../utlis/walletClient");
 // const functions = fbFunctions.region('asia-northeast1')
 const db = admin.firestore();
 module.exports = functions.https.onCall((data, context) => __awaiter(void 0, void 0, void 0, function* () {
@@ -40,19 +40,19 @@ module.exports = functions.https.onCall((data, context) => __awaiter(void 0, voi
     const hash = data.hash;
     const nonce = data.nonce;
     const crypted = data.crypted.toString();
-    const contract = web3Client_1.default.getConfigData("contract");
+    const contract = walletClient_1.default.getConfigData("contract");
     const keyStorage = contract.keyStorage;
     //ユーザーの署名を復元
-    const cosignerSenderPubKey = yield web3Client_1.default.web3.eth.accounts.recover(hash, sigCosigner.signature);
+    const cosignerSenderPubKey = yield walletClient_1.default.web3.eth.accounts.recover(hash, sigCosigner.signature);
     if (cosigner === cosignerSenderPubKey) {
         //authKeyで署名を実行
-        const sigAuthorized = web3Client_1.default.signAuthorized(hash);
+        const sigAuthorized = walletClient_1.default.signAuthorized(hash);
         const v = [sigAuthorized.v, sigCosigner.v];
         const r = [sigAuthorized.r, sigCosigner.r];
         const s = [sigAuthorized.s, sigCosigner.s];
         //signedTxに含める関数の実行データを作成(encodeABI)
-        const encodeABI = yield web3Client_1.default.contract.KeyStorage.methods.setStorage(v, r, s, nonce, wallet, crypted).encodeABI();
-        const sendData = yield web3Client_1.default.sendSignedTransaction(cosigner, keyStorage, encodeABI);
+        const encodeABI = yield walletClient_1.default.contract.KeyStorage.methods.setStorage(v, r, s, nonce, wallet, crypted).encodeABI();
+        const sendData = yield walletClient_1.default.sendSignedTransaction(cosigner, keyStorage, encodeABI);
         yield docRefHash.set({
             state: true
         });

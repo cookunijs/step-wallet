@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import client from '../../utlis/web3Client'
+import client from '../../utlis/walletClient'
 // const functions = fbFunctions.region('asia-northeast1')
 
 const db = admin.firestore()
@@ -87,7 +87,7 @@ module.exports = functions.https.onCall(async (data, context) => {
     )
 
     count += 1
-    await docRefExecution.set({
+    await docRefExecution.update({
       count: count,
     })
 

@@ -246,7 +246,7 @@ const deleteWallet = async () => {
 	await SecureStore.deleteItemAsync("CosignerPrivateKey")
 }
 
-// deleteWallet()
+deleteWallet()
 
 const Wallet = {
 	web3: client.web3,

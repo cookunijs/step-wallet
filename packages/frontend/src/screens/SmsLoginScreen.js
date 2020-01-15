@@ -1,7 +1,10 @@
 import Wallet from '../plugins/wallet'
 import * as React from 'react'
-import {Text, View, ScrollView, TextInput, Button} from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native'
 import { NavigationActions } from 'react-navigation'
+import { Button } from 'react-native-elements'
+import { Madoka } from 'react-native-textinput-effects'
+import PhoneInput from 'react-native-phone-input'
 import LoaderScreen from './LoaderScreen'
 import { Linking } from 'expo'
 import * as WebBrowser from 'expo-web-browser'
@@ -11,16 +14,23 @@ const auth = firebase.auth()
 
 const captchaUrl = `https://my-contract-wallet-development.firebaseapp.com/index.html?appurl=${Linking.makeUrl('')}`
 
+const delemiterIndex = [6, 10]
+
 export default class SmsLoginScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       phone: '',
+      countryFunctions: '',
       confirmationResult: undefined,
       code: '',
       appStatus: "SignIn",
       createErrorStatus: false
     }
+  }
+
+  componentDidMount(){
+    this.onCountryChange()
   }
 
   reset = () => {
@@ -32,8 +42,36 @@ export default class SmsLoginScreen extends React.Component {
     })
   }
 
+  insertDelimiter(text) {
+    let textWithoutDelimiter = text.replace(/-/g, '')
+    let result = textWithoutDelimiter
+    delemiterIndex.forEach((value, index) => {
+      if (textWithoutDelimiter.length >= value) {
+        const insertIndex = value + index
+        result = `${result.slice(0, insertIndex)}-${result.slice(
+          insertIndex,
+          insertIndex + result.length
+        )}`
+        index++
+      }
+    })
+    return result
+  }
+
+  replacePhoneNumber(text) {
+    return text.replace(/-/g, '').replace(/\s+/g, '')
+  }
+
+  onCountryChange(){
+    this.setState({
+      phone: this.insertDelimiter(
+        `+${this.state.countryFunctions.getCountryCode()}\t`
+      )
+    })
+  }
+
   onPhoneChange = (phone) => {
-    this.setState({phone})
+    this.setState({phone: this.insertDelimiter(phone)})
   }
 
   onCodeChange = (code) => {
@@ -52,7 +90,7 @@ export default class SmsLoginScreen extends React.Component {
     await WebBrowser.openBrowserAsync(captchaUrl)
     Linking.removeEventListener('url', listener)
     if (token) {
-      const {phone} = this.state
+      const phone = this.replacePhoneNumber(this.state.phone)
       const captchaVerifier = {
         type: 'recaptcha',
         verify: () => Promise.resolve(token)
@@ -102,35 +140,116 @@ export default class SmsLoginScreen extends React.Component {
     } else if (this.state.appStatus === "SignIn"){
       if (!this.state.confirmationResult)
         return (
-          <ScrollView style={{padding: 20, marginTop: 20}}>
-            <TextInput
+          <View style={{padding: 20, marginTop: 20}}>
+            <PhoneInput
+              ref={(ref) => { this.state.countryFunctions = ref; }}
+              initialCountry='jp'
               value={this.state.phone}
-              onChangeText={this.onPhoneChange}
               keyboardType="phone-pad"
-              placeholder="Your phone"
+              textProps={{
+                placeholder:"+00 00-0000-0000"
+              }}
+              style={{
+                padding: 40,
+                marginTop: 150,
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}
+              flagStyle={{
+                width: 50,
+                height: 30,
+                borderWidth: 1
+              }}
+              textStyle={{
+                fontSize: 20,
+              }}
+              onSelectCountry={(country) => { this.onCountryChange(country)}}
+              onChangePhoneNumber={this.onPhoneChange}
             />
             <Button
+              title="SEND"
+              titleStyle={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color:"#fff"
+              }}
+              buttonStyle={{
+                borderRadius: 50,
+                backgroundColor:"#11bdff"
+              }}
+              containerStyle={{
+                marginTop: 50,
+                marginBottom: 40,
+                justifyContent: 'flex-end'
+              }}
               onPress={this.onPhoneComplete}
-              title="Phone"
             />
-          </ScrollView>
+          </View>
         )
       else {
         return (
-          <ScrollView style={{padding: 20, marginTop: 20}}>
-            <TextInput
+          <View style={{padding: 20, marginTop: 20}}>
+            <Madoka
               value={this.state.code}
-              onChangeText={this.onCodeChange}
+              style={styles.madokaTextInputPass}
+              label={'Code from SMS'}
+              borderColor={'#11bdff'}
+              inputPadding={20}
+              labelHeight={25}
+              labelStyle={styles.madokaLabel}
+              inputStyle={styles.madokaInput}
               keyboardType="numeric"
-              placeholder="Code from SMS"
+              onChangeText={this.onCodeChange}
             />
             <Button
-              onPress={this.onSignIn}
               title="Sign in"
+              titleStyle={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color:"#fff"
+              }}
+              buttonStyle={{
+                borderRadius: 50,
+                backgroundColor:"#11bdff"
+              }}
+              containerStyle={{
+                marginTop: 50,
+                marginBottom: 40,
+                justifyContent: 'flex-end',
+              }}
+              onPress={this.onSignIn}
             />
-          </ScrollView>
+          </View>
         )
       }
     }
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    color: "#000",
+    backgroundColor: '#fff'
+	},
+  button: {
+    marginTop: 250,
+    margin: 15,
+    fontSize: 10
+  },
+  madokaLabel: {
+    color: '#909090'
+  },
+  madokaInput: {
+    color: '#909090'
+  },
+	madokaTextInputPass: {
+    marginTop: 160,
+    height:100
+  },
+  madokaButtonIcon: {
+    borderRadius: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 5
+  }
+})

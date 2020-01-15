@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const web3Client_1 = require("../../utlis/web3Client");
+const walletClient_1 = require("../../utlis/walletClient");
 // const functions = fbFunctions.region('asia-northeast1')
 const db = admin.firestore();
 module.exports = functions.https.onCall((data, context) => __awaiter(void 0, void 0, void 0, function* () {
@@ -19,6 +19,7 @@ module.exports = functions.https.onCall((data, context) => __awaiter(void 0, voi
     if (!authData) {
         throw new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.');
     }
+    let count = 0;
     const userUid = authData.uid;
     const docRefWallet = yield db.collection('wallets').doc(userUid);
     const walletDoc = yield docRefWallet
@@ -29,6 +30,18 @@ module.exports = functions.https.onCall((data, context) => __awaiter(void 0, voi
         .get();
     if (!userDoc.data() || !walletDoc.data()) {
         throw new functions.https.HttpsError('invalid-argument', 'The function must be called while authenticated.');
+    }
+    if (walletDoc.data()) {
+        count = walletDoc.data().recoveryCount;
+    }
+    if (count >= walletClient_1.default.maxNumberOfRecovery) {
+        throw new functions.https.HttpsError('invalid-argument', 'The maximum number of recovery has been exceeded.');
+    }
+    else {
+        count += 1;
+        yield docRefWallet.update({
+            recoveryCount: count,
+        });
     }
     // if(!walletDoc.data().recoveryPhoneAuth) {
     //   throw new functions.https.HttpsError(
@@ -42,28 +55,23 @@ module.exports = functions.https.onCall((data, context) => __awaiter(void 0, voi
     const hash = data.hash;
     const nonce = data.nonce;
     const recoveryDataEncodeABI = data.data;
-    const Wallet = web3Client_1.default.getCloneableWallet(wallet);
+    const Wallet = walletClient_1.default.getCloneableWallet(wallet);
     const recovery = yield Wallet.methods.recover().call();
-    const recoveryPublicKey = yield web3Client_1.default.web3.eth.accounts.recover(hash, sigRecovery.signature);
+    const recoveryPublicKey = yield walletClient_1.default.web3.eth.accounts.recover(hash, sigRecovery.signature);
     if (recovery === recoveryPublicKey) {
         //authKeyで署名を実行
-        const sigAuthorized = web3Client_1.default.signAuthorized(hash);
+        const sigAuthorized = walletClient_1.default.signAuthorized(hash);
         const v = [sigAuthorized.v, sigRecovery.v];
         const r = [sigAuthorized.r, sigRecovery.r];
         const s = [sigAuthorized.s, sigRecovery.s];
         //signedTxに含める関数の実行データを作成(encodeABI)
         const encodeABI = yield Wallet.methods.emergencyRecovery(v, r, s, nonce, newAddress, recoveryDataEncodeABI).encodeABI();
-        const sendData = yield web3Client_1.default.sendSignedTransaction(recoveryPublicKey, wallet, encodeABI);
+        const sendData = yield walletClient_1.default.sendSignedTransaction(recoveryPublicKey, wallet, encodeABI);
         sendData.wallet = wallet;
-        let count = walletDoc.data().recoveryCount;
-        console.log(count);
-        count += 1;
-        console.log(count);
-        yield docRefWallet.set({
-            address: wallet,
-            recoveryCount: count,
-            recoveryPhoneAuth: false
-        });
+        // await docRefWallet.set({
+        //   recoveryCount: count,
+        // })
+        //recoveryPhoneAuth: false //address: wallet,
         return sendData;
     }
     else {

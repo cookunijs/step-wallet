@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const web3Client_1 = require("../../utlis/web3Client");
+const walletClient_1 = require("../../utlis/walletClient");
 // const functions = fbFunctions.region('asia-northeast1')
 const db = admin.firestore();
 module.exports = functions.https.onCall((data, context) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,16 +34,16 @@ module.exports = functions.https.onCall((data, context) => __awaiter(void 0, voi
     }
     const cosigner = data.cosigner;
     const recover = data.recover;
-    const contract = web3Client_1.default.getConfigData("contract");
+    const contract = walletClient_1.default.getConfigData("contract");
     const walletFactory = contract.walletFactory;
-    const nonce = yield web3Client_1.default.contract.WalletFactory.methods.nonce().call();
+    const nonce = yield walletClient_1.default.contract.WalletFactory.methods.nonce().call();
     //署名用のハッシュの作成
-    const hash = yield web3Client_1.default.getSoliditySha3Hash(walletFactory, nonce, cosigner, recover);
+    const hash = yield walletClient_1.default.getSoliditySha3Hash(walletFactory, nonce, cosigner, recover);
     //authKeyで署名を実行
-    const sign = web3Client_1.default.signAuthorized(hash);
+    const sign = walletClient_1.default.signAuthorized(hash);
     //signedTxに含める関数の実行データを作成(encodeABI)
-    const encodeABI = web3Client_1.default.contract.WalletFactory.methods.deployCloneWallet(sign.v, sign.r, sign.s, nonce, cosigner, recover).encodeABI();
-    const sendData = yield web3Client_1.default.sendSignedTransaction(cosigner, walletFactory, encodeABI);
+    const encodeABI = walletClient_1.default.contract.WalletFactory.methods.deployCloneWallet(sign.v, sign.r, sign.s, nonce, cosigner, recover).encodeABI();
+    const sendData = yield walletClient_1.default.sendSignedTransaction(cosigner, walletFactory, encodeABI);
     const wallet = sendData.receipt.logs[0].address;
     sendData.wallet = wallet;
     const batch = db.batch();

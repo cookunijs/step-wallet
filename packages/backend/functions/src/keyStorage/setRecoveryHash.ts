@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import client from '../../utlis/web3Client'
+import client from '../../utlis/walletClient'
 // const functions = fbFunctions.region('asia-northeast1')
 const db = admin.firestore()
 
