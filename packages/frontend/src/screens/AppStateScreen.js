@@ -8,18 +8,18 @@ class AppStateScreen extends Component {
     super(props)
     this.state = {
       appState: AppState.currentState,
-    };
+    }
   }
 
   componentDidMount() {
-    AppState.addEventListener('change', this._handleAppStateChange);
+    AppState.addEventListener('change', this.handleAppStateChange)
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange);
+    AppState.removeEventListener('change', this.handleAppStateChange)
   }
 
-  _handleAppStateChange = async (nextAppState) => {
+  handleAppStateChange = async (nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       console.log('App has come to the foreground!');
     } else if(nextAppState.match(/inactive|background/)) {
@@ -27,7 +27,7 @@ class AppStateScreen extends Component {
       await this.props.navigation.navigate('AuthScreen', {}, NavigationActions.navigate({ routeName: 'AppStateScreen' }))
     }
     this.setState({ appState: nextAppState })
-  };
+  }
 
   render() {
     return <React.Fragment/>

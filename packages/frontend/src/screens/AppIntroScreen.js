@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, View } from 'react-native';
+import React, { Component } from 'react'
+import { Ionicons } from '@expo/vector-icons'
+import { StyleSheet, View } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { Button } from 'react-native-elements'
-import AppIntroSlider from 'react-native-app-intro-slider';
+import AppIntroSlider from 'react-native-app-intro-slider'
 import LoaderScreen from './LoaderScreen'
 import WaitingScreen from './WaitingScreen'
 
@@ -50,7 +50,7 @@ const slides = [
     imageStyle: {width:270, height:270},
     backgroundColor: '#fff',
   }
-];
+]
 // const slides = config.screens.appIntro.slides
 
 class AppIntroScreen extends React.Component {
@@ -60,9 +60,11 @@ class AppIntroScreen extends React.Component {
       appStatus: 0,
     }
   }
+
   componentDidMount = async() => {
 		await this.loadData()
   }
+
   loadData = async () => {
     if(await Wallet.getWalletAddress()) {
       this.setState({
@@ -74,6 +76,7 @@ class AppIntroScreen extends React.Component {
       })
     }
   }
+
   renderNextButton = () => {
     return (
       <View style={styles.buttonCircle}>
@@ -84,8 +87,9 @@ class AppIntroScreen extends React.Component {
           style={styles.buttonIcon}
         />
       </View>
-    );
-  };
+    )
+  }
+
   renderDoneButton = () => {
     return (
       <View style={styles.buttonCircleDone}>
@@ -104,11 +108,13 @@ class AppIntroScreen extends React.Component {
 					style={styles.button}
 				/>
       </View>
-    );
-  };
+    )
+  }
+
   onDone = async () => {
     await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'AppIntroScreen' }))
   }
+
   render() {
     if (this.state.appStatus === 1) {
       return <WaitingScreen />

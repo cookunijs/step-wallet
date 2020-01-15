@@ -9,7 +9,8 @@ const funcs = {
     executeWallet: './wallets/executeWallet',
     recoveryWallet: './wallets/recoveryWallet',
     setRecoveryHash: './keyStorage/setRecoveryHash',
-    getRecoveryHash: './keyStorage/getRecoveryHash'
+    getRecoveryHash: './keyStorage/getRecoveryHash',
+    executeUnlock: './admin/executeUnlock'
 };
 const loadFunctions = (funcsObj) => {
     console.log('loadFunctions ' + process.env.FUNCTION_NAME);

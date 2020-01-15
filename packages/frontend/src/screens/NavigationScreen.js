@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { Platform, AppState } from 'react-native'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
-import GoogleLoginScreen from './GoogleLoginScreen'
-import SettingPassScreen from './SettingPassScreen'
-import AppIntroScreen from './AppIntroScreen'
-import RecoveryScreen from './RecoveryScreen'
 import AuthScreen from './AuthScreen'
+import TopLoginScreen from './TopLoginScreen'
+import SmsLoginScreen from './SmsLoginScreen'
+import SettingPassScreen from './SettingPassScreen'
+import RecoveryScreen from './RecoveryScreen'
+import AppIntroScreen from './AppIntroScreen'
 import WalletScreen from './WalletScreen'
 import ScannerScreen from './ScannerScreen'
 import DetailScreen from './DetailScreen'
-import SmsAuthScreen from './SmsAuthScreen'
 
 const _navigationOptions = {
 	headerStyle: {
@@ -26,12 +26,12 @@ const SetupScreens = createSwitchNavigator({
 		screen: AuthScreen,
 		navigationOptions: _navigationOptions
 	},
-	GoogleLoginScreen: {
-		screen: GoogleLoginScreen,
+	TopLoginScreen: {
+		screen: TopLoginScreen,
 		navigationOptions: _navigationOptions
 	},
-	SmsAuthScreen: {
-		screen: SmsAuthScreen,
+	SmsLoginScreen: {
+		screen: SmsLoginScreen,
 		navigationOptions: _navigationOptions
 	},
 	RecoveryScreen: {
@@ -76,7 +76,7 @@ class NavigationScreen extends React.Component {
     super(props)
     this.state = {
 			appState: AppState.currentState,
-    };
+    }
   }
 
   componentDidMount() {
@@ -95,7 +95,8 @@ class NavigationScreen extends React.Component {
       await this.props.navigation.navigate('AuthScreen')
     }
     this.setState({ appState: nextAppState })
-  }
+	}
+
 	render() {
 		return <App/>
 	}

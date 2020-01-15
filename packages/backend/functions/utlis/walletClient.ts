@@ -7,6 +7,9 @@ const senderPublicKey: string = process.env.SENDERPUBLICKEY || ''
 const senderPrivateKey: string = process.env.SENDERPRIVATEKEY || ''
 const hashWord: string = process.env.HASHWORD || ''
 const maxNumberOfExecution: number = Number(process.env.MAXNUMBEROFEXECUTION) || 10
+const maxNumberOfRecovery: number = Number(process.env.MAXNUMBEROFRECOVERY) || 10
+const deleteCollectionBatchSize: number = Number(process.env.DELETECOLLECTIONBATCHSIZE) || 100
+const deleteCollectionPath: string = process.env.DELETECOLLECTIONPATH || 'execution'
 const RECOVERY: number = 2
 
 const contract: any = {
@@ -95,6 +98,9 @@ export default {
   contract,
   hashWord,
   maxNumberOfExecution,
+  maxNumberOfRecovery,
+  deleteCollectionBatchSize,
+  deleteCollectionPath,
   RECOVERY,
   signAuthorized,
   sendSignedTransaction,

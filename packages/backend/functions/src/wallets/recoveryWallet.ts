@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import client from '../../utlis/web3Client'
+import client from '../../utlis/walletClient'
 // const functions = fbFunctions.region('asia-northeast1')
 
 const db = admin.firestore()
@@ -14,6 +14,7 @@ module.exports = functions.https.onCall(async (data, context) => {
     )
   }
 
+  let count: number = 0
   const userUid: string = authData.uid
   const docRefWallet: any = await db.collection('wallets').doc(userUid)
 
@@ -32,12 +33,28 @@ module.exports = functions.https.onCall(async (data, context) => {
     )
   }
 
-  if(!walletDoc.data().recoveryPhoneAuth) {
-    throw new functions.https.HttpsError(
-      'unauthenticated',
-      'phone unauthenticated.'
-    )
+  if (walletDoc.data()) {
+    count = walletDoc.data().recoveryCount
   }
+
+  if (count >= client.maxNumberOfRecovery) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'The maximum number of recovery has been exceeded.'
+    )
+  } else {
+    count += 1
+    await docRefWallet.update({
+      recoveryCount: count,
+    })
+  }
+
+  // if(!walletDoc.data().recoveryPhoneAuth) {
+  //   throw new functions.https.HttpsError(
+  //     'unauthenticated',
+  //     'phone unauthenticated.'
+  //   )
+  // }
 
   const wallet: string = data.wallet
   const sigRecovery: any = data.sign
@@ -73,15 +90,10 @@ module.exports = functions.https.onCall(async (data, context) => {
     )
     sendData.wallet = wallet
 
-    let count: number = walletDoc.data().recoveryCount
-    console.log(count)
-    count += 1
-    console.log(count)
-    await docRefWallet.set({
-      address: wallet,
-      recoveryCount: count,
-      recoveryPhoneAuth: false
-    })
+    // await docRefWallet.set({
+    //   recoveryCount: count,
+    // })
+    //recoveryPhoneAuth: false //address: wallet,
 
     return sendData
 

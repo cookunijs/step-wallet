@@ -50,6 +50,7 @@
     "react-native-google-signin": "^2.1.1",
     "react-native-modal": "^11.4.0",
     "react-native-paper": "^2.16.0",
+    "react-native-phone-input": "^0.2.4",
     "react-native-qrcode": "^0.2.7",
     "react-native-qrcode-svg": "^5.2.0",
     "react-native-svg": "~9.5.1",

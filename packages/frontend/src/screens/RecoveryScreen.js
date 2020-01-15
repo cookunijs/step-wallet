@@ -1,6 +1,6 @@
 import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, RefreshControl, Clipboard } from 'react-native'
+import { Text, View, StyleSheet } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { Button, Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -10,17 +10,20 @@ import LoaderScreen from './LoaderScreen'
 class RecoveryScreen extends React.Component {
 	static navigationOptions = {
 		title: 'Recovery',
-	}
+  }
+
 	constructor(props){
     super(props)
     this.state = {
       pass: "",
       appStatus: 0
     }
-	}
+  }
+
 	onChangePass = (_pass) => {
     this.setState({ pass: _pass })
   }
+
   recoveryWallet = async () => {
     Wallet.recoveryWallet(this.props.navigation.state.params.user, "0x", this.state.pass).then(async (data) => {
       await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'SetupScreens' }))
@@ -28,16 +31,17 @@ class RecoveryScreen extends React.Component {
     })
     this.setState({ appStatus: 1 })
   }
+
   render() {
     if (this.state.appStatus === 1) {
       return <LoaderScreen />
     } else {
       return(
-        <View>
+        <View style={{ padding: 20, marginTop: 20 }}>
           <Madoka
             value={this.state.pass}
             style={styles.madokaTextInputPass}
-            label={'PASS WORD'}
+            label={'Password for recovery'}
             borderColor={'#11bdff'}
             inputPadding={20}
             labelHeight={25}
@@ -46,17 +50,30 @@ class RecoveryScreen extends React.Component {
             onChangeText={this.onChangePass}
           />
           <Button
-            type="Clear"
+            title="SEND"
+            titleStyle={{
+              marginLeft: 5,
+              fontSize: 20,
+              fontWeight: 'bold',
+              color:"#fff"
+            }}
+            buttonStyle={{
+              borderRadius: 50,
+              backgroundColor:"#11bdff"
+            }}
+            containerStyle={{
+              marginTop: 50,
+              marginBottom: 40,
+              justifyContent: 'flex-end'
+            }}
             icon={
               <Icon
-                size={70}
+                size={18}
                 name='key'
-                color='#11bdff'
-                style={styles.sendButton}
+                color='#fff'
                 iconStyle={styles.madokaButtonIcon}
               />
             }
-            style={styles.button}
             onPress={this.recoveryWallet}
           />
         </View>
@@ -84,10 +101,7 @@ const styles = StyleSheet.create({
     color: '#909090'
   },
 	madokaTextInputPass: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 100,
-    margin: 15,
+    marginTop: 150,
     height:100
   },
   madokaButtonIcon: {

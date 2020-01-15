@@ -102,6 +102,11 @@ packages/backend/server/node_modules/
 packages/server/functions/build/
 packages/backend/contract/build/
 
+# .env file
+packages/frontend/.env
+packages/backend/.env
+packages/sandbox/functions/.env
+
 #etc..
 packages/backend/contract/.secret/
 packages/backend/functions/firepit-log.txt

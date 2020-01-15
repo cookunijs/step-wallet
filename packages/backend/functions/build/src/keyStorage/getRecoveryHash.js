@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const web3Client_1 = require("../../utlis/web3Client");
+const walletClient_1 = require("../../utlis/walletClient");
 // const functions = fbFunctions.region('asia-northeast1')
 const db = admin.firestore();
 module.exports = functions.https.onCall((data, context) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,19 +32,19 @@ module.exports = functions.https.onCall((data, context) => __awaiter(void 0, voi
         throw new functions.https.HttpsError('invalid-argument', 'The function must be called while authenticated.');
     }
     const wallet = walletDoc.data().address;
-    const contract = web3Client_1.default.getConfigData("contract");
+    const contract = walletClient_1.default.getConfigData("contract");
     const keyStorage = contract.keyStorage;
-    const hashWord = web3Client_1.default.hashWord;
-    const nonce = yield web3Client_1.default.contract.KeyStorage.methods.nonce().call();
+    const hashWord = walletClient_1.default.hashWord;
+    const nonce = yield walletClient_1.default.contract.KeyStorage.methods.nonce().call();
     //署名用のハッシュの作成
-    const hash = yield web3Client_1.default.getSoliditySha3Hash(keyStorage, nonce, wallet, hashWord);
+    const hash = yield walletClient_1.default.getSoliditySha3Hash(keyStorage, nonce, wallet, hashWord);
     //authKeyで署名を実行
-    const sign = web3Client_1.default.signAuthorized(hash);
+    const sign = walletClient_1.default.signAuthorized(hash);
     const v = sign.v;
     const r = sign.r;
     const s = sign.s;
     //ユーザーの署名を復元
-    const crypted = yield web3Client_1.default.contract.KeyStorage.methods.getStorage(v, r, s, nonce, wallet, hashWord).call();
+    const crypted = yield walletClient_1.default.contract.KeyStorage.methods.getStorage(v, r, s, nonce, wallet, hashWord).call();
     const sendData = {
         wallet: wallet,
         crypted: crypted,
