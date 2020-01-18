@@ -34,7 +34,7 @@ module.exports = functions.https.onCall(async (data, context) => {
   }
 
   if (walletDoc.data()) {
-    count = walletDoc.data().recoveryCount
+    count = walletDoc.data().failureCount
   }
 
   if (count >= client.maxNumberOfRecovery) {
@@ -45,7 +45,7 @@ module.exports = functions.https.onCall(async (data, context) => {
   } else {
     count += 1
     await docRefWallet.update({
-      recoveryCount: count,
+      failureCount: count,
     })
   }
 
@@ -90,10 +90,9 @@ module.exports = functions.https.onCall(async (data, context) => {
     )
     sendData.wallet = wallet
 
-    // await docRefWallet.set({
-    //   recoveryCount: count,
-    // })
-    //recoveryPhoneAuth: false //address: wallet,
+    await docRefWallet.update({
+      failureCount: 0,
+    })
 
     return sendData
 

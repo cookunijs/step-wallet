@@ -16,7 +16,7 @@ module.exports = functions.https.onCall(async (data, context) => {
 
   const userUid: string = authData.uid
 
-  const docRefHash: any = await db.collection('hashs').doc(userUid)
+  const docRefHash: any = await db.collection('regPassHashs').doc(userUid)
   const hashDoc = await docRefHash.get()
 
   const walletDoc: any = await db

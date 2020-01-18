@@ -41,7 +41,7 @@ class WalletScreen extends React.Component {
 
 	handleAppStateChange = async (nextAppState) => {
     if(nextAppState.match(/inactive|background/)) {
-      await this.props.navigation.navigate('AuthScreen', { inactive: true }, NavigationActions.navigate({ routeName: 'WalletScreen' }))
+			await this.props.navigation.navigate('AuthScreen', { inactive: true }, NavigationActions.navigate({ routeName: 'WalletScreen' }))
     }
     this.setState({ appState: nextAppState })
 	}
@@ -130,7 +130,7 @@ class WalletScreen extends React.Component {
 					statusBarProps={{ barStyle: 'light-content' }}
 					barStyle="light-content"
 					centerComponent={{ text: 'Wallet', style: { color: '#000', fontSize: 35, fontWeight: 'bold' } }}
-					rightComponent={{ icon: 'dehaze', color: '#000', paddingRight: 20, size: 35, onPress:this.toggleSettingsModal}}
+					rightComponent={{ icon: 'dehaze', color: '#000', paddingRight: 20, size: 35, onPress: this.toggleSettingsModal}}
 					containerStyle={styles.headerContainer}
 				/>
 				<ScrollView

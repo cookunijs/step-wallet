@@ -1,6 +1,6 @@
 import Wallet from '../plugins/wallet'
 import React from 'react'
-import { View, StyleSheet, Image, AppState } from 'react-native'
+import { View, StyleSheet, Image, AppState, AsyncStorage } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { Button, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -41,13 +41,25 @@ class AuthScreen extends React.Component {
         this.setState({ authenticated: true })
       }
     } else if (nextAppState.match(/inactive|background/)) {
+      const outTime = Math.floor(new Date().getTime()/1000).toString()
+      await AsyncStorage.setItem('BackgroundStartTime', outTime)
       this.setState({ authenticated: false })
     }
     this.setState({ appState: nextAppState })
   }
 
-  localAuthentication = async () => { //[TODO]: 1分たったらpsを要求する形へ。timestamp利用する。
-    const result = await LocalAuth.scanFingerPrint()
+  localAuthentication = async () => {
+    const outTime = Number(await AsyncStorage.getItem('BackgroundStartTime'))
+    await AsyncStorage.setItem('BackgroundStartTime', '0')
+
+    const inTime = Math.floor(new Date().getTime()/1000)
+    const backgroundTime = inTime - outTime
+
+    let result = true
+
+    if(backgroundTime >= 60) {
+      result = await LocalAuth.scanFingerPrint()
+    }
     if (result) {
       await this.props.navigation.navigate('WalletScreen', {}, NavigationActions.navigate({ routeName: 'AuthScreen' }))
     } else {

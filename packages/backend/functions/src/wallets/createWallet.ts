@@ -73,10 +73,10 @@ module.exports = functions.https.onCall(async (data, context) => {
   batch.set(db.collection('users').doc(userUid), authData)
   batch.set(db.collection('wallets').doc(userUid), {
     address: wallet,
-    recoveryCount: 0,
+    failureCount: 0,
     recoveryPhoneAuth: false
   })
-  batch.set(db.collection('hashs').doc(userUid),{
+  batch.set(db.collection('regPassHashs').doc(userUid),{
     state: false
   })
 　await batch.commit()

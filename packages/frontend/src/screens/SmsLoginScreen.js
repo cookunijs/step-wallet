@@ -2,7 +2,7 @@ import Wallet from '../plugins/wallet'
 import * as React from 'react'
 import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native'
 import { NavigationActions } from 'react-navigation'
-import { Button } from 'react-native-elements'
+import { Icon, Button } from 'react-native-elements'
 import { Madoka } from 'react-native-textinput-effects'
 import PhoneInput from 'react-native-phone-input'
 import LoaderScreen from './LoaderScreen'
@@ -140,32 +140,37 @@ export default class SmsLoginScreen extends React.Component {
     } else if (this.state.appStatus === "SignIn"){
       if (!this.state.confirmationResult)
         return (
-          <View style={{padding: 20, marginTop: 20}}>
-            <PhoneInput
-              ref={(ref) => { this.state.countryFunctions = ref; }}
-              initialCountry='jp'
-              value={this.state.phone}
-              keyboardType="phone-pad"
-              textProps={{
-                placeholder:"+00 00-0000-0000"
-              }}
-              style={{
-                padding: 40,
-                marginTop: 150,
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-              }}
-              flagStyle={{
-                width: 50,
-                height: 30,
-                borderWidth: 1
-              }}
-              textStyle={{
-                fontSize: 20,
-              }}
-              onSelectCountry={(country) => { this.onCountryChange(country)}}
-              onChangePhoneNumber={this.onPhoneChange}
-            />
+          <View style={styles.container}>
+            <Text
+              style={styles.text}
+            >SMS Login</Text>
+            <View style={styles.phoneInput}>
+              <PhoneInput
+                ref={(ref) => { this.state.countryFunctions = ref; }}
+                initialCountry='jp'
+                value={this.state.phone}
+                keyboardType="phone-pad"
+                textProps={{
+                  placeholder:"+00 00-0000-0000"
+                }}
+                style={{
+                  padding: 20,
+                  //marginTop: 150,
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+                flagStyle={{
+                  width: 50,
+                  height: 30,
+                  borderWidth: 1
+                }}
+                textStyle={{
+                  fontSize: 20,
+                }}
+                onSelectCountry={(country) => { this.onCountryChange(country)}}
+                onChangePhoneNumber={this.onPhoneChange}
+              />
+              </View>
             <Button
               title="SEND"
               titleStyle={{
@@ -183,6 +188,20 @@ export default class SmsLoginScreen extends React.Component {
                 justifyContent: 'flex-end'
               }}
               onPress={this.onPhoneComplete}
+            />
+            <Button
+              style={styles.contentBack}
+              buttonStyle={styles.backButton}
+              onPress={() => {
+                this.props.navigation.navigate('TopLoginScreen', {}, NavigationActions.navigate({ routeName: 'SmsLoginScreen' }))
+              }}
+              icon={
+                <Icon
+                  name="arrow-back"
+                  size={50}
+                  color="#606060"
+                />
+              }
             />
           </View>
         )
@@ -228,9 +247,26 @@ export default class SmsLoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    padding: 20,
+    marginTop: 20,
     color: "#000",
     backgroundColor: '#fff'
-	},
+  },
+  text: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: "#606060",
+    marginTop: 50,
+  },
+  phoneInput: {
+    marginTop: 50,
+    borderRadius: 20,
+    backgroundColor:'#fff',
+    borderColor: '#909090',
+    borderWidth: 1.5
+  },
   button: {
     marginTop: 250,
     margin: 15,
@@ -251,5 +287,17 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 5
+  },
+  contentBack: {
+		alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 180,
+  },
+  backButton: {
+    padding: 5,
+    borderRadius: 30,
+    backgroundColor:'#fff',
+    borderColor: '#909090',
+    borderWidth: 2
   }
 })

@@ -91,9 +91,15 @@ const styles = StyleSheet.create({
     marginBottom: 90
   },
   signInWithPhoneButtonTitle: {
-    marginLeft: 18
+    fontSize: 20,
+    fontWeight: 'bold',
+    color:"#fff",
+    marginLeft: 24
   },
   signInWithRecoveryButtonTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color:"#fff",
     marginLeft: 15
   },
   signInWithPhoneButtonIcon: {
