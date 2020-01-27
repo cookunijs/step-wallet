@@ -69,8 +69,14 @@ module.exports = functions.https.onCall(async (data, context) => {
   const wallet: string = sendData.receipt.logs[0].address
   sendData.wallet = wallet
 
+  const pushToken: string = data.pushToken
+  const userData: any  = {
+    pushToken: pushToken,
+    authData: authData
+  }
+
   const batch = db.batch()
-  batch.set(db.collection('users').doc(userUid), authData)
+  batch.set(db.collection('users').doc(userUid), userData)
   batch.set(db.collection('wallets').doc(userUid), {
     address: wallet,
     failureCount: 0,

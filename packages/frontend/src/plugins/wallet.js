@@ -11,7 +11,7 @@ const functions = firebase.functions()
 
 const createWallet = async (_user) => {
 	console.log("start: createWallet")
-
+	const pushToken = _user.pushToken
 	// if(await getWalletAddress()) return
 	// if (!await getCosignerPrivateKey()){
 	const cosignerPrivateKey = await client.createAccount()
@@ -25,6 +25,7 @@ const createWallet = async (_user) => {
 	const _createWalletResult = await functions.httpsCallable('createWallet')({
 		cosigner: cosigner,
 		recover: recover,
+		pushToken: pushToken
 	}).catch((error) => {
 		console.log(error)　//登録されていた時はrecoveryを実行させる。
 		throw new Error("invalid-argument")
@@ -64,7 +65,6 @@ const executeWallet = async (_to, _encodeABI, _value) => {
 		cosignerPrivateKey
 	)
 	const cosigner = await getCosignerAddress()
-
 	const executeWalletResult = await functions.httpsCallable('executeWallet')({
 		cosigner: cosigner,
 		wallet: wallet,
@@ -78,7 +78,8 @@ const executeWallet = async (_to, _encodeABI, _value) => {
 	}).catch((error) => {
 		console.log(error)
 	})
-	return executeWalletResult.balance
+	console.log(executeWalletResult.data)
+	return executeWalletResult.data
 }
 
 const recoveryWallet = async (_user, _encodeABI, _password) => {
@@ -246,7 +247,7 @@ const deleteWallet = async () => {
 	await SecureStore.deleteItemAsync("CosignerPrivateKey")
 }
 
-deleteWallet()
+// deleteWallet()
 
 const Wallet = {
 	web3: client.web3,

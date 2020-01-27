@@ -1,6 +1,6 @@
 import Wallet from '../plugins/wallet'
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Image, ScrollView, RefreshControl, Clipboard, AppState } from 'react-native'
+import { Text, View, StyleSheet, Image, ScrollView, RefreshControl, Clipboard, AppState, AsyncStorage } from 'react-native'
 import { Header, Button, ListItem, Icon } from 'react-native-elements'
 import { NavigationActions } from 'react-navigation'
 import Modal from "react-native-modal"
@@ -10,6 +10,7 @@ import EvilIcon from 'react-native-vector-icons/EvilIcons'
 import ActionButton from 'react-native-action-button'
 import { Madoka } from 'react-native-textinput-effects'
 import config from '../../config.json'
+import TransactionHistoryComponent from '../components/TransactionHistoryComponent'
 
 class WalletScreen extends React.Component {
 	static navigationOptions = {
@@ -26,7 +27,8 @@ class WalletScreen extends React.Component {
 			to: "",
 			value: "",
       balance: "0.00",
-      appState: AppState.currentState,
+			appState: AppState.currentState,
+			transactions: []
     }
   }
 
@@ -48,10 +50,16 @@ class WalletScreen extends React.Component {
 
 	loadData = async () => {
     const wallet = await Wallet.getWalletAddress()
-    const balance = await Wallet.getWalletBalance()
+		const balance = await Wallet.getWalletBalance()
+		const transactionHistory = await AsyncStorage.getItem('TransactionHistory')
+		let transactions = []
+		if(transactionHistory){
+			transactions = JSON.parse(transactionHistory)
+		}
 		this.setState({
 			wallet: wallet,
-			balance: balance
+			balance: balance,
+			transactions: transactions
 		})
 	}
 
@@ -104,12 +112,19 @@ class WalletScreen extends React.Component {
 	transferEth = async () => {
 		if(this.state.isWithdrawModalVisible){
 			this.toggleWithdrawModal()
-			console.log(this.state.value)
-      await Wallet.executeWallet(this.state.to, "0x", this.state.value)
-      const balance = await Wallet.getWalletBalance()
+			// await AsyncStorage.removeItem('TransactionHistory')
+			const result = await Wallet.executeWallet(this.state.to, "0x", this.state.value)
+			const transactionHistory = await AsyncStorage.getItem('TransactionHistory')
+			let transactions = []
+			if(transactionHistory){
+				transactions = JSON.parse(transactionHistory)
+			}
+			transactions.push(result.receipt)
+      await AsyncStorage.setItem('TransactionHistory', JSON.stringify(transactions))
+			const balance = await Wallet.getWalletBalance()
 			this.setState({
-				balance: balance,
-				to: ''
+				to: '',
+				balance: balance
 			})
 		}
 	}
@@ -301,6 +316,11 @@ class WalletScreen extends React.Component {
 							</View>
 						</View>
 					</Modal>
+					<TransactionHistoryComponent
+						items={this.state.transactions}
+						styles={styles}
+						onPress={this.toggleWithdrawModal}
+					/>
 				</ScrollView>
 				<ActionButton
 					style={styles.actionButtonIcon}

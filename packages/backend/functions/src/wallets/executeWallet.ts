@@ -34,12 +34,14 @@ module.exports = functions.https.onCall(async (data, context) => {
     )
   }
 
-  const docRefExecution: any = await db.collection('execution').doc(userUid)
-  const executionDoc: any = await docRefExecution.get()
+  // const docRefTransactions: any = await db.collection('transactions').doc(userUid)
+
+  const docRefExecutions: any = await db.collection('executions').doc(userUid)
+  const executionsDoc: any = await docRefExecutions.get()
   let count: number = 0
 
-  if (executionDoc.data()) {
-    count = executionDoc.data().count
+  if (executionsDoc.data()) {
+    count = executionsDoc.data().count
   }
 
   if (count >= client.maxNumberOfExecution) {
@@ -80,14 +82,15 @@ module.exports = functions.https.onCall(async (data, context) => {
       value
     ).encodeABI()
 
-    const sendData: any = await client.sendSignedTransaction(
+    const sendData: any = await client.sendEtherSignedTransaction(
+      userUid,
       cosigner,
       wallet,
-      encodeABI
+      encodeABI,
+      value
     )
-
     count += 1
-    await docRefExecution.update({
+    await docRefExecutions.set({
       count: count,
     })
 

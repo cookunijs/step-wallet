@@ -16,6 +16,7 @@ const captchaUrl = `https://my-contract-wallet-development.firebaseapp.com/index
 
 const delemiterIndex = [6, 10]
 
+import store from './../store'
 export default class SmsLoginScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -31,6 +32,7 @@ export default class SmsLoginScreen extends React.Component {
 
   componentDidMount(){
     this.onCountryChange()
+    console.log(store)
   }
 
   reset = () => {
@@ -113,9 +115,17 @@ export default class SmsLoginScreen extends React.Component {
         this.setState({ appStatus: "SignIn" })
         return
       })
-      if(next === 'SettingPassScreen'){
+      if(next === 'SettingPassScreen'){ //[TODO]: pushTokenをRedaxから取得して、Wallet.createWalletの引数として送信する。////////////////////////////////////////////////////////////////////////////////////
+
+        const pushToken = store.getState().auth.pushToken
+        console.log(pushToken)
         const prevUser = await firebase.auth().currentUser
-        await Wallet.createWallet(prevUser.providerData[0])
+        const sendData = {
+          pushToken: pushToken,
+          ...prevUser.providerData[0]
+        }
+        console.log(sendData)
+        await Wallet.createWallet(sendData)
         .catch((error) => {
           console.log(error)
           this.setState({ createErrorStatus: true })
